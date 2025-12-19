@@ -1,14 +1,36 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;700&family=JetBrains+Mono:wght@100;300;400;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* HSL-based palette for precise control */
+  --accent-base: 220, 90%, 65%;
+  /* Soft blue #5a89f7 */
+  --accent-secondary: 185, 90%, 50%;
+  /* Cyan #1ae0f7 */
+
+  --bg-main: 230, 20%, 5%;
+  /* Deep space black #0a0b0f */
+
+  /* Standardized Glassmorphism */
+  --glass-opacity: 0.05;
+  --glass-blur: 32px;
+  --glass-border: 220, 20%, 100%, 0.1;
+}
 
 @layer base {
 
   html,
   body {
-    @apply h-full w-full bg-[#090a0f] text-slate-200 overflow-hidden select-none font-sans;
+    @apply h-screen w-screen overflow-hidden select-none font-sans;
+    background-color: hsl(var(--bg-main));
+    color: hsl(220, 10%, 95%);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: hsla(var(--accent-base), 0.3);
+    color: white;
   }
 }
 
@@ -21,30 +43,104 @@
     -webkit-app-region: no-drag;
   }
 
-  .bg-grid-pattern {
-    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
-    background-size: 24px 24px;
+  /* Nebula 2.0 - Cinematic & Performance Optimized */
+  .nebula-surface {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: -1;
+    background: radial-gradient(circle at 10% 10%, hsla(230, 30%, 10%, 1) 0%, transparent 100%);
+    pointer-events: none;
   }
 
-  .cyber-glass {
-    @apply bg-white/[0.03] backdrop-blur-2xl border border-white/10;
-    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  .nebula-cloud {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(160px);
+    opacity: 0.06;
+    will-change: transform;
+    mix-blend-mode: screen;
   }
 
+  .nebula-1 {
+    width: 1000px;
+    height: 1000px;
+    background: radial-gradient(circle, hsla(var(--accent-base), 0.2) 0%, transparent 70%);
+    top: -300px;
+    left: -200px;
+    animation: nebula-float-1 40s ease-in-out infinite alternate;
+  }
+
+  .nebula-2 {
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, hsla(var(--accent-secondary), 0.1) 0%, transparent 70%);
+    bottom: -200px;
+    right: -100px;
+    animation: nebula-float-2 50s ease-in-out infinite alternate;
+  }
+
+  @keyframes nebula-float-1 {
+    from {
+      transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+
+    to {
+      transform: translate(150px, 100px) scale(1.1) rotate(10deg);
+    }
+  }
+
+  @keyframes nebula-float-2 {
+    from {
+      transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+
+    to {
+      transform: translate(-100px, -50px) scale(0.9) rotate(-10deg);
+    }
+  }
+
+  /* Premium Glassmorphism Utility - ULTRA SUBTLE SHADOWS */
+  .glass-pane {
+    background-color: hsla(220, 20%, 8%, 0.5);
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    border: 1px solid hsla(var(--glass-border));
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06),
+      inset 0 0 0 1px hsla(220, 20%, 100%, 0.03);
+    border-radius: 2rem;
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .glass-pane-hover:hover {
+    border-color: hsla(var(--accent-base), 0.4);
+    background-color: hsla(220, 20%, 12%, 0.6);
+    box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05),
+      0 0 30px 0 hsla(var(--accent-base), 0.03);
+    transform: translateY(-1px);
+  }
+
+  /* Typography / Aesthetics */
   .font-mono-tech {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    letter-spacing: 0.15em;
+  }
+
+  .text-glow-accent {
+    text-shadow: 0 0 15px hsla(var(--accent-base), 0.3);
   }
 }
 
-/* Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 3px;
+/* Scrollbar Removal */
+::-webkit-scrollbar {
+  display: none;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  @apply bg-transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-white/10 hover:bg-white/20 rounded-full transition-colors;
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }

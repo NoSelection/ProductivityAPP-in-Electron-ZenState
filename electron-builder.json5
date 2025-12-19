@@ -1,9 +1,10 @@
 // @see - https://www.electron.build/configuration/configuration
 {
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
-  "appId": "YourAppID",
+  "appId": "com.zenstate.app",
   "asar": true,
-  "productName": "YourAppName",
+  "productName": "ZenState",
+  "copyright": "Copyright © 2025 ${author}",
   "directories": {
     "output": "release/${version}"
   },
@@ -11,22 +12,14 @@
     "dist",
     "dist-electron"
   ],
-  "mac": {
-    "target": [
-      "dmg"
-    ],
-    "artifactName": "${productName}-Mac-${version}-Installer.${ext}"
-  },
   "win": {
     "target": [
       {
-        "target": "nsis",
-        "arch": [
-          "x64"
-        ]
+        "target": "portable",
+        "arch": ["x64"]
       }
     ],
-    "artifactName": "${productName}-Windows-${version}-Setup.${ext}"
+    "artifactName": "${productName}-${version}-Portable.${ext}"
   },
   "nsis": {
     "oneClick": false,

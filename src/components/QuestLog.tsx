@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Trash2, CheckCircle2, Circle, Hash } from 'lucide-react'
+import { Plus, Trash2, CheckCircle2, Circle, List } from 'lucide-react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { cn } from '../lib/utils'
 
@@ -35,70 +35,70 @@ export const QuestLog: React.FC = () => {
 
     return (
         <div className={cn(
-            "cyber-glass h-full w-full flex flex-col p-8 group relative overflow-hidden transition-all duration-700 rounded-3xl row-span-2"
+            "glass-pane h-full w-full flex flex-col lg:row-span-2 relative overflow-hidden min-h-[60vh] lg:min-h-0"
         )}>
-            {/* Catch-light accent */}
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
-            <div className="flex items-center justify-between mb-8">
-                <h2 className="text-slate-500 text-[9px] font-bold tracking-[0.3em] uppercase opacity-70 font-mono-tech flex items-center gap-2">
-                    <Hash className="w-3 h-3 text-secondary/40" />
-                    Quest Log // {quests.length}
+            {/* Header Area */}
+            <div className="flex-none p-[3vh] pb-[1vh] flex items-center gap-3">
+                <List className="w-3.5 h-3.5 text-accent-secondary/60" />
+                <h2 className="text-white/40 text-[9px] font-black tracking-[0.5em] uppercase font-mono-tech">
+                    ARCHIVE // QUESTS
                 </h2>
             </div>
 
-            <div className="relative mb-8">
+            {/* Input Area */}
+            <div className="flex-none px-[3vh] py-[1vh] relative mb-[1vh]">
                 <input
                     type="text"
-                    placeholder="INITIATE NEW QUEST..."
-                    className="w-full bg-white/[0.03] border border-white/5 rounded-xl px-5 py-4 text-xs font-mono-tech text-slate-100 outline-none focus:border-secondary/40 focus:bg-white/[0.05] transition-all placeholder-white/10 tracking-widest"
+                    placeholder="INITIATE..."
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 py-[1.5vh] text-[1.5vh] font-mono-tech text-white outline-none focus:border-accent-secondary/40 focus:bg-white/[0.05] transition-all placeholder-white/20 tracking-wider"
                     value={newQuest}
                     onChange={(e) => setNewQuest(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && addQuest()}
                 />
                 <button
                     onClick={addQuest}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-secondary transition-colors"
+                    className="absolute right-[4vh] top-1/2 -translate-y-1/2 text-white/40 hover:text-accent-secondary transition-all"
                 >
-                    <Plus className="w-5 h-5" />
+                    <Plus className="w-[2.5vh] h-[2.5vh] p-0.5 hover:scale-110" />
                 </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3 pr-2">
+            {/* Scrollable List - flex-1 min-h-0 is KEY for squishing */}
+            <div className="flex-1 min-h-0 overflow-y-auto px-[3vh] pb-[2vh] space-y-[1vh] scrollbar-none">
                 <AnimatePresence initial={false}>
                     {quests.length === 0 ? (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="h-full flex flex-col items-center justify-center opacity-10 font-mono-tech uppercase tracking-[0.3em] text-[10px]"
+                            className="h-full flex flex-col items-center justify-center text-white/10 font-mono-tech uppercase tracking-[0.4em] text-[1.2vh]"
                         >
-                            System // Empty
+                            Log // Empty
                         </motion.div>
                     ) : (
                         quests.map((quest) => (
                             <motion.div
                                 key={quest.id}
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                className="group/item flex items-center justify-between p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 hover:bg-white/[0.04] transition-all duration-300"
+                                initial={{ opacity: 0, y: 5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.98 }}
+                                className="group/item flex items-center justify-between p-[1.5vh] rounded-xl bg-white/[0.01] border border-white/5 hover:border-white/10 hover:bg-white/[0.03] transition-all duration-300 min-h-[5vh]"
                             >
-                                <div className="flex items-center gap-4">
-                                    <button onClick={() => toggleQuest(quest.id)} className="text-secondary/30 hover:text-secondary transition-colors">
-                                        {quest.completed ? <CheckCircle2 className="w-5 h-5" /> : <Circle className="w-5 h-5" />}
+                                <div className="flex items-center gap-[1.5vh] min-w-0 flex-1">
+                                    <button onClick={() => toggleQuest(quest.id)} className="text-accent-secondary/60 hover:text-accent-secondary transition-colors shrink-0">
+                                        {quest.completed ? <CheckCircle2 className="w-[2vh] h-[2vh]" /> : <Circle className="w-[2vh] h-[2vh]" />}
                                     </button>
                                     <span className={cn(
-                                        "text-sm font-light text-slate-300 transition-all duration-500",
-                                        quest.completed && "line-through opacity-20 grayscale"
+                                        "text-[1.8vh] font-light text-white/80 transition-all duration-500 truncate leading-none pt-0.5",
+                                        quest.completed && "opacity-30 line-through blur-[0.5px]"
                                     )}>
                                         {quest.text}
                                     </span>
                                 </div>
                                 <button
                                     onClick={() => deleteQuest(quest.id)}
-                                    className="opacity-0 group-hover/item:opacity-100 p-2 rounded-lg hover:bg-red-500/10 text-slate-700 hover:text-red-400/60 transition-all"
+                                    className="text-white/20 hover:text-red-400/80 transition-colors shrink-0 opacity-0 group-hover/item:opacity-100"
                                 >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Trash2 className="w-[2vh] h-[2vh]" />
                                 </button>
                             </motion.div>
                         ))

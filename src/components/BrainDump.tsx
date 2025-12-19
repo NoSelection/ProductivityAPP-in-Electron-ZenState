@@ -1,5 +1,5 @@
 import React from 'react'
-import { Hash } from 'lucide-react'
+import { FileText } from 'lucide-react'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { cn } from '../lib/utils'
 
@@ -8,30 +8,32 @@ export const BrainDump: React.FC = () => {
 
     return (
         <div className={cn(
-            "cyber-glass h-full w-full p-8 flex flex-col group relative overflow-hidden transition-all duration-700 rounded-3xl"
+            "glass-pane h-full w-full flex flex-col group relative overflow-hidden min-h-[40vh] lg:min-h-0"
         )}>
-            {/* Catch-light accent */}
-            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
-            <div className="flex items-center justify-between mb-6">
-                <h2 className="text-slate-500 text-[9px] font-bold tracking-[0.3em] uppercase opacity-70 font-mono-tech flex items-center gap-2">
-                    <Hash className="w-3 h-3 text-secondary/40" />
-                    Neural Buffer // Scratchpad
-                </h2>
-                <div className="px-2 py-1 rounded bg-white/[0.03] border border-white/5">
-                    <span className="text-[9px] text-slate-600 font-bold uppercase tracking-widest font-mono-tech">
-                        {notes.length} bytes
+            <div className="flex-none p-[3vh] pb-[1vh] flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                    <FileText className="w-3.5 h-3.5 text-white/40" />
+                    <h2 className="text-white/30 text-[9px] font-black tracking-[0.5em] uppercase font-mono-tech">
+                        NEURAL // SCRATCHPAD
+                    </h2>
+                </div>
+                <div className="px-3 py-1 rounded-full bg-white/[0.05] border border-white/10">
+                    <span className="text-[8px] text-white/40 font-black uppercase tracking-widest font-mono-tech">
+                        {notes.length} B
                     </span>
                 </div>
             </div>
 
-            <textarea
-                className="flex-1 w-full bg-transparent border-none outline-none resize-none text-sm font-light leading-relaxed text-slate-400 placeholder-white/5 custom-scrollbar font-sans selection:bg-secondary/20 selection:text-secondary"
-                placeholder="> INITIATE NEURAL CACHE DUMP..."
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                spellCheck={false}
-            />
+            {/* Strictly flexible textarea area */}
+            <div className="flex-1 min-h-0 w-full p-[3vh] pt-[1vh]">
+                <textarea
+                    className="w-full h-full bg-transparent border-none outline-none resize-none text-[1.8vh] font-light leading-relaxed text-white/80 placeholder-white/20 scrollbar-none font-sans"
+                    placeholder="> Initiate thoughts..."
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    spellCheck={false}
+                />
+            </div>
         </div>
     )
 }

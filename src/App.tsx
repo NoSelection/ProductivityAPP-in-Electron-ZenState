@@ -1,3 +1,4 @@
+import { ThemeProvider } from "./context/ThemeContext";
 import { Layout } from "./components/Layout";
 import { FocusCard } from "./components/FocusCard";
 import { Timer } from "./components/Timer";
@@ -7,22 +8,24 @@ import { QuestLog } from "./components/QuestLog";
 
 function App() {
   return (
-    <Layout>
-      {/* Top Left - Focus */}
-      <FocusCard />
+    <ThemeProvider>
+      <Layout>
+        {/* Top Left - Focus */}
+        <FocusCard />
 
-      {/* Top Right (Middle Column Top) - Timer */}
-      <Timer />
+        {/* Top Right (Middle Column Top) - Timer */}
+        <Timer />
 
-      {/* Sidebar - Spans 2 Rows (Rightmost column) */}
-      <QuestLog />
+        {/* Sidebar - Spans 2 Rows (Rightmost column) */}
+        <QuestLog />
 
-      {/* Bottom Left - Brain Dump */}
-      <BrainDump />
+        {/* Bottom Left - Brain Dump */}
+        <BrainDump />
 
-      {/* Bottom Right (Middle Column Bottom) - LoFi */}
-      <MediaDeck />
-    </Layout>
+        {/* Bottom Right (Middle Column Bottom) - LoFi */}
+        <MediaDeck />
+      </Layout>
+    </ThemeProvider>
   );
 }
 
