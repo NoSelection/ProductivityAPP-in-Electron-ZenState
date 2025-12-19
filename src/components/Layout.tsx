@@ -20,13 +20,18 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             {/* Cinematic Header */}
             <header className="h-14 lg:h-16 app-drag flex items-center justify-between px-4 lg:px-10 relative z-50 shrink-0">
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-10">
                     <div className="flex flex-col">
                         <h1 className="text-[10px] font-black tracking-[0.6em] text-white/50 uppercase font-mono-tech flex items-center gap-4">
                             <span className="w-1.5 h-1.5 rounded-full bg-accent-base animate-pulse shadow-[0_0_15px_hsla(var(--accent-base),0.8)]" />
                             ZenState // Neural OS
                         </h1>
                     </div>
+
+                    <nav className="hidden lg:flex items-center gap-8 app-no-drag">
+                        <a href="#/" className="text-[9px] font-black tracking-[0.3em] uppercase text-white/40 hover:text-white transition-colors">Dashboard</a>
+                        <a href="#/codex" className="text-[9px] font-black tracking-[0.3em] uppercase text-white/40 hover:text-white transition-colors">Neural Codex</a>
+                    </nav>
                 </div>
 
                 <div className="flex items-center gap-8 app-no-drag">

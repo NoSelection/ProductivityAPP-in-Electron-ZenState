@@ -7,6 +7,9 @@
 - **Scrollbar Elimination**: Completely removed all scrollbars to achieve a unified, "Command Center" aesthetic.
 - **Nebula Softening**: Further refined background cloud opacity and blur for a less distracting, more immersive atmosphere.
 - **Mobile Adaptability**: Implemented a smart scrollable stack layout for mobile devices while maintaining the locked single-screen view on desktop.
+- **Neural Audio Evolution**: Upgraded the Media Deck with a custom URL input ("Neural Link"), preset signal channels (Lofi, Synth, Ambient), and a holographic video toggle mode ("Holo-View").
+- **Neural Codex**: Expanded the application into a multi-page Focus OS using React Router. Added a new "Codex" page for focus statistics, session history, and rank tracking.
+- **Cinematic Navigation**: Implemented smooth page transitions and a persistent "Neural Mode" header for seamless switching between Dashboard and Codex.
 
 ## [2025-12-20] ZenState // Neural Transformation (UI Redesign)
 - **Global Foundation**: Migrated to HSL-based design system for precise color control and better transparency handling.
