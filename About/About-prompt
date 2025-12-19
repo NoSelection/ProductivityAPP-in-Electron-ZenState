@@ -1,0 +1,51 @@
+# Role: Senior Frontend Architect & UX Designer
+# Project: ZenState (Productivity OS Template)
+
+We are building a modern, high-performance desktop productivity app using Electron. The goal is to create a "Focus OS" with a "Cyber-Zen" aesthetic (dark mode, glassmorphism, bento-grid layout). This needs to be high-quality, sellable code.
+
+## 1. The Tech Stack (Strict)
+- **Core:** Electron + Vite (React + TypeScript template).
+- **Styling:** Tailwind CSS + shadcn/ui (for components).
+- **Icons:** Lucide React.
+- **State/Storage:** React Hooks + LocalStorage (Local-first architecture).
+
+## 2. Design System: "Cyber-Zen"
+Implement a custom color palette in `tailwind.config.js`:
+- **Background:** `#1a1b26` (Deep Blue-Grey Void)
+- **Surface:** `#24283b` (Bento Cards)
+- **Primary Accent:** `#7aa2f7` (Neon Blue - Focus)
+- **Secondary Accent:** `#bb9af7` (Soft Purple - Creative)
+- **Text:** `#c0caf5` (Soft White)
+
+**Visual Rules:**
+- **Glassmorphism:** Use slight transparency and blur on the sidebar.
+- **Borderless:** The app must use a custom frameless window (hidden title bar).
+- **Rounded:** `border-radius: 12px` on all cards.
+
+## 3. The Layout: "Bento Grid" Dashboard
+Create a CSS Grid layout (3 columns) containing these widget components:
+1.  **The Core (Top Left):** A large "Current Focus" card. Large text input for the ONE active task. Complete button with hover effects.
+2.  **The Flow (Top Right):** A circular Pomodoro timer (25m default). Visual progress indicator.
+3.  **Brain Dump (Bottom Left):** A Markdown-supported scratchpad.
+4.  **Lo-Fi Deck (Bottom Right):** A minimal media controller placeholder (for embedded YouTube/Spotify).
+5.  **Quest Log (Sidebar):** A collapsible list of backlog tasks (drag-and-drop ready).
+
+## 4. Implementation Steps
+Please generate the code in this order:
+
+**Step A: Project Configuration**
+- Provide the `tailwind.config.js` with the custom colors above.
+- Provide the `electron/main.ts` configuration to enable a **Frameless Window** (hidden title bar, custom traffic light controls).
+
+**Step B: The App Layout**
+- Create a `Layout.tsx` that handles the custom title bar drag region (`-webkit-app-region: drag`).
+- Setup the main CSS Grid structure for the Bento Box.
+
+**Step C: The Components**
+- Generate the code for the `FocusCard.tsx` (The main task input).
+- Generate the code for the `PomodoroTimer.tsx` (With start/pause logic).
+
+**Step D: State Management**
+- Create a simple `useLocalStorage` hook to ensure tasks persist after restart.
+
+Let's build this clean and modular. Start with the Configuration.
