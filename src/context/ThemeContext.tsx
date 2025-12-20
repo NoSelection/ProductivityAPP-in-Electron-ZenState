@@ -1,8 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-export type ThemeType = 'cyber' | 'sakura' | 'deep-sea' | 'matrix' | 'custom';
+export type ThemeType = 'hyper' | 'sakura' | 'ocean' | 'matrix' | 'sunset' | 'arctic';
 
 interface ThemeColors {
+    // Primary neon colors
+    neon_primary: string;
+    neon_secondary: string;
+    neon_accent: string;
+    // Legacy HSL support
     accent_base: string;
     accent_secondary: string;
     bg_main: string;
@@ -12,71 +17,103 @@ interface ThemeContextType {
     theme: ThemeType;
     setTheme: (theme: ThemeType) => void;
     colors: ThemeColors;
-    setCustomColors: (colors: Partial<ThemeColors>) => void;
 }
 
 const Themes: Record<ThemeType, ThemeColors> = {
-    cyber: {
-        accent_base: '220, 90%, 65%',
-        accent_secondary: '185, 90%, 50%',
-        bg_main: '230, 20%, 5%',
+    hyper: {
+        neon_primary: '#00f0ff',
+        neon_secondary: '#ff00aa',
+        neon_accent: '#bf00ff',
+        accent_base: '185, 100%, 50%',
+        accent_secondary: '320, 100%, 50%',
+        bg_main: '240, 20%, 5%',
     },
     sakura: {
-        accent_base: '340, 80%, 65%',
-        accent_secondary: '320, 80%, 45%',
-        bg_main: '340, 20%, 5%',
+        neon_primary: '#ff6b9d',
+        neon_secondary: '#c44569',
+        neon_accent: '#ff9ff3',
+        accent_base: '340, 100%, 71%',
+        accent_secondary: '345, 55%, 52%',
+        bg_main: '340, 25%, 6%',
     },
-    'deep-sea': {
-        accent_base: '170, 90%, 45%',
-        accent_secondary: '180, 80%, 70%',
-        bg_main: '210, 30%, 5%',
+    ocean: {
+        neon_primary: '#00d9ff',
+        neon_secondary: '#0099cc',
+        neon_accent: '#66ffff',
+        accent_base: '190, 100%, 50%',
+        accent_secondary: '195, 100%, 40%',
+        bg_main: '210, 40%, 5%',
     },
     matrix: {
-        accent_base: '145, 100%, 50%',
-        accent_secondary: '135, 100%, 30%',
-        bg_main: '145, 100%, 2%',
+        neon_primary: '#00ff41',
+        neon_secondary: '#008f11',
+        neon_accent: '#39ff14',
+        accent_base: '130, 100%, 50%',
+        accent_secondary: '135, 100%, 28%',
+        bg_main: '120, 100%, 2%',
     },
-    custom: {
-        accent_base: '220, 90%, 65%',
-        accent_secondary: '185, 90%, 50%',
-        bg_main: '230, 20%, 5%',
-    }
+    sunset: {
+        neon_primary: '#ff6b35',
+        neon_secondary: '#f7931e',
+        neon_accent: '#ffcc00',
+        accent_base: '20, 100%, 60%',
+        accent_secondary: '35, 93%, 54%',
+        bg_main: '15, 30%, 5%',
+    },
+    arctic: {
+        neon_primary: '#a8e6ff',
+        neon_secondary: '#7dd3fc',
+        neon_accent: '#e0f2fe',
+        accent_base: '195, 100%, 83%',
+        accent_secondary: '199, 95%, 74%',
+        bg_main: '210, 30%, 6%',
+    },
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [theme, setThemeState] = useState<ThemeType>(() => {
-        return (localStorage.getItem('zen-theme') as ThemeType) || 'cyber';
+        const saved = localStorage.getItem('zen-theme') as ThemeType;
+        // Map old theme names to new ones
+        if (saved === 'cyber' as string) return 'hyper';
+        if (saved === 'deep-sea' as string) return 'ocean';
+        return saved || 'hyper';
     });
 
-    const [customColors, setCustomColorsState] = useState<ThemeColors>(() => {
-        const saved = localStorage.getItem('zen-custom-colors');
-        return saved ? JSON.parse(saved) : Themes.cyber;
-    });
-
-    const currentColors = theme === 'custom' ? customColors : Themes[theme];
+    const currentColors = Themes[theme] || Themes.hyper;
 
     useEffect(() => {
         const root = document.documentElement;
+
+        // Set neon colors as CSS variables
+        root.style.setProperty('--neon-cyan', currentColors.neon_primary);
+        root.style.setProperty('--neon-magenta', currentColors.neon_secondary);
+        root.style.setProperty('--neon-purple', currentColors.neon_accent);
+
+        // Legacy HSL support
         root.style.setProperty('--accent-base', currentColors.accent_base);
         root.style.setProperty('--accent-secondary', currentColors.accent_secondary);
         root.style.setProperty('--bg-main', currentColors.bg_main);
+
+        // Store RGB values for box-shadows and other effects
+        const hexToRgb = (hex: string) => {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result
+                ? `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}`
+                : '0, 240, 255';
+        };
+
+        root.style.setProperty('--accent-base-rgb', hexToRgb(currentColors.neon_primary));
+        root.style.setProperty('--accent-secondary-rgb', hexToRgb(currentColors.neon_secondary));
 
         localStorage.setItem('zen-theme', theme);
     }, [theme, currentColors]);
 
     const setTheme = (newTheme: ThemeType) => setThemeState(newTheme);
 
-    const setCustomColors = (newColors: Partial<ThemeColors>) => {
-        const updated = { ...customColors, ...newColors };
-        setCustomColorsState(updated);
-        localStorage.setItem('zen-custom-colors', JSON.stringify(updated));
-        setThemeState('custom');
-    };
-
     return (
-        <ThemeContext.Provider value={{ theme, setTheme, colors: currentColors, setCustomColors }}>
+        <ThemeContext.Provider value={{ theme, setTheme, colors: currentColors }}>
             {children}
         </ThemeContext.Provider>
     );

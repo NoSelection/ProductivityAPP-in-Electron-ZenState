@@ -7,7 +7,7 @@ import { cn } from '../lib/utils'
 import {
     Settings, X, Minus, Square,
     LayoutDashboard, Compass,
-    Shield, ShieldAlert, Wind
+    Shield, ShieldAlert, Wind, Zap
 } from 'lucide-react'
 
 interface LayoutProps {
@@ -29,25 +29,37 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     }, [isFocusShieldActive])
 
     return (
-        <div className="h-screen w-screen overflow-hidden flex flex-col relative font-sans selection:bg-accent-base/30 selection:text-white">
-            {/* Nebula 2.0 Background */}
-            <div className="nebula-surface">
-                <div className="neu-glow absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-accent-base/5 to-transparent pointer-events-none" />
-                <div className="nebula-cloud nebula-1" />
-                <div className="nebula-cloud nebula-2" />
+        <div className="h-screen w-screen overflow-hidden flex flex-col relative">
+            {/* HYPER Background System */}
+            <div className="hyper-bg">
+                <div className="cyber-grid" />
+                <div className="scan-beam" />
             </div>
 
-            {/* Cinematic Header */}
-            <header className="h-12 lg:h-14 app-drag flex items-center justify-between px-4 lg:px-8 relative z-[70] shrink-0 border-b border-white/[0.03] backdrop-blur-sm">
-                <div className="flex items-center gap-4 lg:gap-8">
-                    <h1 className="text-[9px] lg:text-[10px] font-black tracking-[0.4em] lg:tracking-[0.5em] text-white/50 uppercase font-mono-tech flex items-center gap-2 lg:gap-3">
-                        <span className="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full bg-accent-base animate-pulse" />
-                        ZenState
-                    </h1>
+            {/* Scanlines Overlay */}
+            <div className="scanlines" />
 
-                    <div className="flex items-center gap-0.5 bg-white/[0.03] border border-white/10 p-1 rounded-lg app-no-drag">
+            {/* HYPER Header */}
+            <header className="h-14 lg:h-16 app-drag flex items-center justify-between px-4 lg:px-8 relative z-[70] shrink-0 border-b border-neon-cyan/10 bg-black/30 backdrop-blur-xl">
+                {/* Left Section - Logo & Nav */}
+                <div className="flex items-center gap-6 lg:gap-10">
+                    {/* Logo */}
+                    <div className="flex items-center gap-3">
+                        <div className="relative">
+                            <Zap className="w-5 h-5 lg:w-6 lg:h-6 text-neon-cyan" style={{ filter: 'drop-shadow(0 0 10px #00f0ff)' }} />
+                            <div className="absolute inset-0 animate-ping">
+                                <Zap className="w-5 h-5 lg:w-6 lg:h-6 text-neon-cyan opacity-30" />
+                            </div>
+                        </div>
+                        <h1 className="font-display text-sm lg:text-base font-bold tracking-[0.3em] text-neon-cyan uppercase glitch" data-text="ZENSTATE">
+                            ZENSTATE
+                        </h1>
+                    </div>
+
+                    {/* Navigation */}
+                    <nav className="flex items-center gap-1 p-1 rounded-lg bg-black/40 border border-neon-cyan/10 app-no-drag">
                         {[
-                            { path: '/', label: 'Dash', icon: LayoutDashboard },
+                            { path: '/', label: 'Dashboard', icon: LayoutDashboard },
                             { path: '/codex', label: 'Codex', icon: Compass },
                         ].map((nav) => {
                             const isActive = location.pathname === nav.path
@@ -56,44 +68,71 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                                     key={nav.path}
                                     to={nav.path}
                                     className={cn(
-                                        "flex items-center gap-1.5 px-3 lg:px-4 py-2 rounded-md transition-all text-[9px] lg:text-[10px] font-bold uppercase tracking-wider",
-                                        isActive ? "text-accent-base bg-white/5" : "text-white/20 hover:text-white/40"
+                                        "flex items-center gap-2 px-4 py-2.5 rounded-md transition-all duration-300 font-display text-[10px] lg:text-xs font-semibold uppercase tracking-widest relative overflow-hidden group",
+                                        isActive
+                                            ? "text-neon-cyan bg-neon-cyan/10 shadow-[inset_0_0_20px_rgba(0,240,255,0.1)]"
+                                            : "text-white/30 hover:text-neon-cyan/70 hover:bg-white/5"
                                     )}
                                 >
-                                    <nav.icon className={cn("w-3 h-3 lg:w-3.5 lg:h-3.5", isActive ? "opacity-100" : "opacity-40")} />
-                                    <span className="hidden sm:inline">{nav.label}</span>
+                                    {isActive && (
+                                        <motion.div
+                                            layoutId="nav-glow"
+                                            className="absolute inset-0 bg-gradient-to-r from-neon-cyan/20 via-transparent to-neon-magenta/10"
+                                            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                                        />
+                                    )}
+                                    <nav.icon className={cn(
+                                        "w-3.5 h-3.5 lg:w-4 lg:h-4 relative z-10 transition-all",
+                                        isActive && "drop-shadow-[0_0_8px_#00f0ff]"
+                                    )} />
+                                    <span className="hidden sm:inline relative z-10">{nav.label}</span>
                                 </Link>
                             )
                         })}
-                    </div>
+                    </nav>
                 </div>
 
-                <div className="flex items-center gap-3 lg:gap-6 app-no-drag">
+                {/* Right Section - Controls */}
+                <div className="flex items-center gap-4 lg:gap-6 app-no-drag">
+                    {/* System Status */}
+                    <div className="hidden md:flex items-center gap-3 px-4 py-2 rounded-md bg-black/40 border border-white/5">
+                        <div className="pulse-dot" />
+                        <span className="font-mono-tech text-[9px] text-neon-cyan/60 uppercase tracking-widest">System Online</span>
+                    </div>
+
+                    {/* Settings */}
                     <button
                         onClick={() => setIsSettingsOpen(true)}
-                        className="p-2 rounded-lg hover:bg-white/5 text-white/40 hover:text-white transition-all"
+                        className="p-2.5 rounded-lg bg-black/30 border border-white/10 text-white/40 hover:text-neon-cyan hover:border-neon-cyan/30 hover:shadow-[0_0_20px_rgba(0,240,255,0.2)] transition-all duration-300"
                     >
-                        <Settings className="w-4 h-4" />
+                        <Settings className="w-4 h-4 lg:w-5 lg:h-5" />
                     </button>
 
-                    <div className="hidden sm:flex items-center gap-2 pl-3 border-l border-white/10">
-                        <button className="text-white/30 hover:text-white transition-colors p-1"><Minus className="w-3.5 h-3.5" /></button>
-                        <button className="text-white/30 hover:text-white transition-colors p-1"><Square className="w-3 h-3" /></button>
-                        <button className="text-white/30 hover:text-red-500/80 transition-colors p-1"><X className="w-4 h-4" /></button>
+                    {/* Window Controls */}
+                    <div className="hidden sm:flex items-center gap-1 pl-4 border-l border-white/10">
+                        <button className="p-2 rounded text-white/20 hover:text-neon-lime hover:bg-neon-lime/10 transition-all">
+                            <Minus className="w-3.5 h-3.5" />
+                        </button>
+                        <button className="p-2 rounded text-white/20 hover:text-neon-cyan hover:bg-neon-cyan/10 transition-all">
+                            <Square className="w-3 h-3" />
+                        </button>
+                        <button className="p-2 rounded text-white/20 hover:text-neon-magenta hover:bg-neon-magenta/10 transition-all">
+                            <X className="w-4 h-4" />
+                        </button>
                     </div>
                 </div>
             </header>
 
-            {/* Main OS Hub - Handles global scrolling for mobile */}
+            {/* Main Content Area */}
             <div className="flex-1 min-h-0 relative z-10 flex flex-col overflow-y-auto lg:overflow-hidden custom-scrollbar">
-                <main className="flex-1 w-full max-w-[1800px] mx-auto p-4 lg:p-8 pb-20 lg:pb-6 flex flex-col min-h-0">
+                <main className="flex-1 w-full max-w-[1920px] mx-auto p-4 lg:p-8 pb-28 lg:pb-8 flex flex-col min-h-0">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={location.pathname}
-                            initial={{ opacity: 0, y: 15, filter: 'blur(12px)' }}
+                            initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
                             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                            exit={{ opacity: 0, y: -15, filter: 'blur(12px)' }}
-                            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                            exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
+                            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                             className="flex-1 flex flex-col min-h-0"
                         >
                             {children}
@@ -102,40 +141,74 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </main>
             </div>
 
-            {/* Control Bar */}
-            <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-2 p-1.5 rounded-xl bg-black/50 backdrop-blur-xl border border-white/10">
+            {/* HYPER Control Bar */}
+            <motion.div
+                initial={{ y: 100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[80] flex items-center gap-2 p-2 rounded-2xl bg-black/70 backdrop-blur-2xl border border-neon-cyan/20 shadow-[0_0_40px_rgba(0,240,255,0.1)]"
+            >
+                {/* Corner Accents */}
+                <div className="absolute -top-px left-4 right-4 h-px bg-gradient-to-r from-transparent via-neon-cyan/50 to-transparent" />
+                <div className="absolute -bottom-px left-4 right-4 h-px bg-gradient-to-r from-transparent via-neon-magenta/30 to-transparent" />
+
+                {/* Reset Button */}
                 <button
                     onClick={() => setIsResetOpen(true)}
-                    className="p-3 rounded-lg hover:bg-white/5 text-white/30 hover:text-accent-secondary transition-all group relative"
+                    className="relative p-3.5 rounded-xl bg-black/50 border border-white/5 text-white/30 hover:text-neon-lime hover:border-neon-lime/30 hover:bg-neon-lime/5 hover:shadow-[0_0_20px_rgba(57,255,20,0.2)] transition-all duration-300 group"
                 >
-                    <Wind className="w-5 h-5" />
-                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/90 rounded-md text-[9px] font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity border border-white/10 whitespace-nowrap text-accent-secondary">Reset</span>
+                    <Wind className="w-5 h-5 group-hover:animate-pulse" />
+                    <span className="absolute -top-12 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-black/90 rounded-lg font-display text-[9px] font-bold uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all duration-300 border border-neon-lime/20 whitespace-nowrap text-neon-lime shadow-[0_0_20px_rgba(57,255,20,0.2)]">
+                        Reset Protocol
+                    </span>
                 </button>
-                <div className="w-px h-6 bg-white/10" />
+
+                {/* Divider */}
+                <div className="w-px h-8 bg-gradient-to-b from-transparent via-neon-cyan/20 to-transparent" />
+
+                {/* Focus Shield */}
                 <button
                     onClick={() => setIsFocusShieldActive(!isFocusShieldActive)}
                     className={cn(
-                        "p-3 rounded-lg transition-all group relative",
-                        isFocusShieldActive ? "bg-accent-base/20 text-accent-base" : "hover:bg-white/5 text-white/30 hover:text-accent-base"
+                        "relative p-3.5 rounded-xl border transition-all duration-300 group",
+                        isFocusShieldActive
+                            ? "bg-neon-cyan/10 border-neon-cyan/40 text-neon-cyan shadow-[0_0_30px_rgba(0,240,255,0.3),inset_0_0_20px_rgba(0,240,255,0.1)]"
+                            : "bg-black/50 border-white/5 text-white/30 hover:text-neon-cyan hover:border-neon-cyan/30 hover:bg-neon-cyan/5"
                     )}
                 >
-                    {isFocusShieldActive ? <ShieldAlert className="w-5 h-5" /> : <Shield className="w-5 h-5" />}
-                    <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/90 rounded-md text-[9px] font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity border border-white/10 whitespace-nowrap text-accent-base">Focus</span>
+                    {isFocusShieldActive ? (
+                        <ShieldAlert className="w-5 h-5 animate-pulse" style={{ filter: 'drop-shadow(0 0 10px #00f0ff)' }} />
+                    ) : (
+                        <Shield className="w-5 h-5" />
+                    )}
+                    <span className={cn(
+                        "absolute -top-12 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-black/90 rounded-lg font-display text-[9px] font-bold uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all duration-300 border whitespace-nowrap shadow-lg",
+                        isFocusShieldActive
+                            ? "border-neon-cyan/30 text-neon-cyan"
+                            : "border-white/10 text-white/60"
+                    )}>
+                        {isFocusShieldActive ? 'Shield Active' : 'Focus Shield'}
+                    </span>
                 </button>
-            </div>
+            </motion.div>
 
-            {/* Neural Shield Overlay Layer */}
+            {/* Focus Shield Overlay */}
             <AnimatePresence>
                 {isFocusShieldActive && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
+                        transition={{ duration: 0.8 }}
                         className="fixed inset-0 z-[65] pointer-events-none"
                     >
-                        <div className="absolute inset-0 bg-black/60 backdrop-blur-2xl" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vh] border border-white/5 rounded-[4rem] pointer-events-none opacity-20" />
+                        <div className="absolute inset-0 bg-black/70 backdrop-blur-2xl" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/50" />
+                        {/* Cyber Frame */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] h-[75vh] border border-neon-cyan/10 rounded-3xl">
+                            <div className="absolute -top-px left-10 right-10 h-px bg-gradient-to-r from-transparent via-neon-cyan/40 to-transparent" />
+                            <div className="absolute -bottom-px left-10 right-10 h-px bg-gradient-to-r from-transparent via-neon-magenta/30 to-transparent" />
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>

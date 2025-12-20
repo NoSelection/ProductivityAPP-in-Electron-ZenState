@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Play, Pause, RotateCcw, Activity } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Play, Pause, RotateCcw, Clock, Zap } from 'lucide-react'
 import { useNeuralStorage } from '../hooks/useNeuralStorage'
+import { cn } from '../lib/utils'
 
 export const Timer: React.FC = () => {
     const [timeLeft, setTimeLeft] = useState(25 * 60)
@@ -36,71 +38,185 @@ export const Timer: React.FC = () => {
     }
 
     const percentage = ((25 * 60 - timeLeft) / (25 * 60)) * 100
-    const strokeDasharray = 283
-    const strokeDashoffset = strokeDasharray - (strokeDasharray * percentage) / 100
+    const circumference = 2 * Math.PI * 88
+    const strokeDashoffset = circumference - (circumference * percentage) / 100
 
     return (
-        <div className="Timer h-full w-full flex flex-col justify-center items-center group relative overflow-hidden glass-pane min-h-0">
-            {/* Header */}
-            <div className="absolute top-6 left-6 lg:top-8 lg:left-8 flex items-center gap-3 z-10">
-                <Activity className="w-4 h-4 text-accent-base/60" />
-                <h2 className="text-white/40 text-[9px] font-black tracking-[0.5em] uppercase font-mono-tech">
-                    CHRONO // {isActive ? 'ACTIVE' : 'STANDBY'}
-                </h2>
+        <div className="Timer h-full w-full flex flex-col justify-center items-center group relative overflow-hidden hyper-panel min-h-0">
+            {/* Background Effects */}
+            <div className="absolute inset-0">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,0,170,0.05),transparent_60%)]" />
+                {isActive && (
+                    <motion.div
+                        className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,240,255,0.08),transparent_50%)]"
+                        animate={{ opacity: [0.5, 1, 0.5] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                    />
+                )}
             </div>
 
-            {/* Content Container */}
+            {/* Header */}
+            <div className="absolute top-5 left-5 lg:top-6 lg:left-6 flex items-center gap-3 z-10">
+                <div className="relative">
+                    <Clock className="w-5 h-5 text-neon-magenta" style={{ filter: 'drop-shadow(0 0 8px #ff00aa)' }} />
+                </div>
+                <div className="flex flex-col">
+                    <span className="font-display text-[10px] lg:text-xs font-bold tracking-[0.3em] text-neon-magenta uppercase">
+                        CHRONO
+                    </span>
+                    <span className="font-mono-tech text-[8px] text-white/20 uppercase tracking-widest">
+                        {isActive ? 'Counting Down' : 'Ready'}
+                    </span>
+                </div>
+            </div>
+
+            {/* Status */}
+            <div className="absolute top-5 right-5 lg:top-6 lg:right-6 flex items-center gap-2">
+                <div className={cn(
+                    "w-2 h-2 rounded-full transition-all duration-300",
+                    isActive
+                        ? "bg-neon-cyan animate-pulse shadow-[0_0_10px_#00f0ff,0_0_20px_#00f0ff]"
+                        : "bg-neon-magenta/30"
+                )} />
+                <span className="font-mono-tech text-[9px] text-white/30 uppercase tracking-wider">
+                    {isActive ? 'ACTIVE' : 'STANDBY'}
+                </span>
+            </div>
+
+            {/* Timer Circle */}
             <div className="flex-1 w-full flex flex-col items-center justify-center relative p-6 lg:p-10">
                 <div className="relative w-full max-w-[200px] lg:max-w-[240px] aspect-square flex items-center justify-center">
-                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 224 224">
+                    {/* Outer Glow Ring */}
+                    <motion.div
+                        className="absolute inset-[-10px] rounded-full"
+                        animate={isActive ? {
+                            boxShadow: [
+                                '0 0 20px rgba(0,240,255,0.1), inset 0 0 20px rgba(0,240,255,0.05)',
+                                '0 0 40px rgba(0,240,255,0.2), inset 0 0 30px rgba(0,240,255,0.1)',
+                                '0 0 20px rgba(0,240,255,0.1), inset 0 0 20px rgba(0,240,255,0.05)',
+                            ]
+                        } : {}}
+                        transition={{ duration: 2, repeat: Infinity }}
+                    />
+
+                    {/* SVG Circle */}
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+                        {/* Background Track */}
                         <circle
-                            cx="112"
-                            cy="112"
-                            r="100"
-                            stroke="hsla(var(--accent-base), 0.05)"
-                            strokeWidth="1"
+                            cx="100"
+                            cy="100"
+                            r="88"
+                            stroke="rgba(255,0,170,0.1)"
+                            strokeWidth="2"
                             fill="transparent"
                         />
+                        {/* Dotted inner circle */}
                         <circle
-                            cx="112"
-                            cy="112"
-                            r="100"
-                            stroke="hsla(var(--accent-base), 0.5)"
-                            strokeWidth="3"
+                            cx="100"
+                            cy="100"
+                            r="78"
+                            stroke="rgba(0,240,255,0.05)"
+                            strokeWidth="1"
+                            strokeDasharray="4 8"
                             fill="transparent"
-                            strokeDasharray={strokeDasharray}
+                        />
+                        {/* Progress Ring */}
+                        <motion.circle
+                            cx="100"
+                            cy="100"
+                            r="88"
+                            stroke="url(#timerGradient)"
+                            strokeWidth="4"
+                            fill="transparent"
+                            strokeDasharray={circumference}
                             strokeDashoffset={strokeDashoffset}
                             strokeLinecap="round"
-                            className="transition-all duration-1000 ease-linear"
+                            style={{
+                                filter: 'drop-shadow(0 0 10px #00f0ff) drop-shadow(0 0 20px #00f0ff)',
+                            }}
+                            transition={{ duration: 0.5, ease: 'linear' }}
                         />
+                        {/* Gradient Definition */}
+                        <defs>
+                            <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#00f0ff" />
+                                <stop offset="50%" stopColor="#bf00ff" />
+                                <stop offset="100%" stopColor="#ff00aa" />
+                            </linearGradient>
+                        </defs>
                     </svg>
 
-                    <div className="absolute flex flex-col items-center">
-                        <div className="text-4xl lg:text-5xl font-mono-tech font-light tracking-tighter text-white text-glow-accent">
+                    {/* Center Content */}
+                    <div className="absolute flex flex-col items-center gap-2">
+                        <motion.div
+                            className="font-mono-tech text-4xl lg:text-5xl xl:text-6xl font-light tracking-wider"
+                            style={{
+                                color: isActive ? '#00f0ff' : '#e0e0ff',
+                                textShadow: isActive
+                                    ? '0 0 20px #00f0ff, 0 0 40px #00f0ff'
+                                    : '0 0 10px rgba(0,240,255,0.3)'
+                            }}
+                            animate={isActive ? { opacity: [1, 0.8, 1] } : {}}
+                            transition={{ duration: 1, repeat: Infinity }}
+                        >
                             {formatTime(timeLeft)}
-                        </div>
+                        </motion.div>
+                        <span className="font-mono-tech text-[9px] text-white/20 uppercase tracking-[0.3em]">
+                            {Math.round(percentage)}% Complete
+                        </span>
                     </div>
+
+                    {/* Spinning Accent Ring */}
+                    {isActive && (
+                        <motion.div
+                            className="absolute inset-[-4px] rounded-full border border-neon-cyan/20"
+                            style={{ borderStyle: 'dashed', borderWidth: '1px' }}
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+                        />
+                    )}
                 </div>
             </div>
 
             {/* Controls */}
-            <div className="flex gap-4 pb-6 lg:pb-10 shrink-0 z-10">
-                <button
+            <div className="flex gap-4 pb-6 lg:pb-8 shrink-0 z-10">
+                <motion.button
                     onClick={() => setIsActive(!isActive)}
-                    className="w-12 h-12 lg:w-14 lg:h-14 flex items-center justify-center rounded-xl bg-white/[0.03] border border-white/10 text-accent-base hover:bg-accent-base hover:text-black transition-all"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={cn(
+                        "w-14 h-14 lg:w-16 lg:h-16 flex items-center justify-center rounded-xl border transition-all duration-300",
+                        isActive
+                            ? "bg-neon-cyan/10 border-neon-cyan/40 text-neon-cyan shadow-[0_0_30px_rgba(0,240,255,0.3),inset_0_0_20px_rgba(0,240,255,0.1)]"
+                            : "bg-black/40 border-neon-magenta/20 text-neon-magenta hover:border-neon-magenta/40 hover:bg-neon-magenta/5 hover:shadow-[0_0_20px_rgba(255,0,170,0.2)]"
+                    )}
                 >
-                    {isActive ? <Pause className="w-5 h-5 lg:w-6 lg:h-6 fill-current" /> : <Play className="w-5 h-5 lg:w-6 lg:h-6 fill-current ml-0.5 group-hover/btn:scale-110 transition-transform" />}
-                </button>
-                <button
+                    {isActive ? (
+                        <Pause className="w-6 h-6 lg:w-7 lg:h-7 fill-current" style={{ filter: 'drop-shadow(0 0 8px #00f0ff)' }} />
+                    ) : (
+                        <Play className="w-6 h-6 lg:w-7 lg:h-7 fill-current ml-1" />
+                    )}
+                </motion.button>
+
+                <motion.button
                     onClick={resetTimer}
-                    className="w-12 h-12 lg:w-14 lg:h-14 flex items-center justify-center rounded-xl bg-white/[0.03] border border-white/10 text-white/30 hover:text-white hover:bg-white/10 transition-all"
+                    whileHover={{ scale: 1.05, rotate: -180 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.4 }}
+                    className="w-14 h-14 lg:w-16 lg:h-16 flex items-center justify-center rounded-xl bg-black/40 border border-white/10 text-white/30 hover:text-white hover:border-white/20 hover:bg-white/5 transition-colors"
                 >
-                    <RotateCcw className="w-4 h-4 lg:w-5 lg:h-5 group-hover:rotate-180 transition-transform duration-700" />
-                </button>
+                    <RotateCcw className="w-5 h-5 lg:w-6 lg:h-6" />
+                </motion.button>
             </div>
 
-            <div className="absolute bottom-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <span className="text-[8px] font-mono-tech text-white/10 uppercase tracking-[0.4em]">Temporal Link Sync</span>
+            {/* Bottom Status */}
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="flex items-center gap-2">
+                    <Zap className="w-3 h-3 text-neon-cyan/30" />
+                    <span className="font-mono-tech text-[8px] text-white/10 uppercase tracking-[0.3em]">
+                        Temporal Sync Active
+                    </span>
+                </div>
             </div>
         </div>
     )
