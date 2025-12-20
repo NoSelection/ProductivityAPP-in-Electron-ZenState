@@ -30,6 +30,13 @@ export function initDb() {
             id INTEGER PRIMARY KEY CHECK (id = 1),
             content TEXT
         );
+
+        CREATE TABLE IF NOT EXISTS settings (
+            category TEXT,
+            key TEXT,
+            value TEXT,
+            PRIMARY KEY (category, key)
+        );
     `)
 
     console.log('Neural Core (SQLite) initialized at:', dbPath)
@@ -73,4 +80,11 @@ export function initDb() {
     ipcMain.handle('db:saveNotes', (_, content: string) => {
         return db.prepare('INSERT OR REPLACE INTO notes (id, content) VALUES (1, ?)').run(content)
     })
+}
+
+export function closeDb() {
+    if (db) {
+        db.close()
+        db = null
+    }
 }

@@ -17,6 +17,5 @@
 - **SQLite (better-sqlite3):** A robust, local database for storing user settings, focus metrics, and Neural Codex content.
 - **LocalStorage:** Used for lightweight, non-relational persistence where appropriate.
 
-## Key Utilities
-- **clsx & tailwind-merge:** For dynamic and conflict-free CSS class management.
-- **React Router:** For seamless navigation between the Dashboard, Neural Codex, and Settings.
+## Testing
+- **Vitest:** A fast, Vite-native testing framework for unit and integration tests.
