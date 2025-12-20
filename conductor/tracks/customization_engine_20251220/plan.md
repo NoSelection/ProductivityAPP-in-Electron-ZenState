@@ -10,7 +10,7 @@
 - [x] Task: Build the Timer Configuration interface in `SettingsPanel.tsx`. 6d76134
 - [x] Task: Implement the XP & Progression settings UI. 8949abc
 - [x] Task: Create the Visual Identity/Theme customization controls. d36dbfb
-- [~] Task: Conductor - User Manual Verification 'Core Customization UI' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Core Customization UI' (Protocol in workflow.md) [checkpoint: bc67592]
 
 ## Phase 3: Integration & Reactivity
 - [ ] Task: Integrate Customization Engine with `Timer.tsx` to use user-defined protocols.
