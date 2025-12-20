@@ -5,6 +5,7 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { FocusPage } from "./pages/FocusPage";
 import { MediaPage } from "./pages/MediaPage";
 import { QuestsPage } from "./pages/QuestsPage";
+import { ZenGardenPage } from "./pages/ZenGardenPage";
 import { NeuralCodex } from "./components/NeuralCodex";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Route path="/focus" element={<FocusPage />} />
             <Route path="/codex" element={<NeuralCodex />} />
             <Route path="/media" element={<MediaPage />} />
+            <Route path="/garden" element={<ZenGardenPage />} />
             <Route path="/quests" element={<QuestsPage />} />
           </Routes>
         </MainLayout>

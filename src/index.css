@@ -704,20 +704,35 @@
 body.focus-shield-active header,
 body.focus-shield-active .QuestLog,
 body.focus-shield-active .BrainDump,
-body.focus-shield-active .MediaDeck {
-  opacity: 0.02;
-  filter: blur(20px) grayscale(1);
+body.focus-shield-active .MediaDeck,
+body.focus-shield-active .FocusCard,
+body.focus-shield-active .Sidebar {
+  opacity: 0;
+  filter: blur(20px);
   pointer-events: none;
-  transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-body.focus-shield-active .FocusCard,
+/* ART MODE: The Timer becomes the art piece */
 body.focus-shield-active .Timer {
-  opacity: 1;
-  filter: none;
-  transform: scale(1.02);
-  transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 100;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.5);
+  width: auto;
+  height: auto;
+  z-index: 1000;
+  pointer-events: auto;
+  filter: drop-shadow(0 0 50px rgba(var(--prismatic-2-rgb), 0.2));
+  /* Remove borders/bg for pure art feel */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Hide Timer header */
+body.focus-shield-active .Timer .font-display {
+  opacity: 0.5;
 }
 
 /* Range input styling */

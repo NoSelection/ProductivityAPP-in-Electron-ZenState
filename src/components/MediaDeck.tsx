@@ -74,11 +74,16 @@ export const MediaDeck: React.FC = () => {
 
     return (
         <div className={cn(
-            "MediaDeck flex-1 hyper-panel flex flex-col justify-between group relative overflow-hidden min-h-0 transition-all duration-700",
-            holoMode && "shadow-[0_0_40px_rgba(var(--prismatic-2-rgb),0.2),inset_0_0_40px_rgba(var(--prismatic-2-rgb),0.05)]"
+            "MediaDeck relative w-full aspect-[3/4] max-h-[600px] flex flex-col justify-between bg-[#0a0a0f]/90 backdrop-blur-2xl border border-white/10 rounded-3xl overflow-hidden transition-all duration-700",
+            holoMode && "shadow-[0_0_50px_rgba(var(--prismatic-2-rgb),0.15)]"
         )}>
-            {/* Audio Visualizer Overlay */}
-            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-30 mix-blend-screen">
+            {/* Prismatic Border Highlight */}
+            <div className="absolute inset-0 p-[1px] rounded-3xl pointer-events-none z-30 opacity-50">
+                <div className="absolute inset-0 bg-gradient-to-b from-[var(--prismatic-2)]/30 via-transparent to-[var(--prismatic-2)]/10" />
+            </div>
+
+            {/* Audio Visualizer Overlay (Background) */}
+            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-40 mix-blend-screen">
                 <AudioVisualizer isPlaying={playing} intensity={timerActive ? 1.0 : 0.4} />
             </div>
 
@@ -103,151 +108,128 @@ export const MediaDeck: React.FC = () => {
             )}
 
             {/* Background Effect */}
-            <div className="absolute inset-0 opacity-40">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(var(--prismatic-2-rgb),0.08),transparent_60%)]" />
-                <div className="absolute bottom-0 right-0 w-32 h-32 border-t border-l border-white/5 rounded-tl-3xl opacity-20" />
+            <div className="absolute inset-0 opacity-20 pointer-events-none">
+                <div className="absolute top-0 right-0 w-full h-[300px] bg-gradient-to-b from-[rgba(var(--prismatic-2-rgb),0.1)] to-transparent" />
             </div>
 
-            {/* Header */}
-            <div className="flex-none p-5 lg:p-6 flex items-center justify-between relative z-10 border-b border-white/5">
+            {/* Header / Mode Switch */}
+            <div className="flex-none p-6 flex items-start justify-between relative z-20">
                 <div className="flex items-center gap-3">
-                    <div className="relative w-8 h-8 flex items-center justify-center bg-white/5 rounded-full border border-white/10">
-                        <Radio className="w-4 h-4 text-[var(--prismatic-2)]" style={{ filter: 'drop-shadow(0 0 8px var(--prismatic-2))' }} />
-                        {playing && (
-                            <motion.div
-                                className="absolute inset-0"
-                                animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
-                                transition={{ duration: 2, repeat: Infinity }}
-                            >
-                                <div className="w-full h-full rounded-full border border-[var(--prismatic-2)]/30" />
-                            </motion.div>
+                    <div className={cn(
+                        "w-2 h-2 rounded-full",
+                        playing ? "bg-[var(--prismatic-2)] shadow-[0_0_10px_var(--prismatic-2)]" : "bg-white/20"
+                    )} />
+                    <span className="font-mono-tech text-[9px] tracking-[0.2em] text-white/40 uppercase">
+                        {mode === 'ambient' ? 'ENV // SIM' : 'NET // STRM'}
+                    </span>
+                </div>
+
+                <motion.button
+                    onClick={() => setMode(mode === 'ambient' ? 'stream' : 'ambient')}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={cn(
+                        "px-3 py-1.5 rounded-full border text-[10px] font-mono-tech tracking-wider uppercase transition-all",
+                        mode === 'stream'
+                            ? "border-[var(--prismatic-1)] text-[var(--prismatic-1)] bg-[var(--prismatic-1)]/10"
+                            : "border-white/10 text-white/40 hover:text-white"
+                    )}
+                >
+                    SWITCH INPUT
+                </motion.button>
+            </div>
+
+            {/* Central Visualizer (The Core) */}
+            <div className="flex-1 flex flex-col items-center justify-center relative z-20">
+                <div className="relative w-48 h-48 lg:w-56 lg:h-56 flex items-center justify-center">
+                    {/* Spinning Rings */}
+                    <motion.div
+                        animate={playing ? { rotate: 360 } : { rotate: 0 }}
+                        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-0 border border-dashed border-[var(--prismatic-2)]/20 rounded-full"
+                    />
+                    <motion.div
+                        animate={playing ? { rotate: -360 } : { rotate: 0 }}
+                        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                        className="absolute inset-4 border border-[var(--prismatic-2)]/10 rounded-full"
+                    />
+
+                    {/* Core Glow */}
+                    <div className={cn(
+                        "w-32 h-32 rounded-full flex items-center justify-center backdrop-blur-sm transition-all duration-700 border",
+                        playing
+                            ? "bg-[var(--prismatic-2)]/10 border-[var(--prismatic-2)]/40 shadow-[0_0_60px_rgba(var(--prismatic-2-rgb),0.2)]"
+                            : "bg-white/5 border-white/5"
+                    )}>
+                        {mode === 'ambient' ? (
+                            React.createElement(AMBIENT_PRESETS[currentAmbient].icon, {
+                                className: "w-12 h-12 text-[var(--prismatic-2)] transition-all duration-500",
+                                style: { filter: playing ? 'drop-shadow(0 0 20px var(--prismatic-2))' : 'none' }
+                            })
+                        ) : (
+                            <Radio className="w-12 h-12 text-[var(--prismatic-2)]" />
                         )}
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="font-display text-[10px] lg:text-xs font-bold tracking-[0.3em] text-[var(--prismatic-2)] uppercase">
-                            TRANSMISSION
-                        </span>
-                        <span className="font-mono-tech text-[8px] text-white/20 uppercase tracking-widest">
-                            {playing ? 'Signal Locked' : 'Searching Frequencies'}
-                        </span>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                {/* Track Title */}
+                <div className="text-center mt-8 space-y-2">
+                    <h2 className="font-display text-3xl font-bold text-white tracking-widest uppercase glow-text">
+                        {activeName}
+                    </h2>
+                    <p className="font-mono-tech text-[10px] text-[var(--prismatic-2)] uppercase tracking-[0.4em] opacity-80">
+                        {activeSub}
+                    </p>
+                </div>
+            </div>
+
+            {/* Controls Footer */}
+            <div className="flex-none p-6 lg:p-8 space-y-6 relative z-20 bg-gradient-to-t from-black/80 to-transparent">
+                {/* Playback Controls */}
+                <div className="flex items-center justify-center gap-8">
+                    {/* Play/Pause Main Button */}
                     <motion.button
-                        onClick={() => setMode(mode === 'ambient' ? 'stream' : 'ambient')}
-                        whileHover={{ scale: 1.05 }}
+                        onClick={togglePlay}
+                        whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.95 }}
-                        title={mode === 'ambient' ? "Switch to Streams" : "Switch to Ambient"}
                         className={cn(
-                            "p-2.5 rounded-full border transition-all duration-300",
-                            mode === 'stream'
-                                ? "text-[var(--prismatic-1)] bg-[rgba(var(--prismatic-1-rgb),0.1)] border-[rgba(var(--prismatic-1-rgb),0.3)]"
-                                : "text-white/20 border-white/5 hover:text-[var(--prismatic-2)] hover:bg-white/5"
+                            "w-16 h-16 rounded-full flex items-center justify-center border transition-all duration-300",
+                            playing
+                                ? "border-[var(--prismatic-2)] bg-[var(--prismatic-2)] text-black shadow-[0_0_30px_rgba(var(--prismatic-2-rgb),0.4)]"
+                                : "border-white/20 bg-white/5 text-white hoer:bg-white/10"
                         )}
                     >
-                        {mode === 'ambient' ? <Music className="w-4 h-4" /> : <Radio className="w-4 h-4" />}
+                        {playing ? <Pause className="w-6 h-6 fill-current" /> : <Play className="w-6 h-6 fill-current ml-1" />}
+                    </motion.button>
+
+                    {/* Skip Button */}
+                    <motion.button
+                        onClick={cycleContent}
+                        whileHover={{ scale: 1.1, rotate: 10 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="p-3 rounded-full text-white/30 hover:text-white border border-transparent hover:border-white/20 transition-all"
+                    >
+                        <SkipForward className="w-6 h-6" />
                     </motion.button>
                 </div>
-            </div>
 
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col px-5 lg:px-6 py-4 gap-4 relative z-10 min-h-0">
-                <div className="flex-1 flex flex-row items-center gap-5 lg:gap-6 min-h-0">
-                    {/* Visualizer Disc (Ghost Core) */}
-                    <div className="shrink-0 w-20 h-20 lg:w-28 lg:h-28 relative perspective-1000">
-                        <motion.div
-                            animate={playing ? { rotateY: 180 } : {}}
-                            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                            className="w-full h-full rounded-full bg-black/60 border border-[var(--prismatic-2)]/20 flex items-center justify-center relative preserve-3d"
-                            style={{
-                                boxShadow: playing
-                                    ? '0 0 30px rgba(var(--prismatic-2-rgb),0.2), inset 0 0 20px rgba(var(--prismatic-2-rgb),0.1)'
-                                    : 'none'
-                            }}
-                        >
-                            {/* Ambient Icon or Disc Rings */}
-                            {mode === 'ambient' ? (
-                                React.createElement(AMBIENT_PRESETS[currentAmbient].icon, {
-                                    className: "w-8 h-8 text-[rgba(var(--prismatic-2-rgb),0.6)]",
-                                    style: { filter: playing ? 'drop-shadow(0 0 10px var(--prismatic-2))' : 'none' }
-                                })
-                            ) : (
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="w-16 h-16 border-2 border-[var(--prismatic-1)]/20 rounded-full animate-ping-slow" />
-                                </div>
-                            )}
-
-                            {/* Center Core */}
-                            <div className="absolute w-4 h-4 bg-white rounded-full shadow-[0_0_15px_white]" />
-                        </motion.div>
-                    </div>
-
-                    {/* Track Info & Controls */}
-                    <div className="flex-1 min-w-0 flex flex-col gap-4">
-                        <div className="space-y-1">
-                            <h3
-                                className="text-xl lg:text-2xl font-display font-light text-white tracking-wide truncate"
-                                style={{ textShadow: playing ? '0 0 20px rgba(var(--prismatic-2-rgb),0.3)' : 'none' }}
-                            >
-                                {activeName}
-                            </h3>
-                            <p className="font-mono-tech text-[9px] lg:text-[10px] text-[rgba(var(--prismatic-2-rgb),0.4)] uppercase tracking-[0.2em] truncate">
-                                {activeSub}
-                            </p>
-                        </div>
-
-                        {/* Control Buttons */}
-                        <div className="flex items-center gap-3">
-                            <motion.button
-                                onClick={togglePlay}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className={cn(
-                                    "w-12 h-12 lg:w-14 lg:h-14 flex items-center justify-center rounded-full border transition-all duration-300",
-                                    playing
-                                        ? "bg-[rgba(var(--prismatic-2-rgb),0.1)] border-[rgba(var(--prismatic-2-rgb),0.4)] text-[var(--prismatic-2)] shadow-[0_0_25px_rgba(var(--prismatic-2-rgb),0.3)]"
-                                        : "bg-black/40 border-white/10 text-white/60 hover:border-[var(--prismatic-2)]/40 hover:bg-[var(--prismatic-2)]/5"
-                                )}
-                            >
-                                {playing ? (
-                                    <Pause className="w-5 h-5 lg:w-6 lg:h-6 fill-current" />
-                                ) : (
-                                    <Play className="w-5 h-5 lg:w-6 lg:h-6 fill-current ml-0.5" />
-                                )}
-                            </motion.button>
-
-                            <motion.button
-                                onClick={cycleContent}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="p-3 rounded-full text-white/20 hover:text-[var(--prismatic-1)] hover:bg-[rgba(var(--prismatic-1-rgb),0.05)] border border-transparent hover:border-[rgba(var(--prismatic-1-rgb),0.2)] transition-all"
-                            >
-                                <SkipForward className="w-5 h-5" />
-                            </motion.button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Volume Control */}
-                <div className="shrink-0 bg-transparent pt-2">
-                    <div className="flex items-center gap-4">
-                        <Volume2 className="w-4 h-4 shrink-0" style={{ color: 'rgba(var(--prismatic-2-rgb), 0.4)' }} />
-                        <div className="flex-1 relative h-0.5 bg-white/10 overflow-hidden">
-                            <div
-                                className="absolute top-0 left-0 h-full bg-[var(--prismatic-2)] shadow-[0_0_10px_var(--prismatic-2)]"
-                                style={{ width: `${volume * 100}%` }}
-                            />
-                            <input
-                                type="range"
-                                min="0"
-                                max="1"
-                                step="0.01"
-                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                value={volume}
-                                onChange={(e) => setVolume(parseFloat(e.target.value))}
-                            />
-                        </div>
+                {/* Volume Slider */}
+                <div className="flex items-center gap-4 px-4">
+                    <Volume2 className="w-4 h-4 text-white/30 shrink-0" />
+                    <div className="flex-1 relative h-1 bg-white/10 rounded-full overflow-hidden group/vol">
+                        <div
+                            className="absolute top-0 left-0 h-full bg-[var(--prismatic-2)] shadow-[0_0_10px_var(--prismatic-2)] transition-all duration-100"
+                            style={{ width: `${volume * 100}%` }}
+                        />
+                        <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.01"
+                            value={volume}
+                            onChange={(e) => setVolume(parseFloat(e.target.value))}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
                     </div>
                 </div>
             </div>

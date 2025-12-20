@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { initDb } from './database'
@@ -70,6 +70,17 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+// IPC Listeners for Window Controls
+ipcMain.on('window-minimize', () => win?.minimize())
+ipcMain.on('window-maximize', () => {
+  if (win?.isMaximized()) {
+    win.unmaximize()
+  } else {
+    win?.maximize()
+  }
+})
+ipcMain.on('window-close', () => win?.close())
 
 app.whenReady().then(() => {
   initDb()

@@ -139,6 +139,15 @@ app.on("activate", () => {
     createWindow();
   }
 });
+ipcMain.on("window-minimize", () => win == null ? void 0 : win.minimize());
+ipcMain.on("window-maximize", () => {
+  if (win == null ? void 0 : win.isMaximized()) {
+    win.unmaximize();
+  } else {
+    win == null ? void 0 : win.maximize();
+  }
+});
+ipcMain.on("window-close", () => win == null ? void 0 : win.close());
 app.whenReady().then(() => {
   initDb();
   createWindow();

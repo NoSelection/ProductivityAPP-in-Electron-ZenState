@@ -71,18 +71,18 @@ export const NeuralCodex: React.FC = () => {
         const hours = seconds / 3600
         const adjustedHours = hours / difficultyMultiplier
         if (adjustedHours < 1) return { name: 'Initiate', color: 'text-white/60' }
-        if (adjustedHours < 5) return { name: 'Operator', color: 'text-neon-cyan' }
-        if (adjustedHours < 20) return { name: 'Architect', color: 'text-neon-magenta' }
-        return { name: 'Singularity', color: 'text-neon-lime' }
+        if (adjustedHours < 5) return { name: 'Operator', color: 'text-[var(--prismatic-1)]' }
+        if (adjustedHours < 20) return { name: 'Architect', color: 'text-[var(--prismatic-2)]' }
+        return { name: 'Singularity', color: 'text-[var(--prismatic-3)]' }
     }
 
     const rank = getRank(totalFocus)
 
     const stats = [
-        { label: 'Focus Time', val: `${focusHours}h`, icon: Zap, color: 'neon-cyan', glow: 'var(--neon-cyan)' },
-        { label: 'Cycles', val: pomodoros.toString(), icon: Activity, color: 'neon-magenta', glow: 'var(--neon-magenta)' },
-        { label: 'Completed', val: completedQuests.toString(), icon: Archive, color: 'neon-lime', glow: 'var(--neon-lime)' },
-        { label: 'Rank', val: rank.name, icon: Award, color: 'neon-purple', glow: 'var(--neon-purple)' }
+        { label: 'Focus Time', val: `${focusHours}h`, icon: Zap, color: 'text-[var(--prismatic-1)]', glow: 'var(--prismatic-1)' },
+        { label: 'Cycles', val: pomodoros.toString(), icon: Activity, color: 'text-[var(--prismatic-2)]', glow: 'var(--prismatic-2)' },
+        { label: 'Completed', val: completedQuests.toString(), icon: Archive, color: 'text-[var(--prismatic-3)]', glow: 'var(--prismatic-3)' },
+        { label: 'Rank', val: rank.name, icon: Award, color: rank.color, glow: 'var(--prismatic-1)' }
     ]
 
     // --- Actions ---
@@ -126,30 +126,35 @@ export const NeuralCodex: React.FC = () => {
 
 
     return (
-        <div className="NeuralCodex flex-1 flex gap-6 lg:gap-8 min-h-0 h-full">
+        <div className="NeuralCodex flex-1 flex gap-6 lg:gap-8 min-h-0 h-full relative">
+            {/* Immersive Background */}
+            <div className="absolute inset-0 pointer-events-none -z-10">
+                <div className="absolute top-[-20%] right-[-10%] w-[600px] h-[600px] bg-[radial-gradient(circle,rgba(var(--prismatic-1-rgb),0.05)_0%,transparent_70%)] blur-[100px]" />
+                <div className="absolute bottom-[-10%] left-[10%] w-[500px] h-[500px] bg-[radial-gradient(circle,rgba(var(--prismatic-2-rgb),0.05)_0%,transparent_70%)] blur-[80px]" />
+            </div>
 
             {/* --- SIDEBAR --- */}
             <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="w-80 shrink-0 flex flex-col gap-4"
+                className="w-80 shrink-0 flex flex-col gap-4 bg-[#0a0a0f]/40 backdrop-blur-xl border-r border-white/5 p-4 -ml-4 pl-8" // Integrated sidebar look
             >
                 {/* Search & Actions */}
                 <div className="flex gap-2">
                     <div className="relative flex-1 group">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-neon-cyan transition-colors" />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-[var(--prismatic-1)] transition-colors" />
                         <input
                             type="text"
                             placeholder="SEARCH CODEX..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-9 pr-4 py-2.5 bg-black/40 border border-white/10 rounded-lg text-sm font-mono-tech text-neon-cyan placeholder:text-white/20 focus:border-neon-cyan/50 focus:bg-black/60 transition-all outline-none"
+                            className="w-full pl-9 pr-4 py-2.5 bg-black/40 border border-white/10 rounded-lg text-sm font-mono-tech text-[var(--prismatic-1)] placeholder:text-white/20 focus:border-[var(--prismatic-1)]/50 focus:bg-black/60 transition-all outline-none"
                         />
                     </div>
                     <button
                         onClick={handleCreateNote}
                         aria-label="Create Note"
-                        className="p-2.5 rounded-lg bg-neon-cyan/10 border border-neon-cyan/20 text-neon-cyan hover:bg-neon-cyan/20 hover:border-neon-cyan/50 transition-all group"
+                        className="p-2.5 rounded-lg bg-[var(--prismatic-1)]/10 border border-[var(--prismatic-1)]/20 text-[var(--prismatic-1)] hover:bg-[var(--prismatic-1)]/20 hover:border-[var(--prismatic-1)]/50 transition-all group"
                     >
                         <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
                     </button>
@@ -159,7 +164,7 @@ export const NeuralCodex: React.FC = () => {
                 <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-2">
                     {isLoading ? (
                         <div className="flex justify-center p-8">
-                            <div className="pulse-dot animate-ping" />
+                            <div className="pulse-dot animate-ping bg-[var(--prismatic-1)]" />
                         </div>
                     ) : filteredNotes.map((note) => (
                         <motion.div
@@ -170,26 +175,26 @@ export const NeuralCodex: React.FC = () => {
                             className={cn(
                                 "group p-3 rounded-lg border cursor-pointer transition-all duration-300 relative overflow-hidden",
                                 activeNoteId === note.id
-                                    ? "bg-neon-cyan/5 border-neon-cyan/30 shadow-[inset_0_0_20px_rgba(var(--accent-base-rgb),0.05)]"
+                                    ? "bg-[var(--prismatic-1)]/5 border-[var(--prismatic-1)]/30 shadow-[inset_0_0_20px_rgba(var(--prismatic-1-rgb),0.05)]"
                                     : "bg-black/20 border-white/5 hover:border-white/10 hover:bg-black/30"
                             )}
                         >
                             {/* Accent Bar */}
                             {activeNoteId === note.id && (
-                                <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-neon-cyan shadow-[0_0_10px_var(--neon-cyan)]" />
+                                <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-[var(--prismatic-1)] shadow-[0_0_10px_var(--prismatic-1)]" />
                             )}
 
                             <div className="flex justify-between items-start mb-1">
                                 <h3 className={cn(
                                     "font-display text-sm font-medium truncate pr-4",
-                                    activeNoteId === note.id ? "text-neon-cyan" : "text-white/70 group-hover:text-white"
+                                    activeNoteId === note.id ? "text-[var(--prismatic-1)]" : "text-white/70 group-hover:text-white"
                                 )}>
                                     {note.title || 'Untitled'}
                                 </h3>
 
                                 <button
                                     onClick={(e) => handleDeleteNote(e, note.id)}
-                                    className="opacity-0 group-hover:opacity-100 p-1 hover:text-neon-magenta transition-all"
+                                    className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-400 transition-all"
                                 >
                                     <Trash2 className="w-3.5 h-3.5" />
                                 </button>
@@ -203,8 +208,8 @@ export const NeuralCodex: React.FC = () => {
 
                     {!isLoading && filteredNotes.length === 0 && (
                         <div className="text-center py-8 opacity-30">
-                            <Database className="w-8 h-8 mx-auto mb-2" />
-                            <p className="font-mono-tech text-[10px] uppercase tracking-widest">No Data Found</p>
+                            <Database className="w-8 h-8 mx-auto mb-2 text-white/50" />
+                            <p className="font-mono-tech text-[10px] uppercase tracking-widest text-white/50">No Data Found</p>
                         </div>
                     )}
                 </div>
@@ -212,30 +217,74 @@ export const NeuralCodex: React.FC = () => {
 
 
             {/* --- MAIN AREA --- */}
-            <div className="flex-1 min-w-0 h-full flex flex-col relative overflow-hidden">
+            <div className="flex-1 min-w-0 h-full flex flex-col relative overflow-hidden pt-4 pr-4">
                 <AnimatePresence mode="wait">
                     {activeNoteId && activeNote ? (
                         /* EDIT MODE (Placeholder for Phase 2) */
+                        /* EDIT MODE - ACTIVATED */
                         <motion.div
                             key="editor"
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.98 }}
                             transition={{ duration: 0.3 }}
-                            className="hyper-panel flex-1 flex flex-col p-8 overflow-hidden relative"
+                            className="bg-[#0a0a0f]/80 backdrop-blur-xl border border-white/10 rounded-2xl flex-1 flex flex-col overflow-hidden relative shadow-2xl"
                         >
-                            {/* Editor UI Placeholder */}
-                            <div className="flex flex-col h-full items-center justify-center text-center opacity-50 space-y-4">
-                                <FileText className="w-16 h-16 text-neon-cyan/20 animate-pulse" />
-                                <div>
-                                    <h2 className="font-display text-2xl text-neon-cyan tracking-widest">NEURAL EDITOR</h2>
-                                    <p className="font-mono-tech text-sm text-white/30 mt-2">Initialize Phase 2 to unlock writing module.</p>
-                                    <div className="mt-8 p-4 rounded bg-black/40 border border-white/5 font-mono-tech text-xs text-left">
-                                        <p className="text-neon-magenta mb-2">// DEBUG_DATA</p>
-                                        <p>ID: {activeNote.id}</p>
-                                        <p>TITLE: {activeNote.title}</p>
-                                        <p>UPDATED: {new Date(activeNote.updatedAt).toISOString()}</p>
+                            {/* Editor Header */}
+                            <div className="flex items-center justify-between p-6 border-b border-white/5 bg-white/0">
+                                <input
+                                    type="text"
+                                    value={activeNote.title}
+                                    onChange={(e) => {
+                                        const updated = { ...activeNote, title: e.target.value, updatedAt: Date.now() }
+                                        setCodexNotes(prev => prev.map(n => n.id === activeNote.id ? updated : n))
+                                        window.neuralDb.saveCodexNote(updated)
+                                    }}
+                                    placeholder="UNTITLED ENTRY"
+                                    className="bg-transparent border-none outline-none font-display text-2xl text-[var(--prismatic-1)] placeholder:text-white/20 w-full"
+                                />
+                                <div className="flex items-center gap-3">
+                                    <div className="px-3 py-1 rounded-full bg-[var(--prismatic-2)]/10 border border-[var(--prismatic-2)]/20 text-[var(--prismatic-2)] font-mono-tech text-xs">
+                                        LIVE EDIT
                                     </div>
+                                    <div className="w-px h-6 bg-white/10" />
+                                    <button
+                                        onClick={() => setActiveNoteId(null)}
+                                        className="p-2 hover:bg-white/5 rounded-lg transition-colors text-white/40 hover:text-white"
+                                    >
+                                        <kbd className="font-mono text-xs">ESC</kbd>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Editor Body */}
+                            <div className="flex-1 relative">
+                                <textarea
+                                    value={activeNote.content}
+                                    onChange={(e) => {
+                                        const updated = { ...activeNote, content: e.target.value, updatedAt: Date.now() }
+                                        setCodexNotes(prev => prev.map(n => n.id === activeNote.id ? updated : n))
+                                        window.neuralDb.saveCodexNote(updated)
+                                    }}
+                                    placeholder="Initialize neural link..."
+                                    className="w-full h-full bg-transparent resize-none p-6 outline-none font-mono-tech text-sm leading-relaxed text-white/80 placeholder:text-white/10 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent selection:bg-[var(--prismatic-1)]/30"
+                                    spellCheck={false}
+                                />
+
+                                {/* Decorative "Scan Line" */}
+                                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--prismatic-1)]/20 to-transparent opacity-50 pointer-events-none" />
+                            </div>
+
+                            {/* Editor Footer */}
+                            <div className="p-3 border-t border-white/5 bg-black/20 flex justify-between items-center text-[10px] font-mono-tech text-white/30">
+                                <div className="flex gap-4">
+                                    <span>ID: {activeNote.id.slice(0, 8)}</span>
+                                    <span>WORDS: {activeNote.content.split(/\s+/).filter(Boolean).length}</span>
+                                    <span>CHARS: {activeNote.content.length}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-[var(--prismatic-3)]">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--prismatic-3)] animate-pulse" />
+                                    UPLINK ACTIVE
                                 </div>
                             </div>
                         </motion.div>
@@ -257,22 +306,24 @@ export const NeuralCodex: React.FC = () => {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: i * 0.1, duration: 0.6 }}
-                                        className="hyper-panel p-5 lg:p-6 flex items-center gap-4 group hover:shadow-lg transition-all duration-300"
-                                        style={{ '--hover-glow': stat.glow } as React.CSSProperties}
+                                        className="relative bg-[#0a0a0f]/60 backdrop-blur-md p-5 lg:p-6 flex items-center gap-4 group hover:bg-[#0a0a0f]/80 transition-all duration-300 border border-white/5 rounded-xl overflow-hidden"
                                     >
+                                        {/* Hover Glow Background */}
+                                        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
                                         <div
                                             className={cn(
-                                                "p-3 rounded-xl border transition-all duration-300 group-hover:scale-110",
-                                                `text-${stat.color} bg-${stat.color}/10 border-${stat.color}/20`
+                                                "p-3 rounded-xl border transition-all duration-300 group-hover:scale-110 relative z-10",
+                                                `bg-black/40 border-white/10 ${stat.color}`
                                             )}
                                             style={{ filter: `drop-shadow(0 0 8px ${stat.glow})` }}
                                         >
                                             <stat.icon className="w-5 h-5" />
                                         </div>
-                                        <div className="min-w-0">
+                                        <div className="min-w-0 relative z-10">
                                             <p className="font-mono-tech text-[9px] text-white/30 uppercase tracking-[0.2em] mb-1">{stat.label}</p>
                                             <p
-                                                className={cn("text-2xl lg:text-3xl font-display font-light tracking-tight", `text-${stat.color}`)}
+                                                className={cn("text-2xl lg:text-3xl font-display font-light tracking-tight", stat.color)}
                                                 style={{ textShadow: `0 0 20px color-mix(in srgb, ${stat.glow}, transparent 75%)` }}
                                             >
                                                 {stat.val}
@@ -285,39 +336,57 @@ export const NeuralCodex: React.FC = () => {
                             {/* Main Dashboard Content */}
                             <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 relative">
                                 {/* Analytics Panel */}
-                                <div className="hyper-panel p-6 lg:p-8 flex flex-col gap-6 overflow-hidden relative group">
+                                <div className="bg-[#0a0a0f]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-6 lg:p-8 flex flex-col gap-6 overflow-hidden relative group">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--prismatic-2)]/5 via-transparent to-transparent opacity-50" />
+
                                     <div className="flex items-center justify-between relative z-10">
                                         <div className="flex items-center gap-3">
-                                            <div className="pulse-dot" />
-                                            <span className="font-display text-[11px] font-bold tracking-[0.3em] text-neon-cyan uppercase">Analytics</span>
+                                            <div className="pulse-dot bg-[var(--prismatic-2)]" style={{ boxShadow: '0 0 10px var(--prismatic-2)' }} />
+                                            <span className="font-display text-[11px] font-bold tracking-[0.3em] text-[var(--prismatic-2)] uppercase">Analytics</span>
                                         </div>
-                                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/30 border border-neon-cyan/10">
-                                            <TrendingUp className="w-3 h-3 text-neon-cyan/40" />
-                                            <span className="font-mono-tech text-[8px] text-neon-cyan/40 uppercase tracking-wider">Live</span>
+                                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/40 border border-[var(--prismatic-2)]/20">
+                                            <TrendingUp className="w-3 h-3 text-[var(--prismatic-2)]" />
+                                            <span className="font-mono-tech text-[8px] text-[var(--prismatic-2)] uppercase tracking-wider">Live</span>
                                         </div>
                                     </div>
                                     {/* Chart Placeholder */}
-                                    <div className="flex-1 flex items-end gap-2 border-b border-white/5 pb-4">
-                                        {[45, 70, 40, 90, 65, 80, 55].map((h, i) => (
-                                            <div key={i} className="flex-1 bg-gradient-to-t from-neon-cyan/20 to-transparent rounded-t-sm transition-all hover:bg-neon-cyan/40" style={{ height: `${h}%` }} />
+                                    <div className="flex-1 flex items-end gap-2 border-b border-white/5 pb-4 relative z-10">
+                                        {[45, 70, 40, 90, 65, 80, 55, 60, 85, 50, 75, 95].map((h, i) => (
+                                            <div key={i} className="flex-1 group/bar relative">
+                                                <div
+                                                    className="w-full bg-gradient-to-t from-[var(--prismatic-2)]/20 to-[var(--prismatic-2)]/5 rounded-t-sm transition-all duration-300 hover:from-[var(--prismatic-2)]/40 hover:to-[var(--prismatic-2)]/10"
+                                                    style={{ height: `${h}%` }}
+                                                />
+                                                <div className="absolute -top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover/bar:opacity-100 transition-opacity text-[9px] font-mono-tech text-[var(--prismatic-2)] bg-black/80 px-1 rounded border border-white/10 pointer-events-none">
+                                                    {h}%
+                                                </div>
+                                            </div>
                                         ))}
                                     </div>
                                 </div>
 
                                 {/* Legacy Archive / Vault Info */}
-                                <div className="hyper-panel p-6 lg:p-8 flex flex-col gap-6 overflow-hidden relative">
+                                <div className="bg-[#0a0a0f]/80 backdrop-blur-xl border border-white/5 rounded-2xl p-6 lg:p-8 flex flex-col gap-6 overflow-hidden relative">
+                                    <div className="absolute inset-0 bg-gradient-to-bl from-[var(--prismatic-1)]/5 via-transparent to-transparent opacity-50" />
+
                                     <div className="flex items-center gap-3 relative z-10">
-                                        <div className="w-2 h-2 rounded-full bg-neon-purple animate-pulse" style={{ boxShadow: '0 0 15px #bf00ff' }} />
-                                        <span className="font-display text-[11px] font-bold tracking-[0.3em] text-neon-purple uppercase">System Status</span>
+                                        <div className="w-2 h-2 rounded-full bg-[var(--prismatic-1)] animate-pulse" style={{ boxShadow: '0 0 15px var(--prismatic-1)' }} />
+                                        <span className="font-display text-[11px] font-bold tracking-[0.3em] text-[var(--prismatic-1)] uppercase">System Status</span>
                                     </div>
-                                    <div className="flex-1 flex flex-col justify-center space-y-4">
-                                        <div className="p-4 rounded-lg bg-black/20 border border-white/5">
-                                            <p className="font-mono-tech text-[10px] text-white/40 uppercase mb-1">Total Fragments</p>
-                                            <p className="font-display text-2xl text-white">{codexNotes.length}</p>
+                                    <div className="flex-1 flex flex-col justify-center space-y-4 relative z-10">
+                                        <div className="p-4 rounded-xl bg-black/20 border border-white/5 flex items-center justify-between group hover:bg-white/5 transition-colors">
+                                            <div>
+                                                <p className="font-mono-tech text-[10px] text-white/40 uppercase mb-1">Total Fragments</p>
+                                                <p className="font-display text-2xl text-white group-hover:text-[var(--prismatic-1)] transition-colors">{codexNotes.length}</p>
+                                            </div>
+                                            <Database className="w-6 h-6 text-white/10 group-hover:text-[var(--prismatic-1)]/40 transition-colors" />
                                         </div>
-                                        <div className="p-4 rounded-lg bg-black/20 border border-white/5">
-                                            <p className="font-mono-tech text-[10px] text-white/40 uppercase mb-1">Brain Dump Size</p>
-                                            <p className="font-display text-2xl text-white">{brainDump.length} characters</p>
+                                        <div className="p-4 rounded-xl bg-black/20 border border-white/5 flex items-center justify-between group hover:bg-white/5 transition-colors">
+                                            <div>
+                                                <p className="font-mono-tech text-[10px] text-white/40 uppercase mb-1">Brain Dump Size</p>
+                                                <p className="font-display text-2xl text-white group-hover:text-[var(--prismatic-3)] transition-colors">{brainDump.length} <span className="text-xs text-white/30">chars</span></p>
+                                            </div>
+                                            <FileText className="w-6 h-6 text-white/10 group-hover:text-[var(--prismatic-3)]/40 transition-colors" />
                                         </div>
                                     </div>
                                 </div>

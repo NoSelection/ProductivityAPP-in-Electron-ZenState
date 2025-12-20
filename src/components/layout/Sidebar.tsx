@@ -11,7 +11,8 @@ import {
   ChevronRight,
   ChevronLeft,
   Shield,
-  ShieldAlert
+  ShieldAlert,
+  Flower2
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { motion } from 'framer-motion';
@@ -40,6 +41,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { path: '/focus', label: 'Focus', icon: Timer },
     { path: '/codex', label: 'Codex', icon: Compass },
     { path: '/media', label: 'Atmosphere', icon: Headphones },
+    { path: '/garden', label: 'Zen Garden', icon: Flower2 },
     { path: '/quests', label: 'Quests', icon: ListTodo },
   ];
 
@@ -79,7 +81,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           >
             <item.icon className={cn(
               "w-5 h-5 flex-shrink-0 transition-colors",
-              // Glow effect on active
             )} />
 
             <motion.span
