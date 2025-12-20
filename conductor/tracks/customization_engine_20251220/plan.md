@@ -7,7 +7,7 @@
 - [x] Task: Conductor - User Manual Verification 'Foundation & Persistence' (Protocol in workflow.md) [checkpoint: c5f5ca4]
 
 ## Phase 2: Core Customization UI
-- [ ] Task: Build the Timer Configuration interface in `SettingsPanel.tsx`.
+- [x] Task: Build the Timer Configuration interface in `SettingsPanel.tsx`. 6d76134
 - [ ] Task: Implement the XP & Progression settings UI.
 - [ ] Task: Create the Visual Identity/Theme customization controls.
 - [ ] Task: Conductor - User Manual Verification 'Core Customization UI' (Protocol in workflow.md)
