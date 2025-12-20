@@ -4,7 +4,7 @@
 - [x] Task: Update SQLite database schema to support granular settings storage. 6d21b8b
 - [x] Task: Create backend IPC handlers in `main.ts` for reading/writing configuration. 0fcd996
 - [x] Task: Implement a robust settings service in the frontend to interface with the main process. 41ef077
-- [~] Task: Conductor - User Manual Verification 'Foundation & Persistence' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Foundation & Persistence' (Protocol in workflow.md) [checkpoint: c5f5ca4]
 
 ## Phase 2: Core Customization UI
 - [ ] Task: Build the Timer Configuration interface in `SettingsPanel.tsx`.
