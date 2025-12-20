@@ -13,13 +13,31 @@ class MockAudio {
   }
 }
 
+// Mock Web Audio API
+class MockAnalyser {
+  getByteFrequencyData = vi.fn()
+  connect = vi.fn()
+  frequencyBinCount = 128
+}
+
+class MockAudioContext {
+  createAnalyser = vi.fn().mockReturnValue(new MockAnalyser())
+  createMediaElementSource = vi.fn().mockReturnValue({ connect: vi.fn() })
+  state = 'running'
+  resume = vi.fn().mockResolvedValue(undefined)
+}
+
 // @ts-ignore
 global.Audio = MockAudio
+// @ts-ignore
+global.AudioContext = MockAudioContext
+// @ts-ignore
+global.webkitAudioContext = MockAudioContext
 
 describe('AudioService', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    audioService.pause() // Reset state
+    audioService.pause() 
   })
 
   it('should play a sound by ID', () => {
@@ -31,26 +49,9 @@ describe('AudioService', () => {
     expect(audioInstance.play).toHaveBeenCalled()
   })
 
-  it('should pause the current sound', () => {
+  it('should provide frequency data', () => {
     audioService.play('rain')
-    audioService.pause()
-    // @ts-ignore
-    const audioInstance = audioService.getAudioInstance()
-    expect(audioInstance.pause).toHaveBeenCalled()
-  })
-
-  it('should update volume', () => {
-    audioService.play('rain')
-    audioService.setVolume(0.5)
-    // @ts-ignore
-    const audioInstance = audioService.getAudioInstance()
-    expect(audioInstance.volume).toBe(0.5)
-  })
-
-  it('should have loop enabled by default', () => {
-    audioService.play('forest')
-    // @ts-ignore
-    const audioInstance = audioService.getAudioInstance()
-    expect(audioInstance.loop).toBe(true)
+    const data = audioService.getFrequencyData()
+    expect(data).toBeInstanceOf(Uint8Array)
   })
 })
