@@ -10,7 +10,7 @@
 - [x] Task: Build the Media Deck interface in `MediaDeck.tsx` including sound selection and volume controls. 95469d0
 - [x] Task: Implement state management for the current playing sound and volume. 95469d0
 - [x] Task: Write unit tests for `MediaDeck.tsx` component interactions. 95469d0
-- [ ] Task: Conductor - User Manual Verification 'UI & Controls' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'UI & Controls' (Protocol in workflow.md)
 
 ## Phase 3: Reactive Visualizer
 - [ ] Task: Implement the Audio Web API analyzer to extract frequency/waveform data.
