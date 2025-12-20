@@ -8,7 +8,7 @@
 
 ## Phase 2: Core Customization UI
 - [x] Task: Build the Timer Configuration interface in `SettingsPanel.tsx`. 6d76134
-- [ ] Task: Implement the XP & Progression settings UI.
+- [x] Task: Implement the XP & Progression settings UI. 8949abc
 - [ ] Task: Create the Visual Identity/Theme customization controls.
 - [ ] Task: Conductor - User Manual Verification 'Core Customization UI' (Protocol in workflow.md)
 
