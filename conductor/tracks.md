@@ -4,5 +4,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Implement the Deep Customization Engine core logic and UI
-*Link: [./conductor/tracks/customization_engine_20251220/](./conductor/tracks/customization_engine_20251220/)*
+## [~] Track: Implement the Integrated Media Deck with ambient soundscapes and reactive visualizer
+*Link: [./conductor/tracks/media_deck_20251220/](./conductor/tracks/media_deck_20251220/)*
+

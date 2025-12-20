@@ -4,7 +4,7 @@
 - [x] Task: Set up the project structure for audio assets and identify placeholder files. 6d9df56
 - [x] Task: Create a basic `audioService` utility to manage the HTML5 Audio API. 241f470
 - [x] Task: Write tests for `audioService` focusing on play/pause and looping logic. 241f470
-- [ ] Task: Conductor - User Manual Verification 'Foundation & Audio Core' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Foundation & Audio Core' (Protocol in workflow.md)
 
 ## Phase 2: UI & Controls
 - [ ] Task: Build the Media Deck interface in `MediaDeck.tsx` including sound selection and volume controls.

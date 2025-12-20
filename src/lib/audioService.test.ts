@@ -46,4 +46,11 @@ describe('AudioService', () => {
     const audioInstance = audioService.getAudioInstance()
     expect(audioInstance.volume).toBe(0.5)
   })
+
+  it('should have loop enabled by default', () => {
+    audioService.play('forest')
+    // @ts-ignore
+    const audioInstance = audioService.getAudioInstance()
+    expect(audioInstance.loop).toBe(true)
+  })
 })
