@@ -37,6 +37,15 @@ export function initDb() {
             value TEXT,
             PRIMARY KEY (category, key)
         );
+
+        CREATE TABLE IF NOT EXISTS codex (
+            id TEXT PRIMARY KEY,
+            title TEXT,
+            content TEXT,
+            tags TEXT,
+            createdAt INTEGER,
+            updatedAt INTEGER
+        );
     `)
 
     console.log('Neural Core (SQLite) initialized at:', dbPath)

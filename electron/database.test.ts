@@ -46,6 +46,21 @@ describe('Database', () => {
     }
   })
 
+  it('should initialize the database with the codex table', () => {
+    initDb()
+    
+    const dbPath = path.join(testDataDir, 'zenstate.db')
+    const db = new Database(dbPath)
+    try {
+      const table: any = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='codex'").get()
+      
+      expect(table).toBeDefined()
+      expect(table.name).toBe('codex')
+    } finally {
+      db.close()
+    }
+  })
+
   it('should correctly close the database', () => {
     initDb()
     closeDb()
