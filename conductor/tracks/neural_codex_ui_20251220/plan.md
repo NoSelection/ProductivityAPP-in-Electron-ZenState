@@ -2,7 +2,7 @@
 
 ## Phase 1: Data Layer & Sidebar
 - [x] Task: Update SQLite schema to support rich notes with titles, tags, and timestamps. 446cd55
-- [ ] Task: Create IPC handlers for CRUD operations on notes and tags.
+- [x] Task: Create IPC handlers for CRUD operations on notes and tags. 1acec1a
 - [ ] Task: Build the searchable Minimalist Sidebar in `NeuralCodex.tsx`.
 - [ ] Task: Write unit tests for note filtering and search logic.
 - [ ] Task: Conductor - User Manual Verification 'Data Layer & Sidebar' (Protocol in workflow.md)
