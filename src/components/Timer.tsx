@@ -11,10 +11,11 @@ export const Timer: React.FC = () => {
     const [isActive, setIsActive] = useState(false)
     const [, setTotalFocus] = useNeuralStorage('zen-focus-total', 0)
     const [, setPomodoros] = useNeuralStorage('zen-pomodoros', 0)
+    const [, setTimerActive] = useNeuralStorage('zen-timer-active', false)
 
     useEffect(() => {
-        const loadSettings = async () => {
-            const settings = await settingsService.getAll()
+        setTimerActive(isActive)
+    }, [isActive, setTimerActive])            const settings = await settingsService.getAll()
             if (settings.timer?.focusDuration) {
                 const duration = settings.timer.focusDuration
                 setFocusDuration(duration)

@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Play, Pause, SkipForward, Volume2, Radio, Link, Eye, CloudRain, TreePine, Rocket, Wind, Music } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { audioService } from '../lib/audioService'
+import { AudioVisualizer } from './AudioVisualizer'
+import { useNeuralStorage } from '../hooks/useNeuralStorage'
 
 const AMBIENT_PRESETS = [
     { id: 'rain', name: 'Rainfall', sub: 'Muted raindrops // City', icon: CloudRain },
@@ -24,8 +26,8 @@ export const MediaDeck: React.FC = () => {
     const [currentAmbient, setCurrentAmbient] = useState(0)
     const [currentStream, setCurrentStream] = useState(0)
     const [customUrl, setCustomUrl] = useState('')
-    const [showInput, setShowInput] = useState(false)
     const [holoMode, setHoloMode] = useState(false)
+    const [timerActive] = useNeuralStorage('zen-timer-active', false)
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const playerRef = useRef<any>(null)
@@ -75,6 +77,11 @@ export const MediaDeck: React.FC = () => {
             "MediaDeck flex-1 hyper-panel flex flex-col justify-between group relative overflow-hidden min-h-0 transition-all duration-700",
             holoMode && "shadow-[0_0_40px_rgba(0,240,255,0.2),inset_0_0_40px_rgba(0,240,255,0.05)]"
         )}>
+            {/* Audio Visualizer Overlay */}
+            <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-30">
+                <AudioVisualizer isPlaying={playing} intensity={timerActive ? 1.0 : 0.4} />
+            </div>
+
             {/* Hidden Player for Streams */}
             {mode === 'stream' && (
                 <div className={cn(
