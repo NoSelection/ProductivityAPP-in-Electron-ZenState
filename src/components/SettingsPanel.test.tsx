@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import { SettingsPanel } from './SettingsPanel';
 import { settingsService } from '../lib/settingsService';
 
@@ -19,6 +19,9 @@ vi.mock('../lib/settingsService', () => ({
         focusDuration: 25,
         shortBreakDuration: 5,
         longBreakDuration: 15
+      },
+      xp: {
+        difficultyMultiplier: 1.0
       }
     }),
     set: vi.fn().mockResolvedValue(undefined)
@@ -50,6 +53,7 @@ vi.mock('lucide-react', () => ({
   Sparkles: () => <svg data-testid="icon-sparkles" />,
   Settings: () => <svg data-testid="icon-settings" />,
   Timer: () => <svg data-testid="icon-timer" />,
+  Gamepad2: () => <svg data-testid="icon-gamepad" />,
 }));
 
 describe('SettingsPanel', () => {
@@ -57,31 +61,62 @@ describe('SettingsPanel', () => {
     vi.clearAllMocks();
   });
 
+  afterEach(() => {
+    cleanup();
+  });
+
   it('renders timer settings section', async () => {
     render(<SettingsPanel isOpen={true} onClose={() => {}} />);
     
     // Wait for settings to load
     await waitFor(() => {
-        expect(screen.getByText('Timer Configuration')).toBeDefined();
+        const elements = screen.getAllByText('Timer Configuration');
+        expect(elements.length).toBeGreaterThan(0);
     });
 
-    expect(screen.getByLabelText('Focus Duration (min)')).toBeDefined();
-    expect(screen.getByLabelText('Short Break (min)')).toBeDefined();
-    expect(screen.getByLabelText('Long Break (min)')).toBeDefined();
+    expect(screen.getAllByLabelText('Focus Duration (min)')[0]).toBeDefined();
+    expect(screen.getAllByLabelText('Short Break (min)')[0]).toBeDefined();
+    expect(screen.getAllByLabelText('Long Break (min)')[0]).toBeDefined();
   });
 
   it('updates timer settings on change', async () => {
     render(<SettingsPanel isOpen={true} onClose={() => {}} />);
 
     await waitFor(() => {
-        expect(screen.getByLabelText('Focus Duration (min)')).toBeDefined();
+        expect(screen.getAllByLabelText('Focus Duration (min)')[0]).toBeDefined();
     });
 
-    const focusInput = screen.getByLabelText('Focus Duration (min)');
+    const focusInput = screen.getAllByLabelText('Focus Duration (min)')[0];
     fireEvent.change(focusInput, { target: { value: '30' } });
 
     await waitFor(() => {
         expect(settingsService.set).toHaveBeenCalledWith('timer', 'focusDuration', 30);
+    });
+  });
+
+  it('renders XP settings section', async () => {
+    render(<SettingsPanel isOpen={true} onClose={() => {}} />);
+    
+    await waitFor(() => {
+        const elements = screen.getAllByText('Progression & XP');
+        expect(elements.length).toBeGreaterThan(0);
+    });
+
+    expect(screen.getAllByLabelText('Difficulty Multiplier (x)')[0]).toBeDefined();
+  });
+
+  it('updates XP settings on change', async () => {
+    render(<SettingsPanel isOpen={true} onClose={() => {}} />);
+
+    await waitFor(() => {
+        expect(screen.getAllByLabelText('Difficulty Multiplier (x)')[0]).toBeDefined();
+    });
+
+    const input = screen.getAllByLabelText('Difficulty Multiplier (x)')[0];
+    fireEvent.change(input, { target: { value: '1.5' } });
+
+    await waitFor(() => {
+        expect(settingsService.set).toHaveBeenCalledWith('xp', 'difficultyMultiplier', 1.5);
     });
   });
 });

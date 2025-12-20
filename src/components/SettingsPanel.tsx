@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Palette, Zap, Waves, Leaf, Sun, Snowflake, Sparkles, Settings, Timer } from 'lucide-react';
+import { X, Palette, Zap, Waves, Leaf, Sun, Snowflake, Sparkles, Settings, Timer, Gamepad2 } from 'lucide-react';
 import { useTheme, ThemeType } from '../context/ThemeContext';
 import { cn } from '../lib/utils';
 import { settingsService } from '../lib/settingsService';
@@ -17,12 +17,18 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
         shortBreakDuration: 5,
         longBreakDuration: 15
     });
+    const [xpSettings, setXpSettings] = useState({
+        difficultyMultiplier: 1.0
+    });
 
     useEffect(() => {
         const loadSettings = async () => {
             const settings = await settingsService.getAll();
             if (settings.timer) {
                 setTimerSettings(prev => ({ ...prev, ...settings.timer }));
+            }
+            if (settings.xp) {
+                setXpSettings(prev => ({ ...prev, ...settings.xp }));
             }
         };
         if (isOpen) {
@@ -34,6 +40,12 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
         const numValue = parseInt(value) || 0;
         setTimerSettings(prev => ({ ...prev, [key]: numValue }));
         await settingsService.set('timer', key, numValue);
+    };
+
+    const handleXpChange = async (key: string, value: string) => {
+        const numValue = parseFloat(value) || 0;
+        setXpSettings(prev => ({ ...prev, [key]: numValue }));
+        await settingsService.set('xp', key, numValue);
     };
 
     const themes: { id: ThemeType; label: string; icon: React.ElementType; primary: string; secondary: string }[] = [
@@ -149,6 +161,32 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
                                             />
                                         </div>
                                     ))}
+                                </div>
+                            </section>
+
+                            {/* Progression & XP Section */}
+                            <section>
+                                <div className="flex items-center gap-3 mb-6">
+                                    <Gamepad2 className="w-4 h-4" style={{ color: colors.neon_primary }} />
+                                    <h3 className="font-display text-[11px] font-bold tracking-[0.3em] uppercase text-white/50">
+                                        Progression & XP
+                                    </h3>
+                                </div>
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <label htmlFor="difficultyMultiplier" className="block font-mono-tech text-[10px] text-white/40 uppercase tracking-widest">
+                                            Difficulty Multiplier (x)
+                                        </label>
+                                        <input
+                                            id="difficultyMultiplier"
+                                            type="number"
+                                            step="0.1"
+                                            value={xpSettings.difficultyMultiplier}
+                                            onChange={(e) => handleXpChange('difficultyMultiplier', e.target.value)}
+                                            className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white font-mono text-sm focus:outline-none focus:border-white/20 transition-colors"
+                                            style={{ caretColor: colors.neon_primary }}
+                                        />
+                                    </div>
                                 </div>
                             </section>
 
