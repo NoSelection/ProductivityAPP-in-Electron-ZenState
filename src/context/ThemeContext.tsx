@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { MotionConfig } from 'framer-motion';
+import { settingsService } from '../lib/settingsService';
 
 export type ThemeType = 'hyper' | 'sakura' | 'ocean' | 'matrix' | 'sunset' | 'arctic';
 
@@ -17,6 +19,8 @@ interface ThemeContextType {
     theme: ThemeType;
     setTheme: (theme: ThemeType) => void;
     colors: ThemeColors;
+    animationsEnabled: boolean;
+    blurEnabled: boolean;
 }
 
 const Themes: Record<ThemeType, ThemeColors> = {
@@ -81,7 +85,25 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         return saved || 'hyper';
     });
 
+    const [animationsEnabled, setAnimationsEnabled] = useState(true);
+    const [blurEnabled, setBlurEnabled] = useState(true);
+
     const currentColors = Themes[theme] || Themes.hyper;
+
+    useEffect(() => {
+        const loadVisualSettings = async () => {
+            const settings = await settingsService.getAll();
+            if (settings.visual) {
+                if (settings.visual.animationsEnabled !== undefined) {
+                    setAnimationsEnabled(settings.visual.animationsEnabled);
+                }
+                if (settings.visual.blurEnabled !== undefined) {
+                    setBlurEnabled(settings.visual.blurEnabled);
+                }
+            }
+        };
+        loadVisualSettings();
+    }, []);
 
     useEffect(() => {
         const root = document.documentElement;
@@ -113,8 +135,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const setTheme = (newTheme: ThemeType) => setThemeState(newTheme);
 
     return (
-        <ThemeContext.Provider value={{ theme, setTheme, colors: currentColors }}>
-            {children}
+        <ThemeContext.Provider value={{ theme, setTheme, colors: currentColors, animationsEnabled, blurEnabled }}>
+            <MotionConfig reducedMotion={animationsEnabled ? 'user' : 'always'}>
+                {children}
+            </MotionConfig>
         </ThemeContext.Provider>
     );
 };
