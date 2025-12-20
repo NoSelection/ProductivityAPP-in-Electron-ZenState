@@ -25,6 +25,13 @@ function initDb() {
             id INTEGER PRIMARY KEY CHECK (id = 1),
             content TEXT
         );
+
+        CREATE TABLE IF NOT EXISTS settings (
+            category TEXT,
+            key TEXT,
+            value TEXT,
+            PRIMARY KEY (category, key)
+        );
     `);
   console.log("Neural Core (SQLite) initialized at:", dbPath);
   ipcMain.handle("db:getQuests", () => {
@@ -54,6 +61,12 @@ function initDb() {
   });
   ipcMain.handle("db:saveNotes", (_, content) => {
     return db.prepare("INSERT OR REPLACE INTO notes (id, content) VALUES (1, ?)").run(content);
+  });
+  ipcMain.handle("db:getSettings", () => {
+    return db.prepare("SELECT * FROM settings").all();
+  });
+  ipcMain.handle("db:saveSetting", (_, category, key, value) => {
+    return db.prepare("INSERT OR REPLACE INTO settings (category, key, value) VALUES (?, ?, ?)").run(category, key, JSON.stringify(value));
   });
 }
 const __filename$1 = fileURLToPath(import.meta.url);
