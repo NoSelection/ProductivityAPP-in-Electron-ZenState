@@ -27,4 +27,6 @@ contextBridge.exposeInMainWorld('neuralDb', {
   saveStat: (key: string, value: any) => ipcRenderer.invoke('db:saveStat', key, value),
   getNotes: () => ipcRenderer.invoke('db:getNotes'),
   saveNotes: (content: string) => ipcRenderer.invoke('db:saveNotes', content),
+  getSettings: () => ipcRenderer.invoke('db:getSettings'),
+  saveSetting: (category: string, key: string, value: any) => ipcRenderer.invoke('db:saveSetting', category, key, value),
 })
