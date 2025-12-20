@@ -1,7 +1,63 @@
-import { app, BrowserWindow } from "electron";
+import { app, ipcMain, BrowserWindow } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-const __dirname$1 = path.dirname(fileURLToPath(import.meta.url));
+import Database from "better-sqlite3";
+const __filename$2 = fileURLToPath(import.meta.url);
+path.dirname(__filename$2);
+let db;
+function initDb() {
+  const dbPath = path.join(app.getPath("userData"), "zenstate.db");
+  db = new Database(dbPath);
+  db.exec(`
+        CREATE TABLE IF NOT EXISTS quests (
+            id TEXT PRIMARY KEY,
+            text TEXT,
+            completed INTEGER,
+            createdAt INTEGER
+        );
+
+        CREATE TABLE IF NOT EXISTS stats (
+            key TEXT PRIMARY KEY,
+            value TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS notes (
+            id INTEGER PRIMARY KEY CHECK (id = 1),
+            content TEXT
+        );
+    `);
+  console.log("Neural Core (SQLite) initialized at:", dbPath);
+  ipcMain.handle("db:getQuests", () => {
+    return db.prepare("SELECT * FROM quests ORDER BY createdAt DESC").all();
+  });
+  ipcMain.handle("db:saveQuests", (_, quests) => {
+    const deleteStmt = db.prepare("DELETE FROM quests");
+    const insertStmt = db.prepare("INSERT INTO quests (id, text, completed, createdAt) VALUES (?, ?, ?, ?)");
+    const transaction = db.transaction((items) => {
+      deleteStmt.run();
+      for (const item of items) {
+        insertStmt.run(item.id, item.text, item.completed ? 1 : 0, item.createdAt || Date.now());
+      }
+    });
+    transaction(quests);
+    return { success: true };
+  });
+  ipcMain.handle("db:getStats", () => {
+    return db.prepare("SELECT * FROM stats").all();
+  });
+  ipcMain.handle("db:saveStat", (_, key, value) => {
+    return db.prepare("INSERT OR REPLACE INTO stats (key, value) VALUES (?, ?)").run(key, JSON.stringify(value));
+  });
+  ipcMain.handle("db:getNotes", () => {
+    const row = db.prepare("SELECT content FROM notes WHERE id = 1").get();
+    return row ? row.content : "";
+  });
+  ipcMain.handle("db:saveNotes", (_, content) => {
+    return db.prepare("INSERT OR REPLACE INTO notes (id, content) VALUES (1, ?)").run(content);
+  });
+}
+const __filename$1 = fileURLToPath(import.meta.url);
+const __dirname$1 = path.dirname(__filename$1);
 process.env.APP_ROOT = path.join(__dirname$1, "..");
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
@@ -41,7 +97,10 @@ app.on("activate", () => {
     createWindow();
   }
 });
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  initDb();
+  createWindow();
+});
 export {
   MAIN_DIST,
   RENDERER_DIST,

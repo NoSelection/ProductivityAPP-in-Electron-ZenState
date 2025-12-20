@@ -18,7 +18,13 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
     const [channel, ...omit] = args
     return ipcRenderer.invoke(channel, ...omit)
   },
+})
 
-  // You can expose other APTs you need here.
-  // ...
+contextBridge.exposeInMainWorld('neuralDb', {
+  getQuests: () => ipcRenderer.invoke('db:getQuests'),
+  saveQuests: (quests: any[]) => ipcRenderer.invoke('db:saveQuests', quests),
+  getStats: () => ipcRenderer.invoke('db:getStats'),
+  saveStat: (key: string, value: any) => ipcRenderer.invoke('db:saveStat', key, value),
+  getNotes: () => ipcRenderer.invoke('db:getNotes'),
+  saveNotes: (content: string) => ipcRenderer.invoke('db:saveNotes', content),
 })

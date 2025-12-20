@@ -10,6 +10,8 @@
 - **Neural Audio Evolution**: Upgraded the Media Deck with a custom URL input ("Neural Link"), preset signal channels (Lofi, Synth, Ambient), and a holographic video toggle mode ("Holo-View").
 - **Neural Codex**: Expanded the application into a multi-page Focus OS using React Router. Added a new "Codex" page for focus statistics, session history, and rank tracking.
 - **Cinematic Navigation**: Implemented smooth page transitions and a persistent "Neural Mode" header for seamless switching between Dashboard and Codex.
+- **Neural Connectivity**: Linked the `Timer`, `QuestLog`, and `Neural Codex` via persistent storage logic.
+- **Neural Storage Cluster**: Migrated the entire persistence layer to **SQLite** (`better-sqlite3`) for true data permanence. Implemented a custom IPC bridge and a transition protocol that automatically migrates user data from `localStorage` to the new encrypted database core.
 
 ## [2025-12-20] ZenState // Neural Transformation (UI Redesign)
 - **Global Foundation**: Migrated to HSL-based design system for precise color control and better transparency handling.

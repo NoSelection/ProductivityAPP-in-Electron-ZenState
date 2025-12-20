@@ -1,18 +1,44 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { BarChart3, Archive, Zap, Award } from 'lucide-react'
+import { useNeuralStorage } from '../hooks/useNeuralStorage'
 import { cn } from '../lib/utils'
 
+interface Quest {
+    id: string
+    text: string
+    completed: boolean
+}
+
 export const NeuralCodex: React.FC = () => {
+    const [totalFocus] = useNeuralStorage('zen-focus-total', 0)
+    const [pomodoros] = useNeuralStorage('zen-pomodoros', 0)
+    const [quests] = useNeuralStorage<Quest[]>('zen-quests', [])
+    const [notes] = useNeuralStorage('zen-brain-dump', '')
+
+    const focusHours = (totalFocus / 3600).toFixed(1)
+    const completedQuests = quests.filter(q => q.completed).length
+
+    // Dynamic Ranking Logic
+    const getRank = (seconds: number) => {
+        const hours = seconds / 3600
+        if (hours < 1) return 'Novice'
+        if (hours < 5) return 'Specialist'
+        if (hours < 20) return 'Architect'
+        return 'Singularity'
+    }
+
+    const rank = getRank(totalFocus)
+
     return (
         <div className="col-span-1 lg:col-span-3 h-full flex flex-col gap-6">
             {/* Top Stat Row */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 shrink-0">
                 {[
-                    { label: 'Total Focus', val: '12.4h', icon: Zap, color: 'text-accent-base' },
-                    { label: 'Pomodoros', val: '42', icon: BarChart3, color: 'text-accent-secondary' },
-                    { label: 'Quests Done', val: '128', icon: Archive, color: 'text-blue-400' },
-                    { label: 'Neural Rank', val: 'Specialist', icon: Award, color: 'text-purple-400' }
+                    { label: 'Total Focus', val: `${focusHours}h`, icon: Zap, color: 'text-accent-base' },
+                    { label: 'Pomodoros', val: pomodoros.toString(), icon: BarChart3, color: 'text-accent-secondary' },
+                    { label: 'Quests Done', val: completedQuests.toString(), icon: Archive, color: 'text-blue-400' },
+                    { label: 'Neural Rank', val: rank, icon: Award, color: 'text-purple-400' }
                 ].map((stat, i) => (
                     <motion.div
                         key={stat.label}
@@ -63,15 +89,21 @@ export const NeuralCodex: React.FC = () => {
                         </h2>
                     </div>
                     <div className="flex-1 flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar">
-                        {[1, 2, 3, 4, 5].map((item) => (
-                            <div key={item} className="flex-none p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors group cursor-pointer">
-                                <div className="flex items-center justify-between mb-1">
-                                    <span className="text-[9px] font-black text-accent-base/60 uppercase tracking-widest">Protocol 0{item}</span>
-                                    <span className="text-[9px] text-white/20">2025.12.19</span>
-                                </div>
-                                <p className="text-sm text-white/70 font-light group-hover:text-white transition-colors">Neural OS refinement and bento protocol deployment.</p>
+                        {quests.filter(q => q.completed).length === 0 ? (
+                            <div className="h-full flex flex-col items-center justify-center text-white/10 font-mono-tech uppercase tracking-[0.4em] text-[10px]">
+                                Vault // Empty
                             </div>
-                        ))}
+                        ) : (
+                            quests.filter(q => q.completed).map((quest, i) => (
+                                <div key={quest.id} className="flex-none p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-colors group cursor-pointer">
+                                    <div className="flex items-center justify-between mb-1">
+                                        <span className="text-[9px] font-black text-accent-base/60 uppercase tracking-widest">Protocol {i + 1}</span>
+                                        <span className="text-[9px] text-white/20">2025.12.20</span>
+                                    </div>
+                                    <p className="text-sm text-white/70 font-light group-hover:text-white transition-colors">{quest.text}</p>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </motion.div>
             </div>

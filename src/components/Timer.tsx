@@ -1,24 +1,29 @@
 import React, { useState, useEffect } from 'react'
 import { Play, Pause, RotateCcw, Activity } from 'lucide-react'
+import { useNeuralStorage } from '../hooks/useNeuralStorage'
 import { cn } from '../lib/utils'
 
 export const Timer: React.FC = () => {
     const [timeLeft, setTimeLeft] = useState(25 * 60)
     const [isActive, setIsActive] = useState(false)
+    const [totalFocus, setTotalFocus] = useNeuralStorage('zen-focus-total', 0)
+    const [pomodoros, setPomodoros] = useNeuralStorage('zen-pomodoros', 0)
 
     useEffect(() => {
         let timer: ReturnType<typeof setInterval> | undefined
         if (isActive && timeLeft > 0) {
             timer = setInterval(() => {
                 setTimeLeft((prev) => prev - 1)
+                setTotalFocus((prev: number) => prev + 1)
             }, 1000)
         } else if (timeLeft === 0) {
             setIsActive(false)
+            setPomodoros((prev: number) => prev + 1)
         }
         return () => {
             if (timer) clearInterval(timer)
         }
-    }, [isActive, timeLeft])
+    }, [isActive, timeLeft, setTotalFocus, setPomodoros])
 
     const formatTime = (seconds: number) => {
         const mins = Math.floor(seconds / 60)

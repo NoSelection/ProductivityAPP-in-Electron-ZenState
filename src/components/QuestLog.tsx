@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus, Trash2, CheckCircle2, Circle, List } from 'lucide-react'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useNeuralStorage } from '../hooks/useNeuralStorage'
 import { cn } from '../lib/utils'
 
 interface Quest {
@@ -11,7 +11,7 @@ interface Quest {
 }
 
 export const QuestLog: React.FC = () => {
-    const [quests, setQuests] = useLocalStorage<Quest[]>('zen-quests', [])
+    const [quests, setQuests] = useNeuralStorage<Quest[]>('zen-quests', [])
     const [newQuest, setNewQuest] = useState('')
 
     const addQuest = () => {

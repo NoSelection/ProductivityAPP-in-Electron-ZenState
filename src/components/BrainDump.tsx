@@ -1,10 +1,10 @@
 import React from 'react'
 import { FileText } from 'lucide-react'
-import { useLocalStorage } from '../hooks/useLocalStorage'
+import { useNeuralStorage } from '../hooks/useNeuralStorage'
 import { cn } from '../lib/utils'
 
 export const BrainDump: React.FC = () => {
-    const [notes, setNotes] = useLocalStorage<string>('zen-brain-dump', '')
+    const [notes, setNotes] = useNeuralStorage<string>('zen-brain-dump', '')
 
     return (
         <div className={cn(

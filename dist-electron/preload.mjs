@@ -17,6 +17,12 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
     const [channel, ...omit] = args;
     return electron.ipcRenderer.invoke(channel, ...omit);
   }
-  // You can expose other APTs you need here.
-  // ...
+});
+electron.contextBridge.exposeInMainWorld("neuralDb", {
+  getQuests: () => electron.ipcRenderer.invoke("db:getQuests"),
+  saveQuests: (quests) => electron.ipcRenderer.invoke("db:saveQuests", quests),
+  getStats: () => electron.ipcRenderer.invoke("db:getStats"),
+  saveStat: (key, value) => electron.ipcRenderer.invoke("db:saveStat", key, value),
+  getNotes: () => electron.ipcRenderer.invoke("db:getNotes"),
+  saveNotes: (content) => electron.ipcRenderer.invoke("db:saveNotes", content)
 });
