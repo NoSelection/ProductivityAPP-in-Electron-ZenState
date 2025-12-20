@@ -29,69 +29,55 @@ export const FocusCard: React.FC = () => {
         <motion.div
             layout
             className={cn(
-                "FocusCard h-full w-full flex flex-col items-center justify-center p-8 lg:p-12 relative overflow-hidden hyper-panel min-h-0 corner-accents",
-                isInputFocused && "border-neon-cyan/30 shadow-[0_0_40px_rgba(0,240,255,0.15),inset_0_0_40px_rgba(0,240,255,0.05)]"
+                "FocusCard h-full w-full flex flex-col items-center justify-center p-8 lg:p-12 relative overflow-hidden min-h-0",
+                "bg-[#0a0a0f] border-0 backdrop-blur-3xl", // Deep Void Base
+                isInputFocused && "shadow-prism-glow"
             )}
+            style={{
+                clipPath: 'polygon(0 20px, 20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)' // Double Chamfer
+            }}
         >
-            {/* Animated Background Grid */}
-            <div className="absolute inset-0 opacity-30">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,240,255,0.08),transparent_70%)]" />
+            {/* Prismatic Border (Animated) */}
+            <div className="absolute inset-0 p-[1px] opacity-40">
+                <div className="absolute inset-0 bg-prismatic-ray animate-spin-slow opacity-50" style={{ animationDuration: '10s' }} />
+                <div className="absolute inset-[1px] bg-[#0a0a0f]" style={{ clipPath: 'polygon(0 20px, 20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%)' }} />
             </div>
 
-            {/* Header Badge */}
-            <div className="absolute top-5 left-5 lg:top-6 lg:left-6 flex items-center gap-3 z-10">
-                <div className="relative">
-                    <Crosshair className="w-5 h-5 text-neon-cyan" style={{ filter: 'drop-shadow(0 0 8px #00f0ff)' }} />
-                    {isLocked && (
-                        <motion.div
-                            className="absolute inset-0"
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-                        >
-                            <div className="w-full h-full border border-neon-cyan/30 rounded-full" />
-                        </motion.div>
-                    )}
+            {/* Surreal Background Texture */}
+            <div className="absolute inset-0 opacity-40 pointer-events-none">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]" />
+                <div className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] bg-gradient-to-b from-transparent via-[var(--prismatic-1)]/10 to-transparent rotate-45 animate-pulse" style={{ animationDuration: '8s' }} />
+            </div>
+
+            {/* Header Badge (Floating Geometry) */}
+            <div className="absolute top-8 left-8 flex items-center gap-4 z-10">
+                <div className="relative w-6 h-6">
+                    <div className="absolute inset-0 border border-white/30 rotate-45" />
+                    <div className="absolute inset-1 bg-white/10 rotate-45" />
                 </div>
                 <div className="flex flex-col">
-                    <span className="font-display text-[10px] lg:text-xs font-bold tracking-[0.3em] text-neon-cyan uppercase">
-                        {isLocked ? 'MISSION ACTIVE' : 'TARGET LOCK'}
+                    <span className="font-display text-xs font-bold tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50 uppercase">
+                        {isLocked ? 'Manifesting' : 'Commune'}
                     </span>
-                    <span className="font-mono-tech text-[8px] text-white/20 uppercase tracking-widest">
-                        {isLocked ? 'Protocol Engaged' : 'Awaiting Input'}
-                    </span>
+                    <div className="h-px w-full bg-gradient-to-r from-white/30 to-transparent mt-1" />
                 </div>
-            </div>
-
-            {/* Status Indicator */}
-            <div className="absolute top-5 right-5 lg:top-6 lg:right-6 flex items-center gap-2">
-                <div className={cn(
-                    "w-2 h-2 rounded-full",
-                    isLocked ? "bg-neon-lime animate-pulse shadow-[0_0_10px_#39ff14]" : "bg-neon-cyan/30"
-                )} />
-                <span className="font-mono-tech text-[9px] text-white/30 uppercase tracking-wider">
-                    {isComplete ? 'COMPLETE' : isLocked ? 'ACTIVE' : 'STANDBY'}
-                </span>
             </div>
 
             <AnimatePresence mode="wait">
                 {!isLocked ? (
                     <motion.div
                         key="input-mode"
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 1.1, y: -20 }}
-                        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                        className="w-full max-w-lg flex flex-col items-center gap-10 relative z-10"
+                        initial={{ opacity: 0, filter: 'blur(10px)' }}
+                        animate={{ opacity: 1, filter: 'blur(0px)' }}
+                        exit={{ opacity: 0, filter: 'blur(10px)' }}
+                        className="w-full max-w-lg flex flex-col items-center gap-12 relative z-10"
                     >
                         {/* Input Field */}
                         <div className="relative w-full group">
                             <input
                                 type="text"
-                                className="w-full bg-transparent text-center text-2xl md:text-3xl lg:text-4xl font-light text-white outline-none p-6 font-display tracking-wide"
-                                style={{
-                                    textShadow: isInputFocused ? '0 0 20px rgba(0,240,255,0.3)' : 'none'
-                                }}
-                                placeholder="Define your mission..."
+                                className="w-full bg-transparent text-center text-4xl lg:text-5xl font-thin text-white outline-none py-6 font-display tracking-widest placeholder:text-white/10"
+                                placeholder="Shape Reality..."
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && handleLock()}
@@ -99,34 +85,20 @@ export const FocusCard: React.FC = () => {
                                 onBlur={() => setIsInputFocused(false)}
                                 autoFocus
                             />
-                            {/* Animated underline */}
-                            <div className="absolute bottom-0 left-0 right-0 h-px bg-white/10" />
-                            <motion.div
-                                className="absolute bottom-0 left-1/2 h-[2px] bg-gradient-to-r from-neon-cyan via-neon-magenta to-neon-cyan"
-                                style={{ boxShadow: '0 0 20px #00f0ff, 0 0 40px #00f0ff' }}
-                                initial={{ width: 0, x: '-50%' }}
-                                animate={{
-                                    width: isInputFocused ? '100%' : '0%',
-                                    x: '-50%'
-                                }}
-                                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                            />
-                            {/* Corner brackets */}
-                            <div className="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-neon-cyan/30 opacity-0 group-focus-within:opacity-100 transition-opacity" />
-                            <div className="absolute top-0 right-0 w-4 h-4 border-r-2 border-t-2 border-neon-cyan/30 opacity-0 group-focus-within:opacity-100 transition-opacity" />
-                            <div className="absolute bottom-0 left-0 w-4 h-4 border-l-2 border-b-2 border-neon-cyan/30 opacity-0 group-focus-within:opacity-100 transition-opacity" />
-                            <div className="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-neon-cyan/30 opacity-0 group-focus-within:opacity-100 transition-opacity" />
+                            {/* Prismatic Underline */}
+                            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] bg-gradient-to-r from-[var(--prismatic-1)] via-[var(--prismatic-2)] to-[var(--prismatic-3)] group-focus-within:w-2/3 transition-all duration-700 ease-out" />
                         </div>
 
-                        {/* Lock Button */}
+                        {/* Lock Button (Surreal) */}
                         <motion.button
                             onClick={handleLock}
-                            whileHover={{ scale: 1.02 }}
+                            whileHover={{ scale: 1.02, textShadow: "0 0 8px var(--prismatic-2)" }}
                             whileTap={{ scale: 0.98 }}
-                            className="hyper-btn group flex items-center gap-3"
+                            className="relative z-50 cursor-pointer px-10 py-4 bg-black/40 border border-white/10 text-white/80 font-display text-xs tracking-[0.2em] uppercase transition-all flex items-center gap-3 backdrop-blur-md hover:border-[var(--prismatic-2)] hover:bg-[var(--prismatic-2)]/10 hover:shadow-[0_0_20px_rgba(var(--prismatic-2-rgb),0.2)] hover:text-[var(--prismatic-2)]"
                         >
-                            <Zap className="w-4 h-4 group-hover:animate-pulse" style={{ filter: 'drop-shadow(0 0 5px #00f0ff)' }} />
-                            <span className="relative z-10">Initiate Protocol</span>
+                            <span className="w-1.5 h-1.5 bg-[var(--prismatic-2)] rounded-full shadow-[0_0_5px_var(--prismatic-2)]" />
+                            <span>Bind Intent</span>
+                            <span className="w-1.5 h-1.5 bg-[var(--prismatic-2)] rounded-full shadow-[0_0_5px_var(--prismatic-2)]" />
                         </motion.button>
                     </motion.div>
                 ) : (
@@ -134,69 +106,56 @@ export const FocusCard: React.FC = () => {
                         key="locked-mode"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="flex flex-col items-center justify-center gap-10 w-full relative z-10"
+                        className="flex flex-col items-center justify-center gap-12 w-full relative z-10"
                     >
-                        {/* Mission Text */}
-                        <motion.div
-                            layoutId="mission-text"
-                            className={cn(
-                                "text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-display font-light text-center max-w-full break-words leading-tight tracking-wide transition-all duration-500 select-text px-4",
-                                isComplete
-                                    ? "text-neon-lime/40 line-through blur-[1px]"
-                                    : "text-white"
-                            )}
-                            style={{
-                                textShadow: isComplete
-                                    ? '0 0 20px rgba(57,255,20,0.3)'
-                                    : '0 0 30px rgba(0,240,255,0.2)'
-                            }}
-                        >
-                            {focus}
-                        </motion.div>
+                        {/* Mission Objective Text */}
+                        <div className="relative py-10 w-full text-center">
+                            {/* Organic Glow Behind Text */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-32 bg-gradient-to-r from-transparent via-[rgba(var(--prismatic-1-rgb),0.1)] to-transparent blur-3xl" />
 
-                        {/* Action Buttons */}
-                        <div className="flex items-center gap-4">
+                            <motion.div
+                                layoutId="mission-text"
+                                className={cn(
+                                    "text-4xl md:text-5xl lg:text-6xl font-display font-thin text-white tracking-wide leading-tight px-8 mix-blend-overlay",
+                                    isComplete && "line-through opacity-50"
+                                )}
+                                style={{
+                                    textShadow: '0 0 30px rgba(255,255,255,0.3)'
+                                }}
+                            >
+                                {focus}
+                            </motion.div>
+                        </div>
+
+                        {/* Action Buttons (Artifacts) */}
+                        <div className="flex items-center gap-8">
                             <motion.button
                                 onClick={() => setIsComplete(!isComplete)}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
+                                whileHover={{ scale: 1.1 }}
+                                whileTap={{ scale: 0.9 }}
                                 className={cn(
-                                    "px-8 py-4 rounded-lg border transition-all duration-300 font-display text-[11px] tracking-[0.2em] font-bold uppercase flex items-center gap-3",
+                                    "w-20 h-20 rounded-full flex items-center justify-center border transition-all duration-500 relative overflow-hidden",
                                     isComplete
-                                        ? "bg-neon-lime/10 border-neon-lime/40 text-neon-lime shadow-[0_0_30px_rgba(57,255,20,0.2),inset_0_0_20px_rgba(57,255,20,0.1)]"
-                                        : "bg-black/40 border-neon-cyan/20 text-neon-cyan hover:border-neon-cyan/40 hover:bg-neon-cyan/5 hover:shadow-[0_0_20px_rgba(0,240,255,0.2)]"
+                                        ? "border-[var(--prismatic-3)]/50 bg-[var(--prismatic-3)]/10 shadow-[0_0_40px_rgba(var(--prismatic-3-rgb),0.2)]"
+                                        : "border-white/20 hover:border-white/60 bg-white/5"
                                 )}
                             >
-                                {isComplete ? (
-                                    <CheckCircle2 className="w-5 h-5" style={{ filter: 'drop-shadow(0 0 8px #39ff14)' }} />
-                                ) : (
-                                    <Circle className="w-5 h-5" />
-                                )}
-                                {isComplete ? 'Mission Complete' : 'Complete Mission'}
+                                <div className="absolute inset-0 bg-prismatic-ray opacity-10 animate-spin-slow" />
+                                <CheckCircle2 className={cn("w-8 h-8 relative z-10", isComplete ? "text-[var(--prismatic-3)]" : "text-white/60")} strokeWidth={1} />
                             </motion.button>
 
                             <motion.button
                                 onClick={handleReset}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="p-4 rounded-lg border border-white/5 bg-black/30 text-white/20 hover:text-neon-magenta hover:bg-neon-magenta/5 hover:border-neon-magenta/30 hover:shadow-[0_0_20px_rgba(255,0,170,0.2)] transition-all duration-300"
-                                title="Abort Mission"
+                                whileHover={{ scale: 1.1, rotate: 90 }}
+                                whileTap={{ scale: 0.9 }}
+                                className="w-14 h-14 rounded-full flex items-center justify-center border border-white/5 bg-black/40 hover:bg-white/5 transition-all"
                             >
-                                <X className="w-5 h-5" />
+                                <X className="w-6 h-6 text-white/30" strokeWidth={1} />
                             </motion.button>
                         </div>
                     </motion.div>
                 )}
             </AnimatePresence>
-
-            {/* Bottom Data Stream */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-4">
-                <div className="w-16 h-px bg-gradient-to-r from-transparent to-neon-cyan/20" />
-                <span className="font-mono-tech text-[8px] text-white/10 uppercase tracking-[0.3em]">
-                    Neural Link Active
-                </span>
-                <div className="w-16 h-px bg-gradient-to-l from-transparent to-neon-cyan/20" />
-            </div>
         </motion.div>
     )
 }

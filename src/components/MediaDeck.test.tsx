@@ -9,8 +9,17 @@ vi.mock('../lib/audioService', () => ({
   audioService: {
     play: vi.fn(),
     pause: vi.fn(),
-    setVolume: vi.fn()
+    setVolume: vi.fn(),
+    getFrequencyData: vi.fn().mockReturnValue(new Uint8Array(128).fill(0))
   }
+}));
+
+// Mock useTheme
+vi.mock('../context/ThemeContext', () => ({
+  useTheme: () => ({
+    colors: { neon_primary: '#00f0ff', neon_secondary: '#ff00aa' }
+  }),
+  ThemeProvider: ({ children }: any) => <div>{children}</div>
 }));
 
 // Mock framer-motion
@@ -24,6 +33,7 @@ vi.mock('framer-motion', () => ({
     ),
   },
   AnimatePresence: ({ children }: any) => <>{children}</>,
+  MotionConfig: ({ children }: any) => <>{children}</>
 }));
 
 // Mock Lucide icons
@@ -55,7 +65,7 @@ describe('MediaDeck', () => {
   it('renders and defaults to ambient mode', async () => {
     render(<MediaDeck />);
     expect(screen.getByText(/AUDIO DECK/i)).toBeDefined();
-    expect(screen.getByText(/Rainfall/i)).toBeDefined();
+    expect(screen.getAllByText(/Rainfall/i)[0]).toBeDefined();
   });
 
   it('calls audioService.play with rain when play is clicked in ambient mode', async () => {

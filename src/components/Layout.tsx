@@ -46,7 +46,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     {/* Logo */}
                     <div className="flex items-center gap-3">
                         <div className="relative">
-                            <Zap className="w-5 h-5 lg:w-6 lg:h-6 text-neon-cyan" style={{ filter: 'drop-shadow(0 0 10px #00f0ff)' }} />
+                            <Zap className="w-5 h-5 lg:w-6 lg:h-6 text-neon-cyan" style={{ filter: 'drop-shadow(0 0 10px var(--neon-cyan))' }} />
                             <div className="absolute inset-0 animate-ping">
                                 <Zap className="w-5 h-5 lg:w-6 lg:h-6 text-neon-cyan opacity-30" />
                             </div>
@@ -177,7 +177,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     )}
                 >
                     {isFocusShieldActive ? (
-                        <ShieldAlert className="w-5 h-5 animate-pulse" style={{ filter: 'drop-shadow(0 0 10px #00f0ff)' }} />
+                        <ShieldAlert className="w-5 h-5 animate-pulse" style={{ filter: 'drop-shadow(0 0 10px var(--neon-cyan))' }} />
                     ) : (
                         <Shield className="w-5 h-5" />
                     )}

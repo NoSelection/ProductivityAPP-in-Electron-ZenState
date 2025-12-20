@@ -1,19 +1,25 @@
 import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
-import { Layout } from "./components/Layout";
-import { Dashboard } from "./components/Dashboard";
+import { MainLayout } from "./components/layout/MainLayout";
+import { DashboardPage } from "./pages/DashboardPage";
+import { FocusPage } from "./pages/FocusPage";
+import { MediaPage } from "./pages/MediaPage";
+import { QuestsPage } from "./pages/QuestsPage";
 import { NeuralCodex } from "./components/NeuralCodex";
 
 function App() {
   return (
     <ThemeProvider>
       <Router>
-        <Layout>
+        <MainLayout>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<DashboardPage />} />
+            <Route path="/focus" element={<FocusPage />} />
             <Route path="/codex" element={<NeuralCodex />} />
+            <Route path="/media" element={<MediaPage />} />
+            <Route path="/quests" element={<QuestsPage />} />
           </Routes>
-        </Layout>
+        </MainLayout>
       </Router>
     </ThemeProvider>
   );

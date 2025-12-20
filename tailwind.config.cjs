@@ -9,12 +9,12 @@ module.exports = {
             colors: {
                 // HYPER Neon Palette
                 neon: {
-                    cyan: '#00f0ff',
-                    magenta: '#ff00aa',
-                    lime: '#39ff14',
-                    orange: '#ff6600',
-                    purple: '#bf00ff',
-                    yellow: '#ffff00',
+                    cyan: 'var(--arc-blue)',      // Arc
+                    magenta: 'var(--void-purple)', // Void
+                    lime: 'var(--strand-green)',   // Strand
+                    orange: 'var(--solar-orange)', // Solar
+                    purple: 'var(--stasis-blue)',  // Stasis ("Purple" key kept for backward compat, but mapped to Stasis/Void logic)
+                    yellow: 'var(--solar-gold)',   // Solar Gold
                 },
                 hyper: {
                     black: '#0a0a0f',
@@ -107,16 +107,15 @@ module.exports = {
                 },
             },
             backgroundImage: {
-                'grid-pattern': 'linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px)',
-                'cyber-gradient': 'linear-gradient(135deg, #00f0ff 0%, #bf00ff 50%, #ff00aa 100%)',
-                'neon-glow': 'radial-gradient(ellipse at center, rgba(0,240,255,0.15) 0%, transparent 70%)',
+                'pale-gradient': 'linear-gradient(to bottom right, #fce7f3 0%, #e0e7ff 50%, #f3e8ff 100%)',
+                'void-cloud': 'radial-gradient(circle at 50% 50%, #2e1065 0%, #000000 100%)',
+                'prismatic-ray': 'conic-gradient(from 180deg at 50% 50%, #ff0080 0deg, #7DF9FF 120deg, #ffd700 240deg, #ff0080 360deg)',
+                'surreal-glow': 'radial-gradient(ellipse at center, rgba(255,255,255,0.1) 0%, transparent 60%)',
             },
             boxShadow: {
-                'neon-cyan': '0 0 5px #00f0ff, 0 0 20px #00f0ff, 0 0 40px #00f0ff',
-                'neon-magenta': '0 0 5px #ff00aa, 0 0 20px #ff00aa, 0 0 40px #ff00aa',
-                'neon-lime': '0 0 5px #39ff14, 0 0 20px #39ff14, 0 0 40px #39ff14',
-                'neon-purple': '0 0 5px #bf00ff, 0 0 20px #bf00ff, 0 0 40px #bf00ff',
-                'inner-glow': 'inset 0 0 30px rgba(0,240,255,0.1)',
+                'prism-glow': '0 0 20px rgba(255,0,128,0.3), 0 0 40px rgba(125,249,255,0.2)',
+                'pale-glow': '0 0 30px rgba(252, 231, 243, 0.1)',
+                'artifact-shadow': '0 10px 30px -10px rgba(0,0,0,0.5)',
             },
         },
     },

@@ -10,6 +10,10 @@ declare global {
             saveStat: (key: string, value: any) => Promise<any>
             getNotes: () => Promise<string>
             saveNotes: (content: string) => Promise<any>
+            // Codex
+            getCodexNotes: () => Promise<any[]>
+            saveCodexNote: (note: any) => Promise<any>
+            deleteCodexNote: (id: string) => Promise<any>
         }
     }
 }
@@ -22,6 +26,19 @@ export function useNeuralStorage<T>(key: string, initialValue: T) {
     useEffect(() => {
         async function loadData() {
             try {
+                // Browser Fallback: No neuralDb
+                if (!window.neuralDb) {
+                    const item = window.localStorage.getItem(key)
+                    if (item) {
+                        setStoredValue(JSON.parse(item))
+                    } else {
+                        setStoredValue(initialValue)
+                    }
+                    setIsInitialized(true)
+                    return
+                }
+
+                // Electron Mode: Use SQLite (neuralDb)
                 let data: any
 
                 // 1. Try to get from SQLite
@@ -75,7 +92,13 @@ export function useNeuralStorage<T>(key: string, initialValue: T) {
             const valueToStore = value instanceof Function ? value(storedValue) : value
             setStoredValue(valueToStore)
 
-            // Persist to SQLite
+            // Browser Fallback: Persist to localStorage
+            if (!window.neuralDb) {
+                window.localStorage.setItem(key, JSON.stringify(valueToStore))
+                return
+            }
+
+            // Electron Mode: Persist to SQLite
             if (key === 'zen-quests') {
                 await window.neuralDb.saveQuests(valueToStore as any[])
             } else if (key === 'zen-brain-dump') {

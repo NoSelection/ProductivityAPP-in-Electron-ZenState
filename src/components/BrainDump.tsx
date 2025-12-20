@@ -12,121 +12,87 @@ export const BrainDump: React.FC = () => {
     const charCount = notes.length
 
     return (
-        <div className="BrainDump flex-1 hyper-panel p-5 flex flex-col gap-4 min-h-0 relative overflow-hidden">
-            {/* Background Effect */}
-            <div className="absolute inset-0 opacity-30">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,rgba(191,0,255,0.08),transparent_60%)]" />
+        <div className="BrainDump flex-1 hyper-panel p-5 flex flex-col gap-4 min-h-0 relative overflow-hidden group">
+            {/* Background Lore Texture */}
+            <div className="absolute inset-0 opacity-20 pointer-events-none">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(46,16,101,0.2),transparent_60%)]" />
+                <div className="absolute top-0 right-0 w-full h-px bg-gradient-to-l from-white/10 to-transparent" />
             </div>
 
             {/* Header */}
             <div className="flex items-center justify-between shrink-0 relative z-10">
                 <div className="flex items-center gap-3">
-                    <div className="relative">
-                        <Brain className="w-5 h-5 text-neon-purple" style={{ filter: 'drop-shadow(0 0 8px #bf00ff)' }} />
-                        {!isInitialized && (
-                            <motion.div
-                                className="absolute inset-0"
-                                animate={{ rotate: 360 }}
-                                transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                            >
-                                <div className="w-full h-full border border-neon-purple/30 rounded-full border-t-transparent" />
-                            </motion.div>
-                        )}
+                    <div className="relative w-8 h-8 flex items-center justify-center bg-white/5 rounded-full border border-white/10">
+                        <Brain className="w-4 h-4 text-[var(--prismatic-1)]" style={{ filter: 'drop-shadow(0 0 10px var(--prismatic-1))' }} />
+                        <div className="absolute inset-0 border border-white/5 rounded-full animate-ping opacity-20" style={{ animationDuration: '3s' }} />
                     </div>
                     <div className="flex flex-col">
-                        <span className="font-display text-[10px] lg:text-xs font-bold tracking-[0.3em] text-neon-purple uppercase">
-                            NEURAL DUMP
+                        <span className="font-display text-[10px] lg:text-xs font-bold tracking-[0.3em] text-[var(--prismatic-1)] uppercase">
+                            GRIMOIRE
                         </span>
-                        <span className="font-mono-tech text-[8px] text-white/20 uppercase tracking-widest">
-                            Memory Cache
+                        <span className="font-serif italic text-[9px] text-white/30 tracking-widest">
+                            Whispers & Logic
                         </span>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-black/30 border border-neon-purple/10">
-                        <Cpu className="w-3 h-3 text-neon-purple/40" />
-                        <span className="font-mono-tech text-[9px] text-neon-purple/50">
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 border border-[rgba(var(--prismatic-1-rgb),0.2)]">
+                        <Cpu className="w-3 h-3 text-[rgba(var(--prismatic-1-rgb),0.4)]" />
+                        <span className="font-mono-tech text-[9px] text-[rgba(var(--prismatic-1-rgb),0.6)]">
                             {wordCount}w / {charCount}c
                         </span>
                     </div>
                 </div>
             </div>
 
-            {/* Terminal-style Text Area */}
+            {/* Terminal-style Text Area (Lore Entry) */}
             <div className={cn(
-                "flex-1 min-h-0 relative rounded-lg border transition-all duration-300 overflow-hidden",
+                "flex-1 min-h-0 relative transition-all duration-300 overflow-hidden",
                 isFocused
-                    ? "border-neon-purple/30 shadow-[0_0_30px_rgba(191,0,255,0.15),inset_0_0_30px_rgba(191,0,255,0.05)]"
-                    : "border-white/5 bg-black/30"
+                    ? "border-l-2 border-[var(--prismatic-1)] bg-black/20"
+                    : "border-l-2 border-white/5 bg-transparent"
             )}>
-                {/* Terminal Header */}
-                <div className="flex items-center gap-2 px-4 py-2 border-b border-white/5 bg-black/40">
-                    <Terminal className="w-3 h-3 text-neon-purple/40" />
-                    <span className="font-mono-tech text-[9px] text-white/20 uppercase tracking-wider">
-                        neural_cache.log
-                    </span>
-                    <div className="flex-1" />
-                    <div className="flex items-center gap-1.5">
-                        <div className="w-2 h-2 rounded-full bg-neon-magenta/40" />
-                        <div className="w-2 h-2 rounded-full bg-neon-cyan/40" />
-                        <div className="w-2 h-2 rounded-full bg-neon-lime/40" />
-                    </div>
-                </div>
+                {/* Header Line */}
+                <div className="absolute top-0 left-0 w-full h-px bg-white/5" />
 
                 {/* Text Area */}
-                <div className="relative h-[calc(100%-32px)]">
-                    {/* Line Numbers Column */}
-                    <div className="absolute left-0 top-0 bottom-0 w-10 bg-black/20 border-r border-white/5 flex flex-col pt-4 overflow-hidden">
-                        {Array.from({ length: Math.max(10, notes.split('\n').length + 1) }).map((_, i) => (
-                            <span
-                                key={i}
-                                className="font-mono-tech text-[10px] text-white/10 text-right pr-2 leading-relaxed"
-                            >
-                                {String(i + 1).padStart(2, '0')}
-                            </span>
-                        ))}
-                    </div>
-
+                <div className="relative h-full">
                     <textarea
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                         spellCheck={false}
-                        placeholder="> Initialize memory stream..."
+                        placeholder="Transcribe the whispers..."
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
-                        className="w-full h-full bg-transparent border-none outline-none text-sm text-white/80 placeholder:text-neon-purple/20 resize-none custom-scrollbar leading-relaxed pl-14 pr-4 py-4 font-mono-tech"
+                        className="w-full h-full bg-transparent border-none outline-none text-sm text-white/80 placeholder:text-white/10 resize-none custom-scrollbar leading-relaxed px-6 py-4 font-serif relative z-10 tracking-wide"
                         style={{
-                            textShadow: isFocused ? '0 0 10px rgba(191,0,255,0.2)' : 'none'
+                            textShadow: isFocused ? '0 0 10px rgba(var(--prismatic-1-rgb),0.2)' : 'none'
                         }}
                     />
 
-                    {/* Cursor Blink Effect */}
-                    {isFocused && notes.length === 0 && (
-                        <motion.span
-                            className="absolute left-14 top-4 w-2 h-5 bg-neon-purple/60"
-                            animate={{ opacity: [1, 0] }}
-                            transition={{ duration: 0.8, repeat: Infinity }}
-                        />
-                    )}
+                    {/* Decorative Watermark */}
+                    <div className="absolute bottom-4 right-4 pointer-events-none opacity-5">
+                        <Brain className="w-24 h-24 text-white" />
+                    </div>
                 </div>
             </div>
 
             {/* Bottom Status */}
-            <div className="flex items-center justify-between shrink-0 relative z-10">
+            <div className="flex items-center justify-between shrink-0 relative z-10 border-t border-white/5 pt-3">
                 <div className="flex items-center gap-2">
                     <div className={cn(
                         "w-1.5 h-1.5 rounded-full transition-all",
                         isInitialized
-                            ? "bg-neon-lime shadow-[0_0_8px_#39ff14]"
-                            : "bg-neon-orange animate-pulse"
+                            ? "bg-[var(--prismatic-1)] shadow-[0_0_8px_var(--prismatic-1)]"
+                            : "bg-white/20 animate-pulse"
                     )} />
                     <span className="font-mono-tech text-[8px] text-white/20 uppercase tracking-widest">
-                        {isInitialized ? 'Synced' : 'Syncing...'}
+                        {isInitialized ? 'Archives Synced' : 'Establishing Uplink...'}
                     </span>
                 </div>
                 <span className="font-mono-tech text-[8px] text-white/10 uppercase tracking-widest">
-                    Auto-save enabled
+                    // END TRANSMISSION
                 </span>
             </div>
         </div>

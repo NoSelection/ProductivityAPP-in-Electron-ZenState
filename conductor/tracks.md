@@ -4,6 +4,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-## [~] Track: Implement the Integrated Media Deck with ambient soundscapes and reactive visualizer
-*Link: [./conductor/tracks/media_deck_20251220/](./conductor/tracks/media_deck_20251220/)*
+## [~] Track: Implement the Neural Codex UI for rich note-taking and knowledge management
+*Link: [./conductor/tracks/neural_codex_ui_20251220/](./conductor/tracks/neural_codex_ui_20251220/)*
 

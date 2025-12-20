@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { settingsService } from '../lib/settingsService';
 
-export type ThemeType = 'hyper' | 'sakura' | 'ocean' | 'matrix' | 'sunset' | 'arctic';
+export type ThemeType = 'matrix' | 'sky' | 'heart' | 'sun' | 'ice';
 
 interface ThemeColors {
     // Primary neon colors
@@ -24,7 +24,7 @@ interface ThemeContextType {
 }
 
 const Themes: Record<ThemeType, ThemeColors> = {
-    hyper: {
+    sky: {
         neon_primary: '#00f0ff',
         neon_secondary: '#ff00aa',
         neon_accent: '#bf00ff',
@@ -32,21 +32,13 @@ const Themes: Record<ThemeType, ThemeColors> = {
         accent_secondary: '320, 100%, 50%',
         bg_main: '240, 20%, 5%',
     },
-    sakura: {
+    heart: {
         neon_primary: '#ff6b9d',
         neon_secondary: '#c44569',
         neon_accent: '#ff9ff3',
         accent_base: '340, 100%, 71%',
         accent_secondary: '345, 55%, 52%',
         bg_main: '340, 25%, 6%',
-    },
-    ocean: {
-        neon_primary: '#00d9ff',
-        neon_secondary: '#0099cc',
-        neon_accent: '#66ffff',
-        accent_base: '190, 100%, 50%',
-        accent_secondary: '195, 100%, 40%',
-        bg_main: '210, 40%, 5%',
     },
     matrix: {
         neon_primary: '#00ff41',
@@ -56,7 +48,7 @@ const Themes: Record<ThemeType, ThemeColors> = {
         accent_secondary: '135, 100%, 28%',
         bg_main: '120, 100%, 2%',
     },
-    sunset: {
+    sun: {
         neon_primary: '#ff6b35',
         neon_secondary: '#f7931e',
         neon_accent: '#ffcc00',
@@ -64,7 +56,7 @@ const Themes: Record<ThemeType, ThemeColors> = {
         accent_secondary: '35, 93%, 54%',
         bg_main: '15, 30%, 5%',
     },
-    arctic: {
+    ice: {
         neon_primary: '#a8e6ff',
         neon_secondary: '#7dd3fc',
         neon_accent: '#e0f2fe',
@@ -78,17 +70,24 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [theme, setThemeState] = useState<ThemeType>(() => {
-        const saved = localStorage.getItem('zen-theme') as ThemeType;
-        // Map old theme names to new ones
-        if (saved === 'cyber' as string) return 'hyper';
-        if (saved === 'deep-sea' as string) return 'ocean';
-        return saved || 'hyper';
+        const saved = localStorage.getItem('zen-theme') as string;
+        // Migration logic for old themes
+        if (saved === 'hyper' || saved === 'cyber') return 'sky';
+        if (saved === 'ocean' || saved === 'deep-sea') return 'ice';
+        if (saved === 'sakura' || saved === 'void') return 'heart';
+        if (saved === 'sunset') return 'sun';
+        if (saved === 'arctic') return 'ice';
+        // Check if saved is valid, else default
+        if (['matrix', 'sky', 'heart', 'sun', 'ice'].includes(saved)) {
+            return saved as ThemeType;
+        }
+        return 'sky';
     });
 
     const [animationsEnabled, setAnimationsEnabled] = useState(true);
     const [blurEnabled, setBlurEnabled] = useState(true);
 
-    const currentColors = Themes[theme] || Themes.hyper;
+    const currentColors = Themes[theme] || Themes.sky;
 
     useEffect(() => {
         const loadVisualSettings = async () => {
@@ -113,6 +112,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         root.style.setProperty('--neon-magenta', currentColors.neon_secondary);
         root.style.setProperty('--neon-purple', currentColors.neon_accent);
 
+        // Map Prismatic variables to Theme Colors for Global Consistency
+        root.style.setProperty('--prismatic-1', currentColors.neon_secondary); // Magenta/Secondary
+        root.style.setProperty('--prismatic-2', currentColors.neon_primary);   // Cyan/Primary
+        root.style.setProperty('--prismatic-3', currentColors.neon_accent);    // Accent
+
         // Legacy HSL support
         root.style.setProperty('--accent-base', currentColors.accent_base);
         root.style.setProperty('--accent-secondary', currentColors.accent_secondary);
@@ -128,6 +132,11 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
         root.style.setProperty('--accent-base-rgb', hexToRgb(currentColors.neon_primary));
         root.style.setProperty('--accent-secondary-rgb', hexToRgb(currentColors.neon_secondary));
+
+        // RGB variants for Prismatic colors (for rgba usage)
+        root.style.setProperty('--prismatic-1-rgb', hexToRgb(currentColors.neon_secondary));
+        root.style.setProperty('--prismatic-2-rgb', hexToRgb(currentColors.neon_primary));
+        root.style.setProperty('--prismatic-3-rgb', hexToRgb(currentColors.neon_accent));
 
         localStorage.setItem('zen-theme', theme);
     }, [theme, currentColors]);

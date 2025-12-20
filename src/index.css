@@ -5,24 +5,53 @@
 @tailwind utilities;
 
 :root {
-  /* HYPER Neon Core */
-  --neon-cyan: #00f0ff;
-  --neon-magenta: #ff00aa;
-  --neon-lime: #39ff14;
-  --neon-purple: #bf00ff;
-  --neon-orange: #ff6600;
+  /* --- THE FINAL SHAPE // SURREAL PALETTE --- */
 
-  /* Legacy support */
-  --accent-base: 185, 100%, 50%;
-  --accent-secondary: 320, 100%, 50%;
-  --accent-base-rgb: 0, 240, 255;
-  --accent-secondary-rgb: 255, 0, 170;
-  --bg-main: 240, 20%, 5%;
+  /* PRISMATIC (The Blend) */
+  --prismatic-1: #ff0080;
+  /* Magenta */
+  --prismatic-2: #7DF9FF;
+  /* Arc */
+  --prismatic-3: #ffd700;
+  /* Gold */
+  --prismatic-bg: linear-gradient(135deg, rgba(255, 0, 128, 0.2), rgba(125, 249, 255, 0.2), rgba(255, 215, 0, 0.1));
+
+  /* PALE HEART (The Traveler's Interior) */
+  --pale-pink: #fce7f3;
+  --pale-gold: #fde047;
+  --pale-void: #2e1065;
+
+  /* ELEMENTAL RESONANCE (Retained but softened) */
+  --arc-blue: #7DF9FF;
+  --void-purple: #a855f7;
+  --solar-orange: #fbbf24;
+  --stasis-blue: #6366f1;
+  --strand-green: #4ade80;
+
+  /* UI SURREALISM */
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --panel-bg: rgba(20, 10, 30, 0.6);
+  /* Deep void tint */
+
+  /* ANIMATIONS */
+  --float-duration: 8s;
+
+  /* Backward Compat Mappings */
+  --neon-cyan: var(--arc-blue);
+  --neon-magenta: var(--void-purple);
+  --neon-lime: var(--strand-green);
+  --neon-orange: var(--solar-orange);
+  --neon-purple: var(--stasis-blue);
+  --neon-yellow: var(--pale-gold);
+
+  --accent-base-rgb: 255, 0, 128;
+  /* Default Prismatic Pink */
 
   /* Hyper Glass */
   --glass-opacity: 0.08;
   --glass-blur: 24px;
-  --glass-border: 0, 240, 255, 0.15;
+  --glass-border: var(--accent-base-rgb), 0.15;
 
   /* Spacing */
   --inner-padding: 1.25rem;
@@ -33,6 +62,7 @@
 }
 
 @layer base {
+
   html,
   body {
     @apply h-screen w-screen overflow-hidden select-none;
@@ -52,7 +82,9 @@
   }
 
   /* Reset interactive elements */
-  input, textarea, button {
+  input,
+  textarea,
+  button {
     @apply bg-transparent border-none outline-none text-inherit;
     font-family: inherit;
   }
@@ -60,21 +92,27 @@
   input:-webkit-autofill,
   input:-webkit-autofill:hover,
   input:-webkit-autofill:focus {
-    -webkit-text-fill-color: #00f0ff;
+    -webkit-text-fill-color: var(--neon-cyan);
     -webkit-box-shadow: 0 0 0px 1000px transparent inset;
     transition: background-color 5000s ease-in-out 0s;
   }
 
   /* Placeholder styling */
-  input::placeholder, textarea::placeholder {
-    color: rgba(0, 240, 255, 0.2);
+  input::placeholder,
+  textarea::placeholder {
+    color: rgba(var(--accent-base-rgb), 0.2);
     font-style: italic;
   }
 }
 
 @layer utilities {
-  .app-drag { -webkit-app-region: drag; }
-  .app-no-drag { -webkit-app-region: no-drag; }
+  .app-drag {
+    -webkit-app-region: drag;
+  }
+
+  .app-no-drag {
+    -webkit-app-region: no-drag;
+  }
 
   /* === HYPER BACKGROUND SYSTEM === */
   .hyper-bg {
@@ -83,8 +121,8 @@
     overflow: hidden;
     z-index: -1;
     background:
-      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 240, 255, 0.08) 0%, transparent 50%),
-      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(255, 0, 170, 0.05) 0%, transparent 50%),
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(var(--accent-base-rgb), 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, rgba(var(--accent-secondary-rgb), 0.05) 0%, transparent 50%),
       radial-gradient(ellipse 50% 30% at 0% 80%, rgba(191, 0, 255, 0.05) 0%, transparent 50%),
       linear-gradient(180deg, #080810 0%, #0c0c18 50%, #080810 100%);
   }
@@ -94,29 +132,32 @@
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+      linear-gradient(rgba(var(--accent-base-rgb), 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--accent-base-rgb), 0.02) 1px, transparent 1px);
     background-size: 50px 50px;
     mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
     animation: grid-scroll 60s linear infinite;
   }
 
   @keyframes grid-scroll {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(50px); }
+    0% {
+      transform: translateY(0);
+    }
+
+    100% {
+      transform: translateY(50px);
+    }
   }
 
   /* Scanline Effect */
   .scanlines {
     position: absolute;
     inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent var(--scanline-size),
-      rgba(0, 0, 0, 0.15) var(--scanline-size),
-      rgba(0, 0, 0, 0.15) calc(var(--scanline-size) * 2)
-    );
+    background: repeating-linear-gradient(0deg,
+        transparent,
+        transparent var(--scanline-size),
+        rgba(0, 0, 0, 0.15) var(--scanline-size),
+        rgba(0, 0, 0, 0.15) calc(var(--scanline-size) * 2));
     pointer-events: none;
     z-index: 1000;
     opacity: 0.4;
@@ -126,48 +167,53 @@
   .scan-beam {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      180deg,
-      transparent 0%,
-      rgba(0, 240, 255, 0.03) 50%,
-      transparent 100%
-    );
+    background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(var(--accent-base-rgb), 0.03) 50%,
+        transparent 100%);
     height: 100px;
     animation: scan 8s linear infinite;
     pointer-events: none;
   }
 
   @keyframes scan {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(100vh); }
+    0% {
+      transform: translateY(-100%);
+    }
+
+    100% {
+      transform: translateY(100vh);
+    }
   }
 
-  /* === HYPER GLASS PANELS === */
+  /* === PRISMATIC ARTIFACT PANELS === */
   .hyper-panel {
-    background: linear-gradient(
-      135deg,
-      rgba(15, 15, 25, 0.9) 0%,
-      rgba(10, 10, 18, 0.95) 100%
-    );
-    border: 1px solid rgba(0, 240, 255, 0.1);
-    border-radius: var(--panel-radius);
-    backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    @apply relative overflow-hidden backdrop-blur-2xl transition-all duration-500;
+
+    /* Deep Void Base */
+    background: rgba(10, 10, 15, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    /* Surreal Shadow */
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  }
+
+  .hyper-panel:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 15px 40px -5px rgba(0, 0, 0, 0.6),
+      0 0 20px rgba(var(--prismatic-2), 0.1);
+    /* Arc Glow */
   }
 
   .hyper-panel::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(0, 240, 255, 0.03) 0%,
-      transparent 50%,
-      rgba(255, 0, 170, 0.02) 100%
-    );
+    background: linear-gradient(135deg,
+        rgba(var(--accent-base-rgb), 0.03) 0%,
+        transparent 50%,
+        rgba(var(--accent-secondary-rgb), 0.02) 100%);
     pointer-events: none;
   }
 
@@ -178,20 +224,18 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent 0%,
-      rgba(0, 240, 255, 0.4) 50%,
-      transparent 100%
-    );
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(var(--accent-base-rgb), 0.4) 50%,
+        transparent 100%);
     pointer-events: none;
   }
 
   .hyper-panel:hover {
-    border-color: rgba(0, 240, 255, 0.25);
+    border-color: rgba(var(--accent-base-rgb), 0.25);
     box-shadow:
-      0 0 30px rgba(0, 240, 255, 0.08),
-      inset 0 0 30px rgba(0, 240, 255, 0.02);
+      0 0 30px rgba(var(--accent-base-rgb), 0.08),
+      inset 0 0 30px rgba(var(--accent-base-rgb), 0.02);
   }
 
   /* Corner accents for panels */
@@ -253,13 +297,13 @@
 
   .neon-text-subtle {
     color: var(--neon-cyan);
-    text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+    text-shadow: 0 0 10px rgba(var(--accent-base-rgb), 0.5);
   }
 
   /* === HYPER BUTTONS === */
   .hyper-btn {
-    background: linear-gradient(135deg, rgba(0, 240, 255, 0.1) 0%, rgba(0, 240, 255, 0.05) 100%);
-    border: 1px solid rgba(0, 240, 255, 0.3);
+    background: linear-gradient(135deg, rgba(var(--accent-base-rgb), 0.1) 0%, rgba(var(--accent-base-rgb), 0.05) 100%);
+    border: 1px solid rgba(var(--accent-base-rgb), 0.3);
     color: var(--neon-cyan);
     padding: 0.75rem 1.5rem;
     font-family: 'Orbitron', sans-serif;
@@ -270,14 +314,12 @@
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
-    clip-path: polygon(
-      0 0,
-      calc(100% - 8px) 0,
-      100% 8px,
-      100% 100%,
-      8px 100%,
-      0 calc(100% - 8px)
-    );
+    clip-path: polygon(0 0,
+        calc(100% - 8px) 0,
+        100% 8px,
+        100% 100%,
+        8px 100%,
+        0 calc(100% - 8px));
   }
 
   .hyper-btn::before {
@@ -292,8 +334,8 @@
   .hyper-btn:hover {
     border-color: var(--neon-cyan);
     box-shadow:
-      0 0 20px rgba(0, 240, 255, 0.4),
-      inset 0 0 20px rgba(0, 240, 255, 0.1);
+      0 0 20px rgba(var(--accent-base-rgb), 0.4),
+      inset 0 0 20px rgba(var(--accent-base-rgb), 0.1);
     transform: translateY(-2px);
   }
 
@@ -307,22 +349,22 @@
 
   /* Secondary button variant */
   .hyper-btn-secondary {
-    background: rgba(255, 0, 170, 0.08);
-    border-color: rgba(255, 0, 170, 0.3);
+    background: rgba(var(--accent-secondary-rgb), 0.08);
+    border-color: rgba(var(--accent-secondary-rgb), 0.3);
     color: var(--neon-magenta);
   }
 
   .hyper-btn-secondary:hover {
     border-color: var(--neon-magenta);
     box-shadow:
-      0 0 20px rgba(255, 0, 170, 0.4),
-      inset 0 0 20px rgba(255, 0, 170, 0.1);
+      0 0 20px rgba(var(--accent-secondary-rgb), 0.4),
+      inset 0 0 20px rgba(var(--accent-secondary-rgb), 0.1);
   }
 
   /* === HYPER INPUTS === */
   .hyper-input {
     background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(0, 240, 255, 0.15);
+    border: 1px solid rgba(var(--accent-base-rgb), 0.15);
     border-radius: 4px;
     padding: 0.75rem 1rem;
     color: #e0e0ff;
@@ -333,8 +375,8 @@
   .hyper-input:focus {
     border-color: var(--neon-cyan);
     box-shadow:
-      0 0 15px rgba(0, 240, 255, 0.2),
-      inset 0 0 15px rgba(0, 240, 255, 0.05);
+      0 0 15px rgba(var(--accent-base-rgb), 0.2),
+      inset 0 0 15px rgba(var(--accent-base-rgb), 0.05);
     outline: none;
   }
 
@@ -369,21 +411,55 @@
   }
 
   @keyframes glitch-anim-1 {
-    0% { clip: rect(30px, 9999px, 10px, 0); }
-    20% { clip: rect(60px, 9999px, 80px, 0); }
-    40% { clip: rect(20px, 9999px, 50px, 0); }
-    60% { clip: rect(70px, 9999px, 90px, 0); }
-    80% { clip: rect(40px, 9999px, 60px, 0); }
-    100% { clip: rect(10px, 9999px, 30px, 0); }
+    0% {
+      clip: rect(30px, 9999px, 10px, 0);
+    }
+
+    20% {
+      clip: rect(60px, 9999px, 80px, 0);
+    }
+
+    40% {
+      clip: rect(20px, 9999px, 50px, 0);
+    }
+
+    60% {
+      clip: rect(70px, 9999px, 90px, 0);
+    }
+
+    80% {
+      clip: rect(40px, 9999px, 60px, 0);
+    }
+
+    100% {
+      clip: rect(10px, 9999px, 30px, 0);
+    }
   }
 
   @keyframes glitch-anim-2 {
-    0% { clip: rect(70px, 9999px, 90px, 0); }
-    20% { clip: rect(10px, 9999px, 30px, 0); }
-    40% { clip: rect(50px, 9999px, 70px, 0); }
-    60% { clip: rect(30px, 9999px, 50px, 0); }
-    80% { clip: rect(80px, 9999px, 100px, 0); }
-    100% { clip: rect(20px, 9999px, 40px, 0); }
+    0% {
+      clip: rect(70px, 9999px, 90px, 0);
+    }
+
+    20% {
+      clip: rect(10px, 9999px, 30px, 0);
+    }
+
+    40% {
+      clip: rect(50px, 9999px, 70px, 0);
+    }
+
+    60% {
+      clip: rect(30px, 9999px, 50px, 0);
+    }
+
+    80% {
+      clip: rect(80px, 9999px, 100px, 0);
+    }
+
+    100% {
+      clip: rect(20px, 9999px, 40px, 0);
+    }
   }
 
   /* === ANIMATED BORDERS === */
@@ -395,13 +471,11 @@
     content: '';
     position: absolute;
     inset: -2px;
-    background: linear-gradient(
-      45deg,
-      var(--neon-cyan),
-      var(--neon-magenta),
-      var(--neon-purple),
-      var(--neon-cyan)
-    );
+    background: linear-gradient(45deg,
+        var(--neon-cyan),
+        var(--neon-magenta),
+        var(--neon-purple),
+        var(--neon-cyan));
     background-size: 400% 400%;
     border-radius: inherit;
     z-index: -1;
@@ -424,28 +498,39 @@
   }
 
   @keyframes border-flow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
   }
 
   /* === DATA STREAM EFFECT === */
   .data-stream-bg {
     background-image:
-      repeating-linear-gradient(
-        0deg,
+      repeating-linear-gradient(0deg,
         transparent,
         transparent 2px,
-        rgba(0, 240, 255, 0.03) 2px,
-        rgba(0, 240, 255, 0.03) 4px
-      );
+        rgba(var(--accent-base-rgb), 0.03) 2px,
+        rgba(var(--accent-base-rgb), 0.03) 4px);
     background-size: 100% 8px;
     animation: data-stream 1s linear infinite;
   }
 
   @keyframes data-stream {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 8px; }
+    0% {
+      background-position: 0 0;
+    }
+
+    100% {
+      background-position: 0 8px;
+    }
   }
 
   /* === HUD ELEMENTS === */
@@ -460,7 +545,7 @@
     position: absolute;
     width: 10px;
     height: 100%;
-    border: 1px solid rgba(0, 240, 255, 0.3);
+    border: 1px solid rgba(var(--accent-base-rgb), 0.3);
   }
 
   .hud-bracket::before {
@@ -504,7 +589,7 @@
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, var(--neon-cyan), var(--neon-magenta));
     border-radius: 3px;
-    box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    box-shadow: 0 0 10px rgba(var(--accent-base-rgb), 0.3);
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
@@ -522,11 +607,11 @@
   }
 
   .text-glow-cyan {
-    text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
+    text-shadow: 0 0 10px rgba(var(--accent-base-rgb), 0.5), 0 0 20px rgba(var(--accent-base-rgb), 0.3);
   }
 
   .text-glow-magenta {
-    text-shadow: 0 0 10px rgba(255, 0, 170, 0.5), 0 0 20px rgba(255, 0, 170, 0.3);
+    text-shadow: 0 0 10px rgba(var(--accent-secondary-rgb), 0.5), 0 0 20px rgba(var(--accent-secondary-rgb), 0.3);
   }
 
   /* Legacy glass-pane support */
@@ -545,10 +630,13 @@
   }
 
   @keyframes pulse-glow {
-    0%, 100% {
+
+    0%,
+    100% {
       opacity: 1;
       box-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
     }
+
     50% {
       opacity: 0.6;
       box-shadow: 0 0 20px var(--neon-cyan), 0 0 40px var(--neon-cyan);
@@ -561,8 +649,15 @@
   }
 
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
   }
 
   /* === CYBER RING === */
@@ -585,14 +680,25 @@
   }
 
   @keyframes cyber-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
   }
 }
 
 /* Global scrollbar hide */
-::-webkit-scrollbar { display: none; }
-* { scrollbar-width: none; -ms-overflow-style: none; }
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
 
 /* Focus Shield Protocols */
 body.focus-shield-active header,
@@ -626,7 +732,7 @@ input[type="range"]::-webkit-slider-track {
   height: 4px;
   background: rgba(0, 0, 0, 0.5);
   border-radius: 2px;
-  border: 1px solid rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(var(--accent-base-rgb), 0.1);
 }
 
 input[type="range"]::-webkit-slider-thumb {

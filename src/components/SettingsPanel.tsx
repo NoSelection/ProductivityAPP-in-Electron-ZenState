@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Palette, Zap, Waves, Leaf, Sun, Snowflake, Sparkles, Settings, Timer, Gamepad2, Eye } from 'lucide-react';
+import { Settings, X, Timer, Gamepad2, Eye, Palette } from 'lucide-react';
 import { useTheme, ThemeType } from '../context/ThemeContext';
 import { cn } from '../lib/utils';
 import { settingsService } from '../lib/settingsService';
@@ -60,13 +60,12 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
         await settingsService.set('visual', key, value);
     };
 
-    const themes: { id: ThemeType; label: string; icon: React.ElementType; primary: string; secondary: string }[] = [
-        { id: 'hyper', label: 'Hyper', icon: Zap, primary: '#00f0ff', secondary: '#ff00aa' },
-        { id: 'sakura', label: 'Sakura', icon: Sparkles, primary: '#ff6b9d', secondary: '#c44569' },
-        { id: 'ocean', label: 'Ocean', icon: Waves, primary: '#00d9ff', secondary: '#0099cc' },
-        { id: 'matrix', label: 'Matrix', icon: Leaf, primary: '#00ff41', secondary: '#008f11' },
-        { id: 'sunset', label: 'Sunset', icon: Sun, primary: '#ff6b35', secondary: '#f7931e' },
-        { id: 'arctic', label: 'Arctic', icon: Snowflake, primary: '#a8e6ff', secondary: '#7dd3fc' },
+    const themes: { id: ThemeType; name: string; color: string; glow: string; colorHex: string }[] = [
+        { id: 'sky', name: 'SKY', color: 'bg-neon-cyan', glow: 'shadow-[0_0_20px_#00f0ff]', colorHex: '#00f0ff' },
+        { id: 'heart', name: 'HEART', color: 'bg-neon-magenta', glow: 'shadow-[0_0_20px_#ff6b9d]', colorHex: '#ff6b9d' },
+        { id: 'matrix', name: 'MATRIX', color: 'bg-neon-lime', glow: 'shadow-[0_0_20px_#00ff41]', colorHex: '#00ff41' },
+        { id: 'ice', name: 'ICE', color: 'bg-neon-purple', glow: 'shadow-[0_0_20px_#a8e6ff]', colorHex: '#a8e6ff' },
+        { id: 'sun', name: 'SUN', color: 'bg-neon-orange', glow: 'shadow-[0_0_20px_#ff6b35]', colorHex: '#ff6b35' },
     ];
 
     return (
@@ -285,79 +284,55 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
                                                 whileHover={{ scale: 1.02 }}
                                                 whileTap={{ scale: 0.98 }}
                                                 className={cn(
-                                                    "relative flex flex-col items-center gap-4 p-5 rounded-xl border transition-all duration-300 overflow-hidden group"
+                                                    "relative flex flex-col items-center gap-3 p-4 border transition-all duration-300 overflow-hidden group",
+                                                    /* Destiny Node Shape */
+                                                    "clip-path-chamfer"
                                                 )}
                                                 style={{
                                                     background: isActive
-                                                        ? `linear-gradient(135deg, ${t.primary}15, ${t.secondary}10)`
-                                                        : 'rgba(0,0,0,0.3)',
-                                                    borderColor: isActive ? `${t.primary}50` : 'rgba(255,255,255,0.05)',
-                                                    boxShadow: isActive
-                                                        ? `0 0 30px ${t.primary}20, inset 0 0 30px ${t.primary}05`
-                                                        : 'none'
+                                                        ? `linear-gradient(135deg, ${t.colorHex}15, ${t.colorHex}05)`
+                                                        : 'rgba(255,255,255,0.03)',
+                                                    borderColor: isActive ? `${t.colorHex}50` : 'rgba(255,255,255,0.1)',
+                                                    clipPath: 'polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px)'
                                                 }}
                                             >
-                                                {/* Hover Gradient */}
+                                                {/* Hover Glow */}
                                                 <div
-                                                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
                                                     style={{
-                                                        background: `radial-gradient(circle at 50% 50%, ${t.primary}10, transparent 70%)`
+                                                        background: `radial-gradient(circle at 50% 50%, ${t.colorHex}15, transparent 70%)`
                                                     }}
                                                 />
 
-                                                {/* Icon */}
+                                                {/* Icon (Diamond) */}
                                                 <div
-                                                    className="relative p-3 rounded-lg transition-all duration-300"
+                                                    className="relative w-8 h-8 flex items-center justify-center rotate-45 border"
                                                     style={{
-                                                        background: isActive ? `${t.primary}20` : 'rgba(255,255,255,0.03)',
-                                                        border: `1px solid ${isActive ? t.primary + '40' : 'rgba(255,255,255,0.05)'}`
+                                                        borderColor: isActive ? t.colorHex : 'rgba(255,255,255,0.2)',
+                                                        background: isActive ? `${t.colorHex}20` : 'transparent',
+                                                        boxShadow: isActive ? `0 0 10px ${t.colorHex}40` : 'none'
                                                     }}
                                                 >
-                                                    <t.icon
-                                                        className="w-5 h-5 transition-all duration-300 group-hover:scale-110"
-                                                        style={{
-                                                            color: isActive ? t.primary : 'rgba(255,255,255,0.3)',
-                                                            filter: isActive ? `drop-shadow(0 0 8px ${t.primary})` : 'none'
-                                                        }}
-                                                    />
+                                                    <div className={cn("w-2 h-2 rounded-full", isActive ? "bg-white" : "bg-white/20")} />
                                                 </div>
 
                                                 {/* Label */}
                                                 <span
-                                                    className="relative font-display text-[10px] font-bold tracking-[0.2em] uppercase transition-colors duration-300"
+                                                    className="relative font-display text-[11px] font-bold tracking-[0.2em] uppercase transition-colors duration-300"
                                                     style={{
-                                                        color: isActive ? t.primary : 'rgba(255,255,255,0.4)'
+                                                        color: isActive ? t.colorHex : 'rgba(255,255,255,0.4)',
+                                                        textShadow: isActive ? `0 0 10px ${t.colorHex}80` : 'none'
                                                     }}
                                                 >
-                                                    {t.label}
+                                                    {t.name}
                                                 </span>
 
-                                                {/* Color Preview */}
-                                                <div className="relative flex gap-1.5">
-                                                    <div
-                                                        className="w-3 h-3 rounded-full"
-                                                        style={{
-                                                            background: t.primary,
-                                                            boxShadow: isActive ? `0 0 10px ${t.primary}` : 'none'
-                                                        }}
-                                                    />
-                                                    <div
-                                                        className="w-3 h-3 rounded-full"
-                                                        style={{
-                                                            background: t.secondary,
-                                                            boxShadow: isActive ? `0 0 10px ${t.secondary}` : 'none'
-                                                        }}
-                                                    />
-                                                </div>
-
-                                                {/* Active Indicator */}
+                                                {/* Active Indicator Bar */}
                                                 {isActive && (
                                                     <motion.div
                                                         layoutId="activeTheme"
-                                                        className="absolute -top-px left-4 right-4 h-px"
-                                                        style={{
-                                                            background: `linear-gradient(90deg, transparent, ${t.primary}, transparent)`
-                                                        }}
+                                                        className="absolute bottom-0 left-0 w-full h-0.5"
+                                                        style={{ background: t.colorHex }}
                                                     />
                                                 )}
                                             </motion.button>
@@ -438,7 +413,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
                                     }}
                                 />
                                 <p className="font-mono-tech text-[9px] text-white/20 tracking-[0.4em] uppercase">
-                                    ZenState v2.0 // Hyper Edition
+                                    ZenState v2.0 // {theme} Edition
                                 </p>
                             </div>
                         </div>

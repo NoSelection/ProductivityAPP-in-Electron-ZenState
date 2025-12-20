@@ -1,5 +1,17 @@
 # ZenState - Session Change Log
 
+## [2025-12-20] ZenState // Command Center Redesign (Modular Zen)
+- **Architecture Overhaul**: Switched from a rigid grid layout to a **Sidebar + Stage** modular architecture.
+- **New MainLayout**: Implemented a persistent, collapsible sidebar for navigation and global controls (`Sidebar.tsx`, `MainLayout.tsx`).
+- **Dedicated Stages**: Created standalone full-screen views for core tools:
+    - **Focus Page**: Dedicated space for the Timer and Focus Card.
+    - **Media Page**: Full-screen Atmosphere controller.
+    - **Quests Page**: Combined Quest Log and Brain Dump interface.
+    - **Codex Page**: Integrated the Neural Codex into the new stage system.
+- **Dashboard Summary**: Refactored the home dashboard into a clean status summary view (`DashboardPage.tsx`).
+- **Focus Shield 2.0**: Integrated the "Zen Mode" overlay directly into the main layout with a dedicated sidebar toggle.
+- **Codebase Clean**: Removed unused imports and optimized new components for the new routing structure.
+
 ## [2025-12-20] ZenState // Purity Refinement (Minimalist Polish)
 - **Viewport Lock**: Refactored the entire application to fit within a single screen. No more scrolling; everything is visible at once.
 - **Ultra-Subtle Shadowing**: Replaced heavy drop shadows with high-fidelity, low-opacity borders and hairline depth for a much "cleaner" feel.
@@ -14,6 +26,11 @@
 - **Neural Storage Cluster**: Migrated the entire persistence layer to **SQLite** (`better-sqlite3`) for true data permanence. Implemented a custom IPC bridge and a transition protocol that automatically migrates user data from `localStorage` to the new encrypted database core.
 - **Neural Intelligence**: Implemented the **SIG // INSIGHTS** dashboard with weekly activity charts and efficiency metrics. Added the **RESET // PROTOCOL** (guided breathing orb) and a cinematic **FOCUS // SHIELD** for deep, distraction-free focus sessions.
 - **UI Resurrection**: Performed a total cleanup of the UI layer, moving to a stable `rem`-based architecture and rebuilding the responsive layout core to prevent component overlapping.
+
+## [2025-12-20] ZenState // Neural Codex (Phase 1)
+- **Codex Sidebar**: Implemented the minimalist searchable sidebar for the Neural Codex.
+- **View Switching**: Enabled toggling between the Stats Dashboard and the Focus Editor placeholder.
+- **Data Integration**: Connected the Codex UI to the SQLite `codex` table via IPC.
 
 ## [2025-12-20] ZenState // Neural Transformation (UI Redesign)
 - **Global Foundation**: Migrated to HSL-based design system for precise color control and better transparency handling.
@@ -50,3 +67,20 @@
 - **Squash-Proof Components**: Refactored Timer, MediaDeck, and FocusCard to handle varying heights gracefully.
 - **Visual Purity**: Eliminated banding lines and Moire patterns by diversifying background layers.
 - **Consistent Hierarchy**: Standardized typography scaling and uppercase tracking across the entire OS.
+
+## [2025-12-20] ZenState // Theme System Fixes
+- **Dynamic Theming**: Replaced hardcoded colors with CSS variables across `index.css`, `tailwind.config.cjs`, and key components.
+- **Global Theme Application**: Fixed issue where theme settings were not applying globally. All UI elements now correctly reflect the selected theme (Hyper, Sakura, Matrix, etc.).
+- **Visual Consistency**: Unified `Timer`, `FocusCard`, `NeuralCodex`, and `Layout` to use shared theme tokens.
+
+## [2025-12-20] ZenState // The Final Shape (Polished)
+- **Creative Theme Names**: Renamed themes to 'SKY', 'HEART', 'MATRIX', 'ICE', 'SUN' for a more curated feel.
+- **Global Theme Standardization**: 
+    - Refactored `ThemeContext` to treat all themes as first-class citizens with consistent `var(--prismatic-X)` variable mapping.
+    - Updated `Layout.tsx`, `Sidebar.tsx`, and `DashboardPage.tsx` to use these variables, ensuring the entire app (headers, nav, accents) changes color dynamically with the theme.
+- **Dashboard "More Better" Reskin**:
+    - Transformed the "SYSTEM ONLINE" header into a dynamic, theme-aware hero section with gradients and glow effects.
+    - Polished the Stats Grid to reflect the active theme's primary/secondary colors.
+- **Focus Card Polish**:
+    - **Bind Intent Button**: Revamped the "Bind Intent" button to remove jarring text animations. Implemented a smoother `scale` effect with a theme-colored glow and shadow on hover.
+    - **Timer**: Updated the circular progress ring's SVG gradient to listen to theme variables.

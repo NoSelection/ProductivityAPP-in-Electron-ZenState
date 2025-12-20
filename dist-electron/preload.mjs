@@ -26,5 +26,8 @@ electron.contextBridge.exposeInMainWorld("neuralDb", {
   getNotes: () => electron.ipcRenderer.invoke("db:getNotes"),
   saveNotes: (content) => electron.ipcRenderer.invoke("db:saveNotes", content),
   getSettings: () => electron.ipcRenderer.invoke("db:getSettings"),
-  saveSetting: (category, key, value) => electron.ipcRenderer.invoke("db:saveSetting", category, key, value)
+  saveSetting: (category, key, value) => electron.ipcRenderer.invoke("db:saveSetting", category, key, value),
+  getCodexNotes: () => electron.ipcRenderer.invoke("db:getCodexNotes"),
+  saveCodexNote: (note) => electron.ipcRenderer.invoke("db:saveCodexNote", note),
+  deleteCodexNote: (id) => electron.ipcRenderer.invoke("db:deleteCodexNote", id)
 });

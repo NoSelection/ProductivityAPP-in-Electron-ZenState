@@ -32,6 +32,15 @@ function initDb() {
             value TEXT,
             PRIMARY KEY (category, key)
         );
+
+        CREATE TABLE IF NOT EXISTS codex (
+            id TEXT PRIMARY KEY,
+            title TEXT,
+            content TEXT,
+            tags TEXT,
+            createdAt INTEGER,
+            updatedAt INTEGER
+        );
     `);
   console.log("Neural Core (SQLite) initialized at:", dbPath);
   ipcMain.handle("db:getQuests", () => {
@@ -67,6 +76,26 @@ function initDb() {
   });
   ipcMain.handle("db:saveSetting", (_, category, key, value) => {
     return db.prepare("INSERT OR REPLACE INTO settings (category, key, value) VALUES (?, ?, ?)").run(category, key, JSON.stringify(value));
+  });
+  ipcMain.handle("db:getCodexNotes", () => {
+    return db.prepare("SELECT * FROM codex ORDER BY updatedAt DESC").all();
+  });
+  ipcMain.handle("db:saveCodexNote", (_, note) => {
+    const stmt = db.prepare(`
+            INSERT OR REPLACE INTO codex (id, title, content, tags, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `);
+    return stmt.run(
+      note.id,
+      note.title,
+      note.content,
+      JSON.stringify(note.tags),
+      note.createdAt || Date.now(),
+      note.updatedAt || Date.now()
+    );
+  });
+  ipcMain.handle("db:deleteCodexNote", (_, id) => {
+    return db.prepare("DELETE FROM codex WHERE id = ?").run(id);
   });
 }
 const __filename$1 = fileURLToPath(import.meta.url);
