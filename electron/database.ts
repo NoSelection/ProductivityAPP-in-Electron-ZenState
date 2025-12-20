@@ -98,6 +98,30 @@ export function initDb() {
     ipcMain.handle('db:saveSetting', (_, category: string, key: string, value: any) => {
         return db.prepare('INSERT OR REPLACE INTO settings (category, key, value) VALUES (?, ?, ?)').run(category, key, JSON.stringify(value))
     })
+
+    // Codex
+    ipcMain.handle('db:getCodexNotes', () => {
+        return db.prepare('SELECT * FROM codex ORDER BY updatedAt DESC').all()
+    })
+
+    ipcMain.handle('db:saveCodexNote', (_, note: any) => {
+        const stmt = db.prepare(`
+            INSERT OR REPLACE INTO codex (id, title, content, tags, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `)
+        return stmt.run(
+            note.id,
+            note.title,
+            note.content,
+            JSON.stringify(note.tags),
+            note.createdAt || Date.now(),
+            note.updatedAt || Date.now()
+        )
+    })
+
+    ipcMain.handle('db:deleteCodexNote', (_, id: string) => {
+        return db.prepare('DELETE FROM codex WHERE id = ?').run(id)
+    })
 }
 
 export function closeDb() {

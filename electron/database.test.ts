@@ -76,15 +76,35 @@ describe('Database', () => {
     expect(ipcMain.handle).toHaveBeenCalledWith('db:saveSetting', expect.any(Function))
   })
 
-  it('should handle db:saveSetting and db:getSettings correctly', () => {
+  it('should register codex IPC handlers', () => {
     initDb()
     
-    const saveHandler: any = vi.mocked(ipcMain.handle).mock.calls.find(call => call[0] === 'db:saveSetting')![1]
-    const getHandler: any = vi.mocked(ipcMain.handle).mock.calls.find(call => call[0] === 'db:getSettings')![1]
+    expect(ipcMain.handle).toHaveBeenCalledWith('db:getCodexNotes', expect.any(Function))
+    expect(ipcMain.handle).toHaveBeenCalledWith('db:saveCodexNote', expect.any(Function))
+    expect(ipcMain.handle).toHaveBeenCalledWith('db:deleteCodexNote', expect.any(Function))
+  })
+
+  it('should handle db:saveCodexNote and db:getCodexNotes correctly', () => {
+    initDb()
     
-    saveHandler({} as any, 'focus', 'duration', 25)
+    const saveHandler: any = vi.mocked(ipcMain.handle).mock.calls.find(call => call[0] === 'db:saveCodexNote')![1]
+    const getHandler: any = vi.mocked(ipcMain.handle).mock.calls.find(call => call[0] === 'db:getCodexNotes')![1]
     
-    const settings = getHandler({} as any) as any[]
-    expect(settings).toContainEqual({ category: 'focus', key: 'duration', value: '25' })
+    const note = {
+        id: 'test-id',
+        title: 'Test Note',
+        content: '# Content',
+        tags: ['test'],
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+    }
+
+    saveHandler({} as any, note)
+    
+    const notes = getHandler({} as any) as any[]
+    expect(notes.length).toBe(1)
+    expect(notes[0].id).toBe('test-id')
+    expect(notes[0].title).toBe('Test Note')
+    expect(JSON.parse(notes[0].tags)).toEqual(['test'])
   })
 })
