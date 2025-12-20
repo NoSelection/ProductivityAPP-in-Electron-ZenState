@@ -2,7 +2,7 @@
 
 ## Phase 1: Foundation & Audio Core
 - [x] Task: Set up the project structure for audio assets and identify placeholder files. 6d9df56
-- [ ] Task: Create a basic `audioService` utility to manage the HTML5 Audio API.
+- [x] Task: Create a basic `audioService` utility to manage the HTML5 Audio API. 241f470
 - [ ] Task: Write tests for `audioService` focusing on play/pause and looping logic.
 - [ ] Task: Conductor - User Manual Verification 'Foundation & Audio Core' (Protocol in workflow.md)
 
