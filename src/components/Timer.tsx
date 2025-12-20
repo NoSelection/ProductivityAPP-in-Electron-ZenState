@@ -3,12 +3,28 @@ import { motion } from 'framer-motion'
 import { Play, Pause, RotateCcw, Clock, Zap } from 'lucide-react'
 import { useNeuralStorage } from '../hooks/useNeuralStorage'
 import { cn } from '../lib/utils'
+import { settingsService } from '../lib/settingsService'
 
 export const Timer: React.FC = () => {
+    const [focusDuration, setFocusDuration] = useState(25)
     const [timeLeft, setTimeLeft] = useState(25 * 60)
     const [isActive, setIsActive] = useState(false)
     const [, setTotalFocus] = useNeuralStorage('zen-focus-total', 0)
     const [, setPomodoros] = useNeuralStorage('zen-pomodoros', 0)
+
+    useEffect(() => {
+        const loadSettings = async () => {
+            const settings = await settingsService.getAll()
+            if (settings.timer?.focusDuration) {
+                const duration = settings.timer.focusDuration
+                setFocusDuration(duration)
+                if (!isActive) {
+                    setTimeLeft(duration * 60)
+                }
+            }
+        }
+        loadSettings()
+    }, []) // Run once on mount
 
     useEffect(() => {
         let timer: ReturnType<typeof setInterval> | undefined
@@ -34,10 +50,10 @@ export const Timer: React.FC = () => {
 
     const resetTimer = () => {
         setIsActive(false)
-        setTimeLeft(25 * 60)
+        setTimeLeft(focusDuration * 60)
     }
 
-    const percentage = ((25 * 60 - timeLeft) / (25 * 60)) * 100
+    const percentage = ((focusDuration * 60 - timeLeft) / (focusDuration * 60)) * 100
     const circumference = 2 * Math.PI * 88
     const strokeDashoffset = circumference - (circumference * percentage) / 100
 
