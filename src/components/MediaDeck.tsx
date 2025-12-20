@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import ReactPlayer from 'react-player'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Play, Pause, SkipBack, SkipForward, Volume2, Music, Link, Eye, Radio, X } from 'lucide-react'
+import { Play, Pause, SkipForward, Volume2, Music, Link, Eye } from 'lucide-react'
 import { cn } from '../lib/utils'
 
 const PRESETS = [
@@ -42,10 +42,10 @@ export const MediaDeck: React.FC = () => {
 
     return (
         <div className={cn(
-            "glass-pane h-full w-full flex flex-col justify-between group relative overflow-hidden min-h-[45vh] lg:min-h-0 transition-all duration-500",
-            holoMode && "bg-black/80"
+            "MediaDeck flex-1 glass-pane flex flex-col justify-between group relative overflow-hidden min-h-0 transition-all duration-700",
+            holoMode && "bg-black/95 shadow-neu-glow"
         )}>
-            {/* Hidden Player (or Holo View) */}
+            {/* Hidden Player */}
             <div className={cn("absolute inset-0 z-0 transition-opacity duration-1000", holoMode ? "opacity-100" : "opacity-0 pointer-events-none")}>
                 <Player
                     ref={playerRef}
@@ -55,92 +55,57 @@ export const MediaDeck: React.FC = () => {
                     width="100%"
                     height="100%"
                     controls={false}
-                    style={{ opacity: holoMode ? 0.6 : 0, filter: 'grayscale(0.4) contrast(1.1)' }}
+                    style={{ opacity: holoMode ? 0.4 : 0, filter: 'grayscale(0.6) contrast(1.2)' }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60 pointer-events-none" />
             </div>
 
-            {/* Header */}
-            <div className="flex-none p-[3vh] pb-[1vh] flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-3">
-                    <Music className="w-3.5 h-3.5 text-accent-secondary/60" />
-                    <h2 className="text-white/40 text-[9px] font-black tracking-[0.5em] uppercase font-mono-tech">
+            {/* Header Area */}
+            <div className="flex-none p-6 lg:p-8 flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-4">
+                    <div className="p-2.5 rounded-xl bg-accent-secondary/10 text-accent-secondary border border-accent-secondary/20">
+                        <Music className="w-4 h-4" />
+                    </div>
+                    <h2 className="text-[11px] font-black tracking-[0.5em] text-white/40 uppercase font-mono-tech">
                         NEURAL // AUDIO
                     </h2>
                 </div>
                 <div className="flex items-center gap-2">
-                    <button
-                        onClick={() => setHoloMode(!holoMode)}
-                        className={cn(
-                            "p-1.5 rounded-full transition-all duration-300 hover:bg-white/10",
-                            holoMode ? "text-accent-secondary bg-accent-secondary/10" : "text-white/20"
-                        )}
-                        title="Toggle Holo-View"
-                    >
-                        <Eye className="w-3.5 h-3.5" />
+                    <button onClick={() => setHoloMode(!holoMode)} className={cn("p-2.5 rounded-lg transition-all", holoMode ? "text-accent-secondary bg-accent-secondary/10" : "text-white/20 hover:bg-white/5")}>
+                        <Eye className="w-4 h-4" />
                     </button>
-                    <button
-                        onClick={() => setShowInput(!showInput)}
-                        className={cn(
-                            "p-1.5 rounded-full transition-all duration-300 hover:bg-white/10",
-                            showInput ? "text-accent-secondary bg-accent-secondary/10" : "text-white/20"
-                        )}
-                        title="Neural Link Input"
-                    >
-                        <Link className="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                        onClick={cyclePreset}
-                        className="p-1.5 rounded-full text-white/20 hover:text-white hover:bg-white/10 transition-all duration-300"
-                        title="Cycle Frequency"
-                    >
-                        <Radio className="w-3.5 h-3.5" />
+                    <button onClick={() => setShowInput(!showInput)} className={cn("p-2.5 rounded-lg transition-all", showInput ? "text-accent-secondary bg-accent-secondary/10" : "text-white/20 hover:bg-white/5")}>
+                        <Link className="w-4 h-4" />
                     </button>
                 </div>
             </div>
 
-            {/* Content Container */}
-            <div className="flex-1 min-h-0 flex flex-col justify-center gap-[2vh] p-[3vh] pt-[1vh] relative z-10">
-                <div className="flex items-center gap-6 min-h-0">
-                    {/* Art / Visualizer */}
-                    <div className="relative shrink-0 w-[10vh] h-[10vh] max-w-[80px] max-h-[80px]">
+            {/* Main Content Area */}
+            <div className="flex-1 flex flex-col px-5 lg:px-6 pb-5 gap-4 relative z-10 min-h-0">
+                <div className="flex-1 flex flex-row items-center gap-4 lg:gap-6 min-h-0">
+                    {/* Visualizer Circle */}
+                    <div className="shrink-0 w-20 h-20 lg:w-24 lg:h-24">
                         <motion.div
                             animate={playing ? { rotate: 360 } : {}}
-                            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                            className="w-full h-full rounded-full bg-black/40 border-[1px] border-white/10 flex items-center justify-center overflow-hidden relative shadow-sm backdrop-blur-md"
+                            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                            className="w-full h-full rounded-full bg-black/50 border border-white/10 flex items-center justify-center relative"
                         >
-                            {!holoMode && (
-                                <>
-                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white/10 to-transparent opacity-10" />
-                                    <div className="w-1/4 h-1/4 rounded-full bg-black border border-white/20 z-10 flex items-center justify-center">
-                                        <div className="w-1 h-1 rounded-full bg-accent-secondary/60" />
-                                    </div>
-                                </>
-                            )}
+                            <div className="w-1/3 h-1/3 rounded-full bg-black border border-white/20 z-10 flex items-center justify-center">
+                                <div className="w-1.5 h-1.5 rounded-full bg-accent-secondary animate-pulse" />
+                            </div>
+                            <div className="absolute inset-[15%] border border-white/10 rounded-full" />
                         </motion.div>
-                        {playing && !holoMode && (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1.1 }}
-                                className="absolute -inset-4 bg-accent-secondary/5 blur-2xl rounded-full -z-10"
-                            />
-                        )}
                     </div>
 
-                    <div className="flex-1 min-w-0 flex flex-col justify-center">
+                    {/* Info & Controls */}
+                    <div className="flex-1 min-w-0 flex flex-col">
                         <AnimatePresence mode="wait">
                             {showInput ? (
-                                <motion.div
-                                    key="input"
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: 10 }}
-                                    className="w-full"
-                                >
+                                <motion.div key="input" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full">
                                     <input
                                         type="text"
-                                        placeholder="Paste Neural Link..."
-                                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:border-accent-secondary/50 outline-none font-mono-tech"
+                                        placeholder="Paste URL..."
+                                        className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-xs text-white focus:border-accent-secondary/50 outline-none"
                                         value={customUrl}
                                         onChange={(e) => setCustomUrl(e.target.value)}
                                         onKeyDown={handleUrlSubmit}
@@ -148,53 +113,39 @@ export const MediaDeck: React.FC = () => {
                                     />
                                 </motion.div>
                             ) : (
-                                <motion.div
-                                    key="info"
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: 10 }}
-                                >
-                                    <h3 className="text-[2.2vh] font-light text-white tracking-tight truncate leading-tight">{activeName}</h3>
-                                    <div className="flex items-center gap-2 mt-1">
-                                        <span className="w-1 h-1 rounded-full bg-accent-secondary animate-pulse" />
-                                        <p className="text-[1.1vh] text-white/40 font-black uppercase tracking-[0.2em] truncate">{activeSub}</p>
-                                    </div>
+                                <motion.div key="info" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-1">
+                                    <h3 className="text-xl lg:text-2xl font-light text-white tracking-tight truncate">{activeName}</h3>
+                                    <p className="text-[9px] lg:text-[10px] text-white/30 font-bold uppercase tracking-widest truncate">{activeSub}</p>
                                 </motion.div>
                             )}
                         </AnimatePresence>
 
-                        <div className="mt-[2vh] flex items-center gap-[2vh]">
+                        <div className="mt-4 flex items-center gap-3">
                             <button
                                 onClick={() => setPlaying(!playing)}
-                                className="w-[5vh] h-[5vh] max-w-[48px] max-h-[48px] flex items-center justify-center rounded-full bg-accent-secondary/20 text-accent-secondary hover:bg-accent-secondary hover:text-black transition-all duration-500 border border-accent-secondary/30 backdrop-blur-sm"
+                                className="w-10 h-10 lg:w-12 lg:h-12 flex items-center justify-center rounded-lg bg-accent-secondary/10 text-accent-secondary hover:bg-accent-secondary hover:text-black transition-all border border-accent-secondary/20"
                             >
-                                {playing ? <Pause className="w-[2vh] h-[2vh] fill-current" /> : <Play className="w-[2vh] h-[2vh] fill-current ml-0.5" />}
+                                {playing ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
                             </button>
-                            <div className="flex items-center gap-[2vh]">
-                                <SkipBack
-                                    onClick={() => cyclePreset()}
-                                    className="w-[2.2vh] h-[2.2vh] text-white/40 hover:text-white cursor-pointer transition-colors"
-                                />
-                                <SkipForward
-                                    onClick={() => cyclePreset()}
-                                    className="w-[2.2vh] h-[2.2vh] text-white/40 hover:text-white cursor-pointer transition-colors"
-                                />
-                            </div>
+                            <button onClick={cyclePreset} className="text-white/20 hover:text-white transition-all p-2 hover:bg-white/5 rounded-lg">
+                                <SkipForward className="w-5 h-5" />
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3 bg-white/[0.02] border border-white/5 px-4 py-[1.2vh] rounded-xl w-full shrink-0 backdrop-blur-md">
-                    <Volume2 className="w-4 h-4 text-white/40" />
-                    <input
-                        type="range"
-                        min="0"
-                        max="1"
-                        step="0.01"
-                        className="flex-1 accent-accent-secondary h-1 bg-white/5 rounded-full appearance-none cursor-pointer"
-                        value={volume}
-                        onChange={(e) => setVolume(parseFloat(e.target.value))}
-                    />
+                {/* Volume Slider */}
+                <div className="shrink-0 bg-black/20 border border-white/[0.06] p-3 rounded-lg">
+                    <div className="flex items-center gap-3">
+                        <Volume2 className="w-4 h-4 text-white/30 shrink-0" />
+                        <input
+                            type="range" min="0" max="1" step="0.01"
+                            className="flex-1 accent-accent-secondary h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer"
+                            value={volume}
+                            onChange={(e) => setVolume(parseFloat(e.target.value))}
+                        />
+                        <span className="text-[9px] font-mono-tech text-white/30 w-8 text-right shrink-0">{Math.round(volume * 100)}%</span>
+                    </div>
                 </div>
             </div>
         </div>

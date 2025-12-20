@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Play, Pause, RotateCcw, Activity } from 'lucide-react'
 import { useNeuralStorage } from '../hooks/useNeuralStorage'
-import { cn } from '../lib/utils'
 
 export const Timer: React.FC = () => {
     const [timeLeft, setTimeLeft] = useState(25 * 60)
     const [isActive, setIsActive] = useState(false)
-    const [totalFocus, setTotalFocus] = useNeuralStorage('zen-focus-total', 0)
-    const [pomodoros, setPomodoros] = useNeuralStorage('zen-pomodoros', 0)
+    const [, setTotalFocus] = useNeuralStorage('zen-focus-total', 0)
+    const [, setPomodoros] = useNeuralStorage('zen-pomodoros', 0)
 
     useEffect(() => {
         let timer: ReturnType<typeof setInterval> | undefined
@@ -41,35 +40,33 @@ export const Timer: React.FC = () => {
     const strokeDashoffset = strokeDasharray - (strokeDasharray * percentage) / 100
 
     return (
-        <div className={cn(
-            "glass-pane h-full w-full flex flex-col justify-center items-center group relative overflow-hidden min-h-[45vh] lg:min-h-0"
-        )}>
+        <div className="Timer h-full w-full flex flex-col justify-center items-center group relative overflow-hidden glass-pane min-h-0">
             {/* Header */}
-            <div className="absolute top-[3vh] left-[3vh] flex items-center gap-3 z-10">
-                <Activity className="w-3.5 h-3.5 text-accent-base/60" />
+            <div className="absolute top-6 left-6 lg:top-8 lg:left-8 flex items-center gap-3 z-10">
+                <Activity className="w-4 h-4 text-accent-base/60" />
                 <h2 className="text-white/40 text-[9px] font-black tracking-[0.5em] uppercase font-mono-tech">
                     CHRONO // {isActive ? 'ACTIVE' : 'STANDBY'}
                 </h2>
             </div>
 
-            {/* Content Container - Flex 1 to Consume Space */}
-            <div className="flex-1 min-h-0 w-full flex flex-col items-center justify-center relative p-[4vh]">
-                <div className="w-full h-full max-h-[35vh] aspect-square relative flex items-center justify-center">
+            {/* Content Container */}
+            <div className="flex-1 w-full flex flex-col items-center justify-center relative p-6 lg:p-10">
+                <div className="relative w-full max-w-[200px] lg:max-w-[240px] aspect-square flex items-center justify-center">
                     <svg className="w-full h-full transform -rotate-90" viewBox="0 0 224 224">
                         <circle
                             cx="112"
                             cy="112"
-                            r="95"
-                            stroke="hsla(var(--accent-base), 0.1)"
+                            r="100"
+                            stroke="hsla(var(--accent-base), 0.05)"
                             strokeWidth="1"
                             fill="transparent"
                         />
                         <circle
                             cx="112"
                             cy="112"
-                            r="95"
+                            r="100"
                             stroke="hsla(var(--accent-base), 0.5)"
-                            strokeWidth="2"
+                            strokeWidth="3"
                             fill="transparent"
                             strokeDasharray={strokeDasharray}
                             strokeDashoffset={strokeDashoffset}
@@ -79,27 +76,31 @@ export const Timer: React.FC = () => {
                     </svg>
 
                     <div className="absolute flex flex-col items-center">
-                        <div className="text-[5vh] font-mono-tech font-light tracking-tighter text-white text-glow-accent">
+                        <div className="text-4xl lg:text-5xl font-mono-tech font-light tracking-tighter text-white text-glow-accent">
                             {formatTime(timeLeft)}
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Footer / Controls - Pushed to bottom with explicit spacing */}
-            <div className="flex gap-[3vh] pb-[4vh] shrink-0 z-10">
+            {/* Controls */}
+            <div className="flex gap-4 pb-6 lg:pb-10 shrink-0 z-10">
                 <button
                     onClick={() => setIsActive(!isActive)}
-                    className="w-[8vh] h-[8vh] max-w-[80px] max-h-[80px] flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-accent-base hover:bg-accent-base hover:text-white transition-all duration-500 shadow-sm"
+                    className="w-12 h-12 lg:w-14 lg:h-14 flex items-center justify-center rounded-xl bg-white/[0.03] border border-white/10 text-accent-base hover:bg-accent-base hover:text-black transition-all"
                 >
-                    {isActive ? <Pause className="w-[3vh] h-[3vh] fill-current" /> : <Play className="w-[3vh] h-[3vh] fill-current ml-1" />}
+                    {isActive ? <Pause className="w-5 h-5 lg:w-6 lg:h-6 fill-current" /> : <Play className="w-5 h-5 lg:w-6 lg:h-6 fill-current ml-0.5 group-hover/btn:scale-110 transition-transform" />}
                 </button>
                 <button
                     onClick={resetTimer}
-                    className="w-[8vh] h-[8vh] max-w-[80px] max-h-[80px] flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white/30 hover:text-white hover:bg-white/10 transition-all duration-500 shadow-sm"
+                    className="w-12 h-12 lg:w-14 lg:h-14 flex items-center justify-center rounded-xl bg-white/[0.03] border border-white/10 text-white/30 hover:text-white hover:bg-white/10 transition-all"
                 >
-                    <RotateCcw className="w-[2.5vh] h-[2.5vh]" />
+                    <RotateCcw className="w-4 h-4 lg:w-5 lg:h-5 group-hover:rotate-180 transition-transform duration-700" />
                 </button>
+            </div>
+
+            <div className="absolute bottom-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-[8px] font-mono-tech text-white/10 uppercase tracking-[0.4em]">Temporal Link Sync</span>
             </div>
         </div>
     )

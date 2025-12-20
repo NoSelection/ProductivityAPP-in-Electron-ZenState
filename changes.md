@@ -12,6 +12,8 @@
 - **Cinematic Navigation**: Implemented smooth page transitions and a persistent "Neural Mode" header for seamless switching between Dashboard and Codex.
 - **Neural Connectivity**: Linked the `Timer`, `QuestLog`, and `Neural Codex` via persistent storage logic.
 - **Neural Storage Cluster**: Migrated the entire persistence layer to **SQLite** (`better-sqlite3`) for true data permanence. Implemented a custom IPC bridge and a transition protocol that automatically migrates user data from `localStorage` to the new encrypted database core.
+- **Neural Intelligence**: Implemented the **SIG // INSIGHTS** dashboard with weekly activity charts and efficiency metrics. Added the **RESET // PROTOCOL** (guided breathing orb) and a cinematic **FOCUS // SHIELD** for deep, distraction-free focus sessions.
+- **UI Resurrection**: Performed a total cleanup of the UI layer, moving to a stable `rem`-based architecture and rebuilding the responsive layout core to prevent component overlapping.
 
 ## [2025-12-20] ZenState // Neural Transformation (UI Redesign)
 - **Global Foundation**: Migrated to HSL-based design system for precise color control and better transparency handling.

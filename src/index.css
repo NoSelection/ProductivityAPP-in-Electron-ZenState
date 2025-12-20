@@ -5,17 +5,21 @@
 :root {
   /* HSL-based palette for precise control */
   --accent-base: 220, 90%, 65%;
-  /* Soft blue #5a89f7 */
   --accent-secondary: 185, 90%, 50%;
-  /* Cyan #1ae0f7 */
-
   --bg-main: 230, 20%, 5%;
-  /* Deep space black #0a0b0f */
+
+  /* RGB equivalents for rgba() usage in JS/inline styles */
+  --accent-base-rgb: 89, 137, 247;
+  --accent-secondary-rgb: 13, 229, 229;
 
   /* Standardized Glassmorphism */
-  --glass-opacity: 0.05;
+  --glass-opacity: 0.1;
   --glass-blur: 32px;
-  --glass-border: 220, 20%, 100%, 0.1;
+  --glass-border: 220, 20%, 100%, 0.12;
+
+  /* Spacing Tokens */
+  --inner-padding: 1.25rem;
+  --panel-radius: 1.5rem;
 }
 
 @layer base {
@@ -28,8 +32,25 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* Reset all interactive elements to be Neural-native */
+  input,
+  textarea,
+  button {
+    @apply bg-transparent border-none outline-none text-inherit;
+    font-family: inherit;
+  }
+
+  /* Force transparency and color for search/input fields */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: white;
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
   ::selection {
-    background-color: hsla(var(--accent-base), 0.3);
+    background-color: hsla(var(--accent-base), 0.4);
     color: white;
   }
 }
@@ -57,26 +78,26 @@
     position: absolute;
     border-radius: 50%;
     filter: blur(160px);
-    opacity: 0.06;
+    opacity: 0.05;
     will-change: transform;
     mix-blend-mode: screen;
   }
 
   .nebula-1 {
-    width: 1000px;
-    height: 1000px;
+    width: 60vw;
+    height: 60vw;
     background: radial-gradient(circle, hsla(var(--accent-base), 0.2) 0%, transparent 70%);
-    top: -300px;
-    left: -200px;
+    top: -20vh;
+    left: -10vw;
     animation: nebula-float-1 40s ease-in-out infinite alternate;
   }
 
   .nebula-2 {
-    width: 800px;
-    height: 800px;
+    width: 50vw;
+    height: 50vw;
     background: radial-gradient(circle, hsla(var(--accent-secondary), 0.1) 0%, transparent 70%);
-    bottom: -200px;
-    right: -100px;
+    bottom: -15vh;
+    right: -5vw;
     animation: nebula-float-2 50s ease-in-out infinite alternate;
   }
 
@@ -86,7 +107,7 @@
     }
 
     to {
-      transform: translate(150px, 100px) scale(1.1) rotate(10deg);
+      transform: translate(5vw, 5vh) scale(1.1) rotate(10deg);
     }
   }
 
@@ -96,46 +117,65 @@
     }
 
     to {
-      transform: translate(-100px, -50px) scale(0.9) rotate(-10deg);
+      transform: translate(-5vw, -3vh) scale(0.9) rotate(-10deg);
     }
   }
 
-  /* Premium Glassmorphism Utility - ULTRA SUBTLE SHADOWS */
+  /* Clean Glassmorphism */
   .glass-pane {
-    background-color: hsla(220, 20%, 8%, 0.5);
-    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
-    border: 1px solid hsla(var(--glass-border));
-    box-shadow:
-      0 4px 6px -1px rgba(0, 0, 0, 0.1),
-      0 2px 4px -1px rgba(0, 0, 0, 0.06),
-      inset 0 0 0 1px hsla(220, 20%, 100%, 0.03);
-    border-radius: 2rem;
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    @apply border border-white/10 overflow-hidden;
+    background-color: hsla(220, 25%, 8%, 0.7);
+    backdrop-filter: blur(24px) saturate(120%);
+    -webkit-backdrop-filter: blur(24px) saturate(120%);
+    border-radius: var(--panel-radius);
+    transition: all 0.3s ease;
   }
 
-  .glass-pane-hover:hover {
-    border-color: hsla(var(--accent-base), 0.4);
-    background-color: hsla(220, 20%, 12%, 0.6);
-    box-shadow:
-      0 10px 15px -3px rgba(0, 0, 0, 0.1),
-      0 4px 6px -2px rgba(0, 0, 0, 0.05),
-      0 0 30px 0 hsla(var(--accent-base), 0.03);
-    transform: translateY(-1px);
+  .glass-pane:hover {
+    @apply border-white/15;
+    background-color: hsla(220, 25%, 10%, 0.75);
   }
 
-  /* Typography / Aesthetics */
+  /* Minimal button shadows - just enough depth */
+  .shadow-neu-button {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.2s ease;
+  }
+
+  .shadow-neu-button:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Subtle accent glow */
+  .shadow-neu-glow {
+    box-shadow: 0 0 20px hsla(var(--accent-base), 0.2);
+  }
+
   .font-mono-tech {
-    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
     letter-spacing: 0.15em;
   }
 
-  .text-glow-accent {
-    text-shadow: 0 0 15px hsla(var(--accent-base), 0.3);
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
   }
 }
 
-/* Scrollbar Removal */
+/* Scrollbar Removal Global */
 ::-webkit-scrollbar {
   display: none;
 }
@@ -143,4 +183,23 @@
 * {
   scrollbar-width: none;
   -ms-overflow-style: none;
+}
+
+/* Focus Shield Protocols - Dims everything except FocusCard and Timer */
+body.focus-shield-active header,
+body.focus-shield-active .QuestLog,
+body.focus-shield-active .BrainDump,
+body.focus-shield-active .MediaDeck {
+  opacity: 0.03;
+  filter: blur(16px) grayscale(1);
+  pointer-events: none;
+  transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.focus-shield-active .FocusCard,
+body.focus-shield-active .Timer {
+  opacity: 1;
+  filter: none;
+  transform: scale(1.01);
+  transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
 }

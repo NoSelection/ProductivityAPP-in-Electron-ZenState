@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Trash2, CheckCircle2, Circle, List } from 'lucide-react'
+import { Plus, Trash2, CheckCircle2, Circle, Activity } from 'lucide-react'
 import { useNeuralStorage } from '../hooks/useNeuralStorage'
 import { cn } from '../lib/utils'
 
@@ -34,71 +34,71 @@ export const QuestLog: React.FC = () => {
     }
 
     return (
-        <div className={cn(
-            "glass-pane h-full w-full flex flex-col lg:row-span-2 relative overflow-hidden min-h-[60vh] lg:min-h-0"
-        )}>
-            {/* Header Area */}
-            <div className="flex-none p-[3vh] pb-[1vh] flex items-center gap-3">
-                <List className="w-3.5 h-3.5 text-accent-secondary/60" />
-                <h2 className="text-white/40 text-[9px] font-black tracking-[0.5em] uppercase font-mono-tech">
-                    ARCHIVE // QUESTS
-                </h2>
+        <div className="QuestLog flex-1 glass-pane flex flex-col relative overflow-hidden min-h-0">
+            {/* Header */}
+            <div className="flex-none p-5 pb-3 flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-accent-secondary/10 text-accent-secondary border border-accent-secondary/20">
+                    <Activity className="w-3.5 h-3.5" />
+                </div>
+                <h2 className="text-[10px] font-bold tracking-widest text-white/40 uppercase">Tasks</h2>
             </div>
 
-            {/* Input Area */}
-            <div className="flex-none px-[3vh] py-[1vh] relative mb-[1vh]">
-                <input
-                    type="text"
-                    placeholder="INITIATE..."
-                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-5 py-[1.5vh] text-[1.5vh] font-mono-tech text-white outline-none focus:border-accent-secondary/40 focus:bg-white/[0.05] transition-all placeholder-white/20 tracking-wider"
-                    value={newQuest}
-                    onChange={(e) => setNewQuest(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && addQuest()}
-                />
-                <button
-                    onClick={addQuest}
-                    className="absolute right-[4vh] top-1/2 -translate-y-1/2 text-white/40 hover:text-accent-secondary transition-all"
-                >
-                    <Plus className="w-[2.5vh] h-[2.5vh] p-0.5 hover:scale-110" />
-                </button>
+            {/* Input */}
+            <div className="flex-none px-5 pb-4">
+                <div className="relative">
+                    <input
+                        type="text"
+                        placeholder="Add task..."
+                        className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-sm text-white outline-none focus:border-accent-secondary/40 transition-all placeholder:text-white/20"
+                        value={newQuest}
+                        onChange={(e) => setNewQuest(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && addQuest()}
+                    />
+                    <button
+                        onClick={addQuest}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-accent-secondary transition-all"
+                    >
+                        <Plus className="w-5 h-5" />
+                    </button>
+                </div>
             </div>
 
-            {/* Scrollable List - flex-1 min-h-0 is KEY for squishing */}
-            <div className="flex-1 min-h-0 overflow-y-auto px-[3vh] pb-[2vh] space-y-[1vh] scrollbar-none">
+            {/* List */}
+            <div className="flex-1 min-h-0 overflow-y-auto px-5 pb-5 space-y-2 custom-scrollbar">
                 <AnimatePresence initial={false}>
                     {quests.length === 0 ? (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="h-full flex flex-col items-center justify-center text-white/10 font-mono-tech uppercase tracking-[0.4em] text-[1.2vh]"
-                        >
-                            Log // Empty
-                        </motion.div>
+                        <div className="h-full flex items-center justify-center text-white/10">
+                            <span className="text-xs">No tasks yet</span>
+                        </div>
                     ) : (
                         quests.map((quest) => (
                             <motion.div
                                 key={quest.id}
-                                initial={{ opacity: 0, y: 5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.98 }}
-                                className="group/item flex items-center justify-between p-[1.5vh] rounded-xl bg-white/[0.01] border border-white/5 hover:border-white/10 hover:bg-white/[0.03] transition-all duration-300 min-h-[5vh]"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="group/item flex items-center gap-3 p-3 rounded-lg bg-white/[0.02] border border-white/[0.05] hover:border-white/10 hover:bg-white/[0.04] transition-all"
                             >
-                                <div className="flex items-center gap-[1.5vh] min-w-0 flex-1">
-                                    <button onClick={() => toggleQuest(quest.id)} className="text-accent-secondary/60 hover:text-accent-secondary transition-colors shrink-0">
-                                        {quest.completed ? <CheckCircle2 className="w-[2vh] h-[2vh]" /> : <Circle className="w-[2vh] h-[2vh]" />}
-                                    </button>
-                                    <span className={cn(
-                                        "text-[1.8vh] font-light text-white/80 transition-all duration-500 truncate leading-none pt-0.5",
-                                        quest.completed && "opacity-30 line-through blur-[0.5px]"
-                                    )}>
-                                        {quest.text}
-                                    </span>
-                                </div>
+                                <button
+                                    onClick={() => toggleQuest(quest.id)}
+                                    className={cn(
+                                        "shrink-0 transition-colors",
+                                        quest.completed ? "text-accent-secondary" : "text-white/20 hover:text-white/40"
+                                    )}
+                                >
+                                    {quest.completed ? <CheckCircle2 className="w-5 h-5" /> : <Circle className="w-5 h-5" />}
+                                </button>
+                                <span className={cn(
+                                    "flex-1 text-sm text-white/70 truncate select-text",
+                                    quest.completed && "text-white/20 line-through"
+                                )}>
+                                    {quest.text}
+                                </span>
                                 <button
                                     onClick={() => deleteQuest(quest.id)}
-                                    className="text-white/20 hover:text-red-400/80 transition-colors shrink-0 opacity-0 group-hover/item:opacity-100"
+                                    className="shrink-0 text-white/10 hover:text-red-400 transition-colors opacity-0 group-hover/item:opacity-100"
                                 >
-                                    <Trash2 className="w-[2vh] h-[2vh]" />
+                                    <Trash2 className="w-4 h-4" />
                                 </button>
                             </motion.div>
                         ))
