@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { initDb, closeDb } from './database'
 import Database from 'better-sqlite3'
-import { app } from 'electron'
+import { ipcMain } from 'electron'
 import path from 'node:path'
 import fs from 'node:fs'
 
@@ -18,6 +18,7 @@ describe('Database', () => {
   const testDataDir = './test-data'
 
   beforeEach(() => {
+    vi.clearAllMocks()
     if (!fs.existsSync(testDataDir)) {
       fs.mkdirSync(testDataDir)
     }
@@ -48,10 +49,27 @@ describe('Database', () => {
   it('should correctly close the database', () => {
     initDb()
     closeDb()
-    // If we can't run a query, it's closed. 
-    // We don't have direct access to 'db' variable, but we can check if file is unlockable.
     if (fs.existsSync(path.join(testDataDir, 'zenstate.db'))) {
-      fs.rmSync(path.join(testDataDir, 'zenstate.db')) // Should not throw EBUSY
+      fs.rmSync(path.join(testDataDir, 'zenstate.db'))
     }
+  })
+
+  it('should register settings IPC handlers', () => {
+    initDb()
+    
+    expect(ipcMain.handle).toHaveBeenCalledWith('db:getSettings', expect.any(Function))
+    expect(ipcMain.handle).toHaveBeenCalledWith('db:saveSetting', expect.any(Function))
+  })
+
+  it('should handle db:saveSetting and db:getSettings correctly', () => {
+    initDb()
+    
+    const saveHandler: any = vi.mocked(ipcMain.handle).mock.calls.find(call => call[0] === 'db:saveSetting')![1]
+    const getHandler: any = vi.mocked(ipcMain.handle).mock.calls.find(call => call[0] === 'db:getSettings')![1]
+    
+    saveHandler({} as any, 'focus', 'duration', 25)
+    
+    const settings = getHandler({} as any) as any[]
+    expect(settings).toContainEqual({ category: 'focus', key: 'duration', value: '25' })
   })
 })

@@ -80,6 +80,15 @@ export function initDb() {
     ipcMain.handle('db:saveNotes', (_, content: string) => {
         return db.prepare('INSERT OR REPLACE INTO notes (id, content) VALUES (1, ?)').run(content)
     })
+
+    // Settings
+    ipcMain.handle('db:getSettings', () => {
+        return db.prepare('SELECT * FROM settings').all()
+    })
+
+    ipcMain.handle('db:saveSetting', (_, category: string, key: string, value: any) => {
+        return db.prepare('INSERT OR REPLACE INTO settings (category, key, value) VALUES (?, ?, ?)').run(category, key, JSON.stringify(value))
+    })
 }
 
 export function closeDb() {
