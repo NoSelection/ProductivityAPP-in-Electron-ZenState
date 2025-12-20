@@ -3,7 +3,7 @@
 ## Phase 1: Foundation & Persistence
 - [x] Task: Update SQLite database schema to support granular settings storage. 6d21b8b
 - [x] Task: Create backend IPC handlers in `main.ts` for reading/writing configuration. 0fcd996
-- [ ] Task: Implement a robust settings service in the frontend to interface with the main process.
+- [x] Task: Implement a robust settings service in the frontend to interface with the main process. 41ef077
 - [ ] Task: Conductor - User Manual Verification 'Foundation & Persistence' (Protocol in workflow.md)
 
 ## Phase 2: Core Customization UI
