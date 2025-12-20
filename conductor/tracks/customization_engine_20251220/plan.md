@@ -1,0 +1,19 @@
+# Track Plan: Deep Customization Engine
+
+## Phase 1: Foundation & Persistence
+- [ ] Task: Update SQLite database schema to support granular settings storage.
+- [ ] Task: Create backend IPC handlers in `main.ts` for reading/writing configuration.
+- [ ] Task: Implement a robust settings service in the frontend to interface with the main process.
+- [ ] Task: Conductor - User Manual Verification 'Foundation & Persistence' (Protocol in workflow.md)
+
+## Phase 2: Core Customization UI
+- [ ] Task: Build the Timer Configuration interface in `SettingsPanel.tsx`.
+- [ ] Task: Implement the XP & Progression settings UI.
+- [ ] Task: Create the Visual Identity/Theme customization controls.
+- [ ] Task: Conductor - User Manual Verification 'Core Customization UI' (Protocol in workflow.md)
+
+## Phase 3: Integration & Reactivity
+- [ ] Task: Integrate Customization Engine with `Timer.tsx` to use user-defined protocols.
+- [ ] Task: Update `ThemeContext.tsx` to apply visual identity settings in real-time.
+- [ ] Task: Verify XP gain logic reflects user-defined difficulty multipliers in the `Dashboard.tsx`.
+- [ ] Task: Conductor - User Manual Verification 'Integration & Reactivity' (Protocol in workflow.md)
