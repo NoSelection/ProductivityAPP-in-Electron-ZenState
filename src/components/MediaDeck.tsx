@@ -1,19 +1,28 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import ReactPlayer from 'react-player'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Play, Pause, SkipForward, Volume2, Radio, Link, Eye, Disc3 } from 'lucide-react'
+import { Play, Pause, SkipForward, Volume2, Radio, Link, Eye, CloudRain, TreePine, Rocket, Wind, Music } from 'lucide-react'
 import { cn } from '../lib/utils'
+import { audioService } from '../lib/audioService'
 
-const PRESETS = [
+const AMBIENT_PRESETS = [
+    { id: 'rain', name: 'Rainfall', sub: 'Muted raindrops // City', icon: CloudRain },
+    { id: 'forest', name: 'Pine Forest', sub: 'Whispering leaves // Birds', icon: TreePine },
+    { id: 'deep-space', name: 'Deep Space', sub: 'Low drone // Void', icon: Rocket },
+    { id: 'white-noise', name: 'Neural Hum', sub: 'Static // Pure focus', icon: Wind }
+]
+
+const STREAM_PRESETS = [
     { name: 'Lofi Girl', sub: 'Beats to study // relax', url: 'https://www.youtube.com/watch?v=jfKfPfyJRdk' },
-    { name: 'Synthwave Radio', sub: 'Neon nights // Cyberpunk', url: 'https://www.youtube.com/watch?v=4xDzrJKXOOY' },
-    { name: 'Dark Ambient', sub: 'Deep focus // Drone', url: 'https://www.youtube.com/watch?v=S7bCg4cOebE' }
+    { name: 'Synthwave Radio', sub: 'Neon nights // Cyberpunk', url: 'https://www.youtube.com/watch?v=4xDzrJKXOOY' }
 ]
 
 export const MediaDeck: React.FC = () => {
+    const [mode, setMode] = useState<'ambient' | 'stream'>('ambient')
     const [playing, setPlaying] = useState(false)
     const [volume, setVolume] = useState(0.5)
-    const [currentPreset, setCurrentPreset] = useState(0)
+    const [currentAmbient, setCurrentAmbient] = useState(0)
+    const [currentStream, setCurrentStream] = useState(0)
     const [customUrl, setCustomUrl] = useState('')
     const [showInput, setShowInput] = useState(false)
     const [holoMode, setHoloMode] = useState(false)
@@ -23,19 +32,40 @@ export const MediaDeck: React.FC = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Player = ReactPlayer as any
 
-    const activeUrl = customUrl || PRESETS[currentPreset].url
-    const activeName = customUrl ? 'Custom Stream' : PRESETS[currentPreset].name
-    const activeSub = customUrl ? 'External Signal' : PRESETS[currentPreset].sub
+    useEffect(() => {
+        audioService.setVolume(volume)
+    }, [volume])
 
-    const cyclePreset = () => {
-        setCustomUrl('')
-        setCurrentPreset((prev) => (prev + 1) % PRESETS.length)
-        setPlaying(true)
+    const activeName = mode === 'ambient' 
+        ? AMBIENT_PRESETS[currentAmbient].name 
+        : (customUrl ? 'Custom Signal' : STREAM_PRESETS[currentStream].name)
+    
+    const activeSub = mode === 'ambient'
+        ? AMBIENT_PRESETS[currentAmbient].sub
+        : (customUrl ? 'External Stream' : STREAM_PRESETS[currentStream].sub)
+
+    const togglePlay = () => {
+        const nextState = !playing
+        setPlaying(nextState)
+        
+        if (mode === 'ambient') {
+            if (nextState) {
+                audioService.play(AMBIENT_PRESETS[currentAmbient].id)
+            } else {
+                audioService.pause()
+            }
+        }
     }
 
-    const handleUrlSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            setShowInput(false)
+    const cycleContent = () => {
+        if (mode === 'ambient') {
+            const next = (currentAmbient + 1) % AMBIENT_PRESETS.length
+            setCurrentAmbient(next)
+            if (playing) audioService.play(AMBIENT_PRESETS[next].id)
+        } else {
+            setCustomUrl('')
+            const next = (currentStream + 1) % STREAM_PRESETS.length
+            setCurrentStream(next)
             setPlaying(true)
         }
     }
@@ -45,23 +75,25 @@ export const MediaDeck: React.FC = () => {
             "MediaDeck flex-1 hyper-panel flex flex-col justify-between group relative overflow-hidden min-h-0 transition-all duration-700",
             holoMode && "shadow-[0_0_40px_rgba(0,240,255,0.2),inset_0_0_40px_rgba(0,240,255,0.05)]"
         )}>
-            {/* Hidden Player */}
-            <div className={cn(
-                "absolute inset-0 z-0 transition-opacity duration-1000",
-                holoMode ? "opacity-100" : "opacity-0 pointer-events-none"
-            )}>
-                <Player
-                    ref={playerRef}
-                    url={activeUrl}
-                    playing={playing}
-                    volume={volume}
-                    width="100%"
-                    height="100%"
-                    controls={false}
-                    style={{ opacity: holoMode ? 0.3 : 0, filter: 'grayscale(0.5) contrast(1.3) hue-rotate(180deg)' }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none" />
-            </div>
+            {/* Hidden Player for Streams */}
+            {mode === 'stream' && (
+                <div className={cn(
+                    "absolute inset-0 z-0 transition-opacity duration-1000",
+                    holoMode ? "opacity-100" : "opacity-0 pointer-events-none"
+                )}>
+                    <Player
+                        ref={playerRef}
+                        url={customUrl || STREAM_PRESETS[currentStream].url}
+                        playing={playing}
+                        volume={volume}
+                        width="100%"
+                        height="100%"
+                        controls={false}
+                        style={{ opacity: holoMode ? 0.3 : 0, filter: 'grayscale(0.5) contrast(1.3) hue-rotate(180deg)' }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent pointer-events-none" />
+                </div>
+            )}
 
             {/* Background Effect */}
             <div className="absolute inset-0 opacity-40">
@@ -95,6 +127,20 @@ export const MediaDeck: React.FC = () => {
 
                 <div className="flex items-center gap-2">
                     <motion.button
+                        onClick={() => setMode(mode === 'ambient' ? 'stream' : 'ambient')}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        title={mode === 'ambient' ? "Switch to Streams" : "Switch to Ambient"}
+                        className={cn(
+                            "p-2.5 rounded-lg border transition-all duration-300",
+                            mode === 'stream'
+                                ? "text-neon-magenta bg-neon-magenta/10 border-neon-magenta/30"
+                                : "text-white/20 border-transparent hover:text-neon-cyan hover:bg-white/5"
+                        )}
+                    >
+                        {mode === 'ambient' ? <Music className="w-4 h-4" /> : <Radio className="w-4 h-4" />}
+                    </motion.button>
+                    <motion.button
                         onClick={() => setHoloMode(!holoMode)}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -106,19 +152,6 @@ export const MediaDeck: React.FC = () => {
                         )}
                     >
                         <Eye className="w-4 h-4" />
-                    </motion.button>
-                    <motion.button
-                        onClick={() => setShowInput(!showInput)}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={cn(
-                            "p-2.5 rounded-lg border transition-all duration-300",
-                            showInput
-                                ? "text-neon-magenta bg-neon-magenta/10 border-neon-magenta/30"
-                                : "text-white/20 border-transparent hover:text-neon-magenta hover:bg-white/5"
-                        )}
-                    >
-                        <Link className="w-4 h-4" />
                     </motion.button>
                 </div>
             </div>
@@ -138,10 +171,18 @@ export const MediaDeck: React.FC = () => {
                                     : 'none'
                             }}
                         >
-                            {/* Disc Rings */}
-                            <div className="absolute inset-[15%] border border-neon-cyan/10 rounded-full" />
-                            <div className="absolute inset-[30%] border border-neon-magenta/10 rounded-full" />
-                            <div className="absolute inset-[45%] border border-neon-cyan/10 rounded-full" />
+                            {/* Ambient Icon or Disc Rings */}
+                            {mode === 'ambient' ? (
+                                React.createElement(AMBIENT_PRESETS[currentAmbient].icon, {
+                                    className: "w-8 h-8 text-neon-cyan/40",
+                                    style: { filter: playing ? 'drop-shadow(0 0 10px #00f0ff)' : 'none' }
+                                })
+                            ) : (
+                                <>
+                                    <div className="absolute inset-[15%] border border-neon-cyan/10 rounded-full" />
+                                    <div className="absolute inset-[30%] border border-neon-magenta/10 rounded-full" />
+                                </>
+                            )}
 
                             {/* Center */}
                             <div className="w-1/4 h-1/4 rounded-full bg-black border border-neon-cyan/30 z-10 flex items-center justify-center">
@@ -153,64 +194,26 @@ export const MediaDeck: React.FC = () => {
                                 />
                             </div>
                         </motion.div>
-
-                        {/* Outer Ring Animation */}
-                        {playing && (
-                            <motion.div
-                                className="absolute inset-[-4px] rounded-full border border-neon-cyan/20"
-                                animate={{ rotate: -360 }}
-                                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                                style={{ borderStyle: 'dashed' }}
-                            />
-                        )}
                     </div>
 
                     {/* Track Info & Controls */}
                     <div className="flex-1 min-w-0 flex flex-col gap-4">
-                        <AnimatePresence mode="wait">
-                            {showInput ? (
-                                <motion.div
-                                    key="input"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    className="w-full"
-                                >
-                                    <input
-                                        type="text"
-                                        placeholder="Paste stream URL..."
-                                        className="w-full bg-black/50 border border-neon-magenta/20 rounded-lg px-4 py-3 text-sm text-white focus:border-neon-magenta/50 outline-none font-mono-tech placeholder:text-white/15 focus:shadow-[0_0_20px_rgba(255,0,170,0.15)]"
-                                        value={customUrl}
-                                        onChange={(e) => setCustomUrl(e.target.value)}
-                                        onKeyDown={handleUrlSubmit}
-                                        autoFocus
-                                    />
-                                </motion.div>
-                            ) : (
-                                <motion.div
-                                    key="info"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    className="space-y-1"
-                                >
-                                    <h3
-                                        className="text-xl lg:text-2xl font-display font-light text-white tracking-wide truncate"
-                                        style={{ textShadow: playing ? '0 0 20px rgba(0,240,255,0.3)' : 'none' }}
-                                    >
-                                        {activeName}
-                                    </h3>
-                                    <p className="font-mono-tech text-[9px] lg:text-[10px] text-neon-cyan/40 uppercase tracking-[0.2em] truncate">
-                                        {activeSub}
-                                    </p>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                        <div className="space-y-1">
+                            <h3
+                                className="text-xl lg:text-2xl font-display font-light text-white tracking-wide truncate"
+                                style={{ textShadow: playing ? '0 0 20px rgba(0,240,255,0.3)' : 'none' }}
+                            >
+                                {activeName}
+                            </h3>
+                            <p className="font-mono-tech text-[9px] lg:text-[10px] text-neon-cyan/40 uppercase tracking-[0.2em] truncate">
+                                {activeSub}
+                            </p>
+                        </div>
 
                         {/* Control Buttons */}
                         <div className="flex items-center gap-3">
                             <motion.button
-                                onClick={() => setPlaying(!playing)}
+                                onClick={togglePlay}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 className={cn(
@@ -228,7 +231,7 @@ export const MediaDeck: React.FC = () => {
                             </motion.button>
 
                             <motion.button
-                                onClick={cyclePreset}
+                                onClick={cycleContent}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
                                 className="p-3 rounded-xl text-white/20 hover:text-neon-magenta hover:bg-neon-magenta/5 border border-transparent hover:border-neon-magenta/20 transition-all"
@@ -249,7 +252,7 @@ export const MediaDeck: React.FC = () => {
                                 min="0"
                                 max="1"
                                 step="0.01"
-                                className="w-full h-1 cursor-pointer"
+                                className="w-full h-1 cursor-pointer accent-neon-cyan"
                                 value={volume}
                                 onChange={(e) => setVolume(parseFloat(e.target.value))}
                             />
@@ -260,27 +263,6 @@ export const MediaDeck: React.FC = () => {
                     </div>
                 </div>
             </div>
-
-            {/* Bottom Visualizer Bar */}
-            {playing && (
-                <div className="absolute bottom-0 left-0 right-0 h-1 flex gap-px overflow-hidden">
-                    {Array.from({ length: 40 }).map((_, i) => (
-                        <motion.div
-                            key={i}
-                            className="flex-1 bg-gradient-to-t from-neon-cyan to-neon-magenta"
-                            animate={{
-                                scaleY: [0.3, Math.random() * 0.7 + 0.3, 0.3],
-                            }}
-                            transition={{
-                                duration: 0.5 + Math.random() * 0.5,
-                                repeat: Infinity,
-                                delay: i * 0.02,
-                            }}
-                            style={{ transformOrigin: 'bottom' }}
-                        />
-                    ))}
-                </div>
-            )}
         </div>
     )
 }
