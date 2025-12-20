@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Palette, Zap, Waves, Leaf, Sun, Snowflake, Sparkles, Settings, Timer, Gamepad2 } from 'lucide-react';
+import { X, Palette, Zap, Waves, Leaf, Sun, Snowflake, Sparkles, Settings, Timer, Gamepad2, Eye } from 'lucide-react';
 import { useTheme, ThemeType } from '../context/ThemeContext';
 import { cn } from '../lib/utils';
 import { settingsService } from '../lib/settingsService';
@@ -20,6 +20,10 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
     const [xpSettings, setXpSettings] = useState({
         difficultyMultiplier: 1.0
     });
+    const [visualSettings, setVisualSettings] = useState({
+        animationsEnabled: true,
+        blurEnabled: true
+    });
 
     useEffect(() => {
         const loadSettings = async () => {
@@ -29,6 +33,9 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
             }
             if (settings.xp) {
                 setXpSettings(prev => ({ ...prev, ...settings.xp }));
+            }
+            if (settings.visual) {
+                setVisualSettings(prev => ({ ...prev, ...settings.visual }));
             }
         };
         if (isOpen) {
@@ -46,6 +53,11 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
         const numValue = parseFloat(value) || 0;
         setXpSettings(prev => ({ ...prev, [key]: numValue }));
         await settingsService.set('xp', key, numValue);
+    };
+
+    const handleVisualChange = async (key: string, value: boolean) => {
+        setVisualSettings(prev => ({ ...prev, [key]: value }));
+        await settingsService.set('visual', key, value);
     };
 
     const themes: { id: ThemeType; label: string; icon: React.ElementType; primary: string; secondary: string }[] = [
@@ -186,6 +198,70 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
                                             className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white font-mono text-sm focus:outline-none focus:border-white/20 transition-colors"
                                             style={{ caretColor: colors.neon_primary }}
                                         />
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* Visual Identity Section */}
+                            <section>
+                                <div className="flex items-center gap-3 mb-6">
+                                    <Eye className="w-4 h-4" style={{ color: colors.neon_primary }} />
+                                    <h3 className="font-display text-[11px] font-bold tracking-[0.3em] uppercase text-white/50">
+                                        Visual Identity
+                                    </h3>
+                                </div>
+                                <div className="space-y-3">
+                                    <div
+                                        className="p-4 rounded-xl border flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+                                        style={{
+                                            background: 'rgba(0,0,0,0.3)',
+                                            borderColor: 'rgba(255,255,255,0.05)'
+                                        }}
+                                        onClick={() => handleVisualChange('animationsEnabled', !visualSettings.animationsEnabled)}
+                                    >
+                                        <label className="font-mono-tech text-[10px] text-white/30 uppercase tracking-widest cursor-pointer pointer-events-none">
+                                            Animations Enabled
+                                        </label>
+                                        <div
+                                            className={cn(
+                                                "w-8 h-4 rounded-full relative transition-colors duration-300",
+                                                visualSettings.animationsEnabled ? "bg-emerald-500/20" : "bg-white/10"
+                                            )}
+                                        >
+                                            <div
+                                                className={cn(
+                                                    "absolute top-1 w-2 h-2 rounded-full transition-all duration-300",
+                                                    visualSettings.animationsEnabled ? "left-5 bg-emerald-400" : "left-1 bg-white/20"
+                                                )}
+                                                style={{ boxShadow: visualSettings.animationsEnabled ? `0 0 10px ${colors.neon_primary}` : 'none' }}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div
+                                        className="p-4 rounded-xl border flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+                                        style={{
+                                            background: 'rgba(0,0,0,0.3)',
+                                            borderColor: 'rgba(255,255,255,0.05)'
+                                        }}
+                                        onClick={() => handleVisualChange('blurEnabled', !visualSettings.blurEnabled)}
+                                    >
+                                        <label className="font-mono-tech text-[10px] text-white/30 uppercase tracking-widest cursor-pointer pointer-events-none">
+                                            Blur Effects
+                                        </label>
+                                        <div
+                                            className={cn(
+                                                "w-8 h-4 rounded-full relative transition-colors duration-300",
+                                                visualSettings.blurEnabled ? "bg-emerald-500/20" : "bg-white/10"
+                                            )}
+                                        >
+                                            <div
+                                                className={cn(
+                                                    "absolute top-1 w-2 h-2 rounded-full transition-all duration-300",
+                                                    visualSettings.blurEnabled ? "left-5 bg-emerald-400" : "left-1 bg-white/20"
+                                                )}
+                                                style={{ boxShadow: visualSettings.blurEnabled ? `0 0 10px ${colors.neon_primary}` : 'none' }}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </section>
