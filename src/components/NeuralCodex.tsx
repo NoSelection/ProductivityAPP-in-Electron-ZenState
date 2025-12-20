@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { BarChart3, Archive, Zap, Award, TrendingUp, Database, Activity, Cpu } from 'lucide-react'
 import { useNeuralStorage } from '../hooks/useNeuralStorage'
 import { cn } from '../lib/utils'
+import { settingsService } from '../lib/settingsService'
 
 interface Quest {
     id: string
@@ -15,15 +16,27 @@ export const NeuralCodex: React.FC = () => {
     const [pomodoros] = useNeuralStorage('zen-pomodoros', 0)
     const [quests] = useNeuralStorage<Quest[]>('zen-quests', [])
     const [notes] = useNeuralStorage('zen-brain-dump', '')
+    const [difficultyMultiplier, setDifficultyMultiplier] = useState(1.0)
+
+    useEffect(() => {
+        const loadSettings = async () => {
+            const settings = await settingsService.getAll()
+            if (settings.xp?.difficultyMultiplier) {
+                setDifficultyMultiplier(settings.xp.difficultyMultiplier)
+            }
+        }
+        loadSettings()
+    }, [])
 
     const focusHours = (totalFocus / 3600).toFixed(1)
     const completedQuests = quests.filter(q => q.completed).length
 
     const getRank = (seconds: number) => {
         const hours = seconds / 3600
-        if (hours < 1) return { name: 'Initiate', color: 'text-white/60' }
-        if (hours < 5) return { name: 'Operator', color: 'text-neon-cyan' }
-        if (hours < 20) return { name: 'Architect', color: 'text-neon-magenta' }
+        const adjustedHours = hours / difficultyMultiplier
+        if (adjustedHours < 1) return { name: 'Initiate', color: 'text-white/60' }
+        if (adjustedHours < 5) return { name: 'Operator', color: 'text-neon-cyan' }
+        if (adjustedHours < 20) return { name: 'Architect', color: 'text-neon-magenta' }
         return { name: 'Singularity', color: 'text-neon-lime' }
     }
 
