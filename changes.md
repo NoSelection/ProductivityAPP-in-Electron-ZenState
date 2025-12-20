@@ -1,5 +1,17 @@
 # ZenState - Session Change Log
 
+## [2025-12-21] ZenState // Birthday Protocol (Sanctuary & Core)
+- **Neural Sanctuary (Zen Garden)**: 🎂 Created a high-end visualization module featuring noise grain, gradient mesh foundations, and reactive sacred geometry. Includes a special "Record of Existence" birthday ritual.
+- **Focus Shield 2.0 (Art Mode)**: Redesigned the distraction-free mode into a cinematic "Art Mode". The UI completely vanishes, centering the Timer as a floating time-artifact. Added a red-glow "DEACTIVATE" escape hatch.
+- **System Core (Window Controls)**: Fully implemented custom window controls (Min/Max/Close) and a dedicated titlebar drag region for the frameless Electron shell.
+- **Neural Codex (Phase 2)**: Replaced the editor placeholder with a real functional markdown writing interface with auto-save and theme-accurate analytics cards.
+- **Advanced Aesthetics**:
+    - Integrated **Noise/Grain** overlays and **Gradient Mesh** systems into `index.css`.
+    - Added **Cormorant Garamond** (Serif) support for editorial/ancient-tech contrast.
+    - Implemented a custom smooth-spring cursor trail system.
+- **Media Deck Hardware Refit**: Upgraded visuals for the Atmosphere player with spinning rings, glowing cores, and optimized animations.
+- **Global DDR**: Cleaned up dozens of dead imports (`lucide-react`, `framer-motion`) across the codebase for improved build performance.
+
 ## [2025-12-20] ZenState // Command Center Redesign (Modular Zen)
 - **Architecture Overhaul**: Switched from a rigid grid layout to a **Sidebar + Stage** modular architecture.
 - **New MainLayout**: Implemented a persistent, collapsible sidebar for navigation and global controls (`Sidebar.tsx`, `MainLayout.tsx`).
