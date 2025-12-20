@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Palette, Zap, Waves, Leaf, Sun, Snowflake, Sparkles, Settings } from 'lucide-react';
+import { X, Palette, Zap, Waves, Leaf, Sun, Snowflake, Sparkles, Settings, Timer } from 'lucide-react';
 import { useTheme, ThemeType } from '../context/ThemeContext';
 import { cn } from '../lib/utils';
+import { settingsService } from '../lib/settingsService';
 
 interface SettingsPanelProps {
     isOpen: boolean;
@@ -11,6 +12,29 @@ interface SettingsPanelProps {
 
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
     const { theme, setTheme, colors } = useTheme();
+    const [timerSettings, setTimerSettings] = useState({
+        focusDuration: 25,
+        shortBreakDuration: 5,
+        longBreakDuration: 15
+    });
+
+    useEffect(() => {
+        const loadSettings = async () => {
+            const settings = await settingsService.getAll();
+            if (settings.timer) {
+                setTimerSettings(prev => ({ ...prev, ...settings.timer }));
+            }
+        };
+        if (isOpen) {
+            loadSettings();
+        }
+    }, [isOpen]);
+
+    const handleTimerChange = async (key: string, value: string) => {
+        const numValue = parseInt(value) || 0;
+        setTimerSettings(prev => ({ ...prev, [key]: numValue }));
+        await settingsService.set('timer', key, numValue);
+    };
 
     const themes: { id: ThemeType; label: string; icon: React.ElementType; primary: string; secondary: string }[] = [
         { id: 'hyper', label: 'Hyper', icon: Zap, primary: '#00f0ff', secondary: '#ff00aa' },
@@ -97,6 +121,37 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose })
 
                         {/* Content */}
                         <div className="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-8 space-y-8">
+                            {/* Timer Configuration Section */}
+                            <section>
+                                <div className="flex items-center gap-3 mb-6">
+                                    <Timer className="w-4 h-4" style={{ color: colors.neon_primary }} />
+                                    <h3 className="font-display text-[11px] font-bold tracking-[0.3em] uppercase text-white/50">
+                                        Timer Configuration
+                                    </h3>
+                                </div>
+                                <div className="space-y-4">
+                                    {[
+                                        { label: 'Focus Duration (min)', key: 'focusDuration', value: timerSettings.focusDuration },
+                                        { label: 'Short Break (min)', key: 'shortBreakDuration', value: timerSettings.shortBreakDuration },
+                                        { label: 'Long Break (min)', key: 'longBreakDuration', value: timerSettings.longBreakDuration }
+                                    ].map((item) => (
+                                        <div key={item.key} className="space-y-2">
+                                            <label htmlFor={item.key} className="block font-mono-tech text-[10px] text-white/40 uppercase tracking-widest">
+                                                {item.label}
+                                            </label>
+                                            <input
+                                                id={item.key}
+                                                type="number"
+                                                value={item.value}
+                                                onChange={(e) => handleTimerChange(item.key, e.target.value)}
+                                                className="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-white font-mono text-sm focus:outline-none focus:border-white/20 transition-colors"
+                                                style={{ caretColor: colors.neon_primary }}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+
                             {/* Theme Section */}
                             <section>
                                 <div className="flex items-center gap-3 mb-6">
