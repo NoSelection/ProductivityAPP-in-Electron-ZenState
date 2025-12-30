@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Play, Pause, RotateCcw, Clock, Zap } from 'lucide-react'
+import { Play, Pause, RotateCcw } from 'lucide-react'
 import { useNeuralStorage } from '../hooks/useNeuralStorage'
-import { cn } from '../lib/utils'
 import { settingsService } from '../lib/settingsService'
 
 export const Timer: React.FC = () => {
@@ -29,7 +28,7 @@ export const Timer: React.FC = () => {
             }
         }
         loadSettings()
-    }, []) // Run once on mount
+    }, [])
 
     useEffect(() => {
         let timer: ReturnType<typeof setInterval> | undefined
@@ -63,97 +62,78 @@ export const Timer: React.FC = () => {
     const strokeDashoffset = circumference - (circumference * percentage) / 100
 
     return (
-        <div className="Timer h-full w-full flex flex-col justify-center items-center group relative overflow-hidden min-h-0 bg-[#0a0a0f] border-0 backdrop-blur-3xl"
-            style={{ clipPath: 'circle(120% at 50% 120%)' }} // Subtle organic curve at bottom
-        >
-            {/* Header Badge */}
-            <div className="absolute top-8 left-8 flex items-center gap-3 z-10">
-                <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
-                <span className="font-display text-xs font-bold tracking-[0.3em] text-white/60 uppercase">
-                    CHRONOMETRY
+        <div className="h-full w-full flex flex-col justify-center items-center relative overflow-hidden bg-transparent">
+
+            {/* Minimal Label */}
+            <div className="absolute top-10 flex flex-col items-center gap-2 z-10">
+                <span className="text-tech text-[10px] tracking-[0.4em] text-white/40 uppercase">
+                    Session Status
                 </span>
+                <div className={`w-1 h-1 rounded-full ${isActive ? 'bg-white animate-pulse' : 'bg-white/20'}`} />
             </div>
 
             {/* Main Artifact Ring */}
-            <div className="flex-1 w-full flex flex-col items-center justify-center relative p-10">
-                <div className="relative w-72 h-72 flex items-center justify-center">
+            <div className="relative w-80 h-80 flex items-center justify-center">
 
-                    {/* Background Surreal Glow */}
-                    <div className="absolute inset-0 bg-gradient-radial from-white/10 to-transparent opacity-50 blur-3xl animate-pulse" />
+                {/* Ambient Backlight */}
+                <div className={`absolute inset-0 rounded-full blur-[80px] transition-opacity duration-1000 ${isActive ? 'bg-white/10 opacity-100' : 'opacity-0'}`} />
 
-                    {/* Orbiting Artifact Parts */}
-                    <motion.div
-                        className="absolute inset-0 border border-white/10 rounded-full"
-                        animate={{ rotate: 360, scale: [1, 1.05, 1] }}
-                        transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                {/* Orbiting Ring */}
+                <motion.div
+                    className="absolute inset-[10px] border border-white/5 rounded-full"
+                    animate={isActive ? { rotate: 360 } : { rotate: 0 }}
+                    transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+                />
+
+                {/* SVG Circle Progress */}
+                <svg className="w-full h-full transform -rotate-90 pointer-events-none" viewBox="0 0 200 200">
+                    {/* Track */}
+                    <circle cx="100" cy="100" r="88" stroke="rgba(255,255,255,0.02)" strokeWidth="1" fill="transparent" />
+
+                    {/* Progress */}
+                    <circle
+                        cx="100"
+                        cy="100"
+                        r="88"
+                        stroke="white"
+                        strokeWidth="1.5"
+                        fill="transparent"
+                        strokeDasharray={circumference}
+                        strokeDashoffset={strokeDashoffset}
+                        strokeLinecap="round"
+                        className="opacity-80 transition-[stroke-dashoffset] duration-300 ease-linear shadow-[0_0_15px_white]"
                     />
-                    <motion.div
-                        className="absolute inset-[20px] border border-white/20 rounded-full"
-                        style={{ borderStyle: 'dotted' }}
-                        animate={{ rotate: -360 }}
-                        transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-                    />
+                </svg>
 
-                    {/* SVG Circle (Gold/Prismatic) */}
-                    <svg className="w-full h-full transform -rotate-90 drop-shadow-prism-glow" viewBox="0 0 200 200">
-                        {/* Track */}
-                        <circle cx="100" cy="100" r="80" stroke="rgba(255,255,255,0.05)" strokeWidth="1" fill="transparent" />
-
-                        {/* Progress */}
-                        <motion.circle
-                            cx="100"
-                            cy="100"
-                            r="80"
-                            stroke="url(#prismaticFlux)"
-                            strokeWidth="3"
-                            fill="transparent"
-                            strokeDasharray={circumference}
-                            strokeDashoffset={strokeDashoffset}
-                            strokeLinecap="round"
-                            transition={{ duration: 0.5, ease: 'linear' }}
-                        />
-                        <defs>
-                            <linearGradient id="prismaticFlux" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stopColor="var(--prismatic-1)" />
-                                <stop offset="50%" stopColor="var(--prismatic-2)" />
-                                <stop offset="100%" stopColor="var(--prismatic-3)" />
-                            </linearGradient>
-                        </defs>
-                    </svg>
-
-                    {/* Center Time (Surreal Serif) */}
-                    <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-                        <span className="font-serif text-6xl text-white drop-shadow-2xl mix-blend-overlay">
-                            {formatTime(timeLeft)}
-                        </span>
-                    </div>
+                {/* Center Time */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
+                    <span className="text-display text-7xl font-extralight text-white tracking-tighter">
+                        {formatTime(timeLeft)}
+                    </span>
+                    <span className="text-serif text-sm text-white/30 italic mt-2">
+                        {isActive ? 'focusing' : 'ready'}
+                    </span>
                 </div>
             </div>
 
-            {/* Controls (Floating Orbs) */}
-            <div className="flex gap-8 pb-12 z-10">
-                <motion.button
+            {/* Controls */}
+            <div className="absolute bottom-12 flex gap-8 z-10">
+                <button
                     onClick={() => setIsActive(!isActive)}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    className={cn(
-                        "w-16 h-16 rounded-full flex items-center justify-center backdrop-blur-md transition-all",
-                        isActive
-                            ? "bg-white/10 shadow-[0_0_30px_rgba(125,249,255,0.2)]"
-                            : "bg-white/5 hover:bg-white/10"
-                    )}
+                    className="w-14 h-14 rounded-full flex items-center justify-center backdrop-blur-md border border-white/10 hover:bg-white/5 hover:border-white/30 transition-all group"
                 >
-                    {isActive ? <Pause className="w-5 h-5 fill-white text-white opacity-80" /> : <Play className="w-5 h-5 fill-white text-white ml-1 opacity-80" />}
-                </motion.button>
+                    {isActive
+                        ? <Pause className="w-5 h-5 text-white/80 fill-current" />
+                        : <Play className="w-5 h-5 text-white/80 fill-current ml-1" />
+                    }
+                </button>
 
-                <motion.button
+                <button
                     onClick={resetTimer}
-                    whileHover={{ scale: 1.1, rotate: -90 }}
-                    whileTap={{ scale: 0.9 }}
-                    className="w-12 h-12 rounded-full flex items-center justify-center border border-white/5 hover:bg-white/5 transition-all text-white/40 hover:text-white"
+                    className="w-10 h-10 rounded-full flex items-center justify-center border border-transparent hover:border-white/10 text-white/20 hover:text-white mt-2 transition-all"
                 >
                     <RotateCcw className="w-4 h-4" />
-                </motion.button>
+                </button>
             </div>
         </div>
     )

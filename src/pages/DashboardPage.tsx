@@ -1,59 +1,79 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 export const DashboardPage: React.FC = () => {
     return (
-        <div className="max-w-5xl mx-auto w-full flex flex-col gap-12">
-            {/* Hero Section */}
-            <div className="relative p-8 lg:p-12 rounded-3xl overflow-hidden group">
-                {/* Dynamic Background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[var(--prismatic-2)]/10 via-[#0a0a0f] to-[var(--prismatic-1)]/5 backdrop-blur-xl border border-white/5" />
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            className="max-w-6xl mx-auto w-full flex flex-col justify-center min-h-[80vh] gap-16"
+        >
+            {/* Minimalist Hero */}
+            <header className="relative z-10 space-y-2">
+                <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2, duration: 0.8 }}
+                >
+                    <span className="text-tech text-xs uppercase tracking-[0.3em] text-white/40 ml-1">
+                        System Online
+                    </span>
+                    <h1 className="text-display text-7xl lg:text-9xl text-white tracking-tighter text-glow-subtle mix-blend-overlay">
+                        ZenState
+                    </h1>
+                </motion.div>
 
-                {/* Animated Glow Orbs */}
-                <div className="absolute -right-20 -top-20 w-96 h-96 bg-[var(--prismatic-2)]/20 blur-[100px] rounded-full mix-blend-screen animate-pulse" style={{ animationDuration: '4s' }} />
-                <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-[var(--prismatic-1)]/10 blur-[80px] rounded-full mix-blend-screen" />
+                <motion.p
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.4, duration: 0.8 }}
+                    className="text-serif text-2xl lg:text-3xl text-white/60 font-light max-w-2xl"
+                >
+                    "The mind is a void. Let the code fill it."
+                </motion.p>
+            </header>
 
-                <div className="relative z-10 flex flex-col gap-6">
-                    <div>
-                        <div className="flex items-center gap-3 mb-2">
-                            <div className="w-2 h-2 rounded-full bg-[var(--prismatic-2)] animate-pulse shadow-[0_0_10px_var(--prismatic-2)]" />
-                            <span className="font-mono-tech text-xs tracking-widest text-[var(--prismatic-2)]/70 uppercase">Command Interface</span>
-                        </div>
-                        <h1 className="font-display text-5xl lg:text-7xl font-bold text-white tracking-tight">
-                            SYSTEM <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--prismatic-2)] to-[var(--prismatic-1)]">ONLINE</span>
-                        </h1>
-                    </div>
-
-                    <p className="text-white/60 text-lg lg:text-xl max-w-xl leading-relaxed">
-                        Welcome back, Operator. All systems are nominal. <br />
-                        <span className="text-[var(--prismatic-2)]">Neural synchronization complete.</span>
-                    </p>
-
-                    {/* Action Line */}
-                    <div className="h-px w-full max-w-md bg-gradient-to-r from-[var(--prismatic-2)]/50 to-transparent mt-4" />
-                </div>
-            </div>
-
-            {/* Quick Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Floating Glass Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[
-                    { label: 'Focus Time', value: '00:00', unit: 'HRS', color: 'text-[var(--prismatic-2)]', border: 'border-[var(--prismatic-2)]/20', bg: 'bg-[var(--prismatic-2)]/5' },
-                    { label: 'Tasks Active', value: '0', unit: 'QUESTS', color: 'text-[var(--prismatic-1)]', border: 'border-[var(--prismatic-1)]/20', bg: 'bg-[var(--prismatic-1)]/5' },
-                    { label: 'Streak', value: '1', unit: 'DAY', color: 'text-[var(--prismatic-3)]', border: 'border-[var(--prismatic-3)]/20', bg: 'bg-[var(--prismatic-3)]/5' },
-                ].map((stat) => (
-                    <div key={stat.label} className={`p-6 rounded-2xl bg-black/40 border hover:border-white/20 transition-all duration-300 group hover:-translate-y-1 ${stat.border}`}>
-                        <div className="text-white/40 font-mono-tech text-xs uppercase tracking-widest mb-3 flex items-center justify-between">
-                            {stat.label}
-                            <div className={`w-1.5 h-1.5 rounded-full ${stat.bg.replace('/5', '')}`} />
+                    { label: 'Deep Work', value: '4.2', unit: 'hrs' },
+                    { label: 'Flow State', value: '87', unit: '%' },
+                    { label: 'Streak', value: '12', unit: 'days' },
+                ].map((stat, i) => (
+                    <motion.div
+                        key={stat.label}
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.6 + (i * 0.1), duration: 0.8 }}
+                        className="glass-panel rounded-2xl p-8 flex flex-col justify-between group h-48"
+                    >
+                        <div className="flex justify-between items-start">
+                            <span className="text-tech text-[10px] uppercase tracking-widest text-white/30 group-hover:text-white/60 transition-colors">
+                                {stat.label}
+                            </span>
+                            <div className="w-1 h-1 rounded-full bg-white/20 group-hover:bg-white/80 transition-colors" />
                         </div>
+
                         <div className="flex items-baseline gap-2">
-                            <span className={`font-display text-4xl font-bold ${stat.color} drop-shadow-lg`}>{stat.value}</span>
-                            <span className="text-white/20 font-bold text-xs">{stat.unit}</span>
+                            <span className="text-display text-6xl text-white/90 group-hover:text-white transition-colors">
+                                {stat.value}
+                            </span>
+                            <span className="text-serif text-xl text-white/40 italic">
+                                {stat.unit}
+                            </span>
                         </div>
-                        {/* Interactive Hover Line */}
-                        <div className={`mt-4 h-0.5 w-0 group-hover:w-full transition-all duration-500 ${stat.bg.replace('/5', '')}`} />
-                    </div>
+                    </motion.div>
                 ))}
             </div>
-        </div>
+
+            {/* Subtle Action Line */}
+            <motion.div
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: '100%', opacity: 1 }}
+                transition={{ delay: 1, duration: 1.5 }}
+                className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"
+            />
+        </motion.div>
     );
 };
