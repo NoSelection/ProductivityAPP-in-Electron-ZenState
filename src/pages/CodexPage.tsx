@@ -1,17 +1,17 @@
 import { motion } from 'framer-motion';
-import { MediaWidget } from '../components/widgets/MediaWidget';
+import { CodexWidget } from '../components/widgets/CodexWidget';
 import { GlassPanel } from '../components/atoms/GlassPanel';
 
-export const MediaPage = () => {
+export const CodexPage = () => {
   return (
     <div className="h-full w-full flex items-center justify-center p-8">
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-xl aspect-[3/4] max-h-[700px]"
+        className="w-full h-full"
       >
-        <GlassPanel className="w-full h-full p-12">
-           <MediaWidget />
+        <GlassPanel className="w-full h-full p-8">
+           <CodexWidget />
         </GlassPanel>
       </motion.div>
     </div>

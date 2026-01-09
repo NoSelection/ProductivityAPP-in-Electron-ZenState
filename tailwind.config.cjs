@@ -7,40 +7,26 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                // HYPER Neon Palette
-                neon: {
-                    cyan: 'var(--arc-blue)',      // Arc
-                    magenta: 'var(--void-purple)', // Void
-                    lime: 'var(--strand-green)',   // Strand
-                    orange: 'var(--solar-orange)', // Solar
-                    purple: 'var(--stasis-blue)',  // Stasis ("Purple" key kept for backward compat, but mapped to Stasis/Void logic)
-                    yellow: 'var(--solar-gold)',   // Solar Gold
-                },
-                hyper: {
-                    black: '#0a0a0f',
-                    dark: '#12121a',
-                    panel: '#1a1a24',
-                    border: '#2a2a3a',
+                glass: {
+                    base: 'var(--glass-base)',
+                    surface: 'var(--glass-surface)',
+                    highlight: 'var(--glass-highlight)',
                 },
                 accent: {
-                    base: 'hsl(var(--accent-base))',
-                    secondary: 'hsl(var(--accent-secondary))',
+                    primary: 'var(--accent-primary)',
+                    secondary: 'var(--accent-secondary)',
+                    highlight: 'var(--accent-highlight)',
                 },
-                bg: {
-                    main: 'hsl(var(--bg-main))',
-                },
-                white: {
-                    DEFAULT: '#FFFFFF',
-                    5: 'rgba(255, 255, 255, 0.05)',
-                    10: 'rgba(255, 255, 255, 0.1)',
-                    20: 'rgba(255, 255, 255, 0.2)',
-                    40: 'rgba(255, 255, 255, 0.4)',
+                border: {
+                    subtle: 'var(--border-subtle)',
+                    highlight: 'var(--border-highlight)',
                 }
             },
             fontFamily: {
-                sans: ['Rajdhani', 'system-ui', 'sans-serif'],
-                display: ['Orbitron', 'sans-serif'],
-                mono: ['Share Tech Mono', 'JetBrains Mono', 'monospace'],
+                sans: ['Outfit', 'system-ui', 'sans-serif'],
+                serif: ['Cormorant Garamond', 'serif'],
+                tech: ['Space Grotesk', 'monospace'],
+                display: ['Outfit', 'sans-serif'],
             },
             borderRadius: {
                 '3xl': '1.5rem',

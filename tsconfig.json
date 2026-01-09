@@ -24,6 +24,9 @@
     "src",
     "electron"
   ],
+  "exclude": [
+    "src/_legacy"
+  ],
   "references": [
     {
       "path": "./tsconfig.node.json"

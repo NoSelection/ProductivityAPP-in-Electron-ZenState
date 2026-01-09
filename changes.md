@@ -1,5 +1,26 @@
 # ZenState - Session Change Log
 
+## [2026-01-09] ZenState // Crystal Rebirth (Interactive Glass OS)
+- **Architectural Shift**: Completely scrapped the old frontend for a modern, widget-based "Crystal OS" architecture.
+- **Glass Design System**: Implemented a high-fidelity "Etheric Glass" palette with advanced backdrop blurs, grain textures, and layered cinematic atmosphere.
+- **Customizable Workspace**: 
+    - Added **Edit Mode**: Users can now move, resize, and reorder widgets on a 12-column grid.
+    - Added **Dynamic Widget Injection**: Ability to add multiple instances of Timers, Media Players, Quests, and Codex entries.
+- **New Atomic Atoms**:
+    - `GlassPanel`: Translucent adaptive containers.
+    - `GlassButton`: High-haptic interactive elements with spring physics.
+    - `GlassInput`: Ultra-minimalist form fields.
+- **Rebuilt Features**:
+    - **Timer 2.0**: Minimalist SVG ring with focus-ready glow states.
+    - **Media 2.0**: Enhanced audio center with YouTube stream support and ambient presets.
+    - **Quest 2.0**: Streamlined directive list with animated transitions.
+    - **Neural Codex 2.0**: Integrated as a widget with persistent local database storage.
+- **Atmospheric Finish**:
+    - GPU-accelerated "Nebula" background with organic blob movement.
+    - Layered film grain for a premium digital-texture feel.
+    - Smooth `LayoutGroup` transitions for all UI reordering.
+- **Clean Slate Protocol**: Archived all legacy components to `src/_legacy` for reference, ensuring zero dead code in the new production path.
+
 ## [2025-12-30] ZenState // Hyper-Minimalist Glass Sanctuary (Gemini 3 Pro)
 - **Glass Design System**: Replaced the "Cyber/Gamer" aesthetic with a high-end "Frosted Glass" design language.
     - **Palette**: Switched to a rich slate/midnight blue background (`#0f172a`) with desaturated white/silver accents.
