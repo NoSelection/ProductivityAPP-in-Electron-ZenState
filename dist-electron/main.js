@@ -2,9 +2,7 @@ import { app, ipcMain, BrowserWindow } from "electron";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import Database from "better-sqlite3";
-const __filename$2 = fileURLToPath(import.meta.url);
-path.dirname(__filename$2);
-let db;
+let db = null;
 function initDb() {
   const dbPath = path.join(app.getPath("userData"), "zenstate.db");
   db = new Database(dbPath);
@@ -44,9 +42,11 @@ function initDb() {
     `);
   console.log("Neural Core (SQLite) initialized at:", dbPath);
   ipcMain.handle("db:getQuests", () => {
+    if (!db) return [];
     return db.prepare("SELECT * FROM quests ORDER BY createdAt DESC").all();
   });
   ipcMain.handle("db:saveQuests", (_, quests) => {
+    if (!db) return { success: false };
     const deleteStmt = db.prepare("DELETE FROM quests");
     const insertStmt = db.prepare("INSERT INTO quests (id, text, completed, createdAt) VALUES (?, ?, ?, ?)");
     const transaction = db.transaction((items) => {
@@ -59,28 +59,36 @@ function initDb() {
     return { success: true };
   });
   ipcMain.handle("db:getStats", () => {
+    if (!db) return [];
     return db.prepare("SELECT * FROM stats").all();
   });
   ipcMain.handle("db:saveStat", (_, key, value) => {
+    if (!db) return null;
     return db.prepare("INSERT OR REPLACE INTO stats (key, value) VALUES (?, ?)").run(key, JSON.stringify(value));
   });
   ipcMain.handle("db:getNotes", () => {
+    if (!db) return "";
     const row = db.prepare("SELECT content FROM notes WHERE id = 1").get();
     return row ? row.content : "";
   });
   ipcMain.handle("db:saveNotes", (_, content) => {
+    if (!db) return null;
     return db.prepare("INSERT OR REPLACE INTO notes (id, content) VALUES (1, ?)").run(content);
   });
   ipcMain.handle("db:getSettings", () => {
+    if (!db) return [];
     return db.prepare("SELECT * FROM settings").all();
   });
   ipcMain.handle("db:saveSetting", (_, category, key, value) => {
+    if (!db) return null;
     return db.prepare("INSERT OR REPLACE INTO settings (category, key, value) VALUES (?, ?, ?)").run(category, key, JSON.stringify(value));
   });
   ipcMain.handle("db:getCodexNotes", () => {
+    if (!db) return [];
     return db.prepare("SELECT * FROM codex ORDER BY updatedAt DESC").all();
   });
   ipcMain.handle("db:saveCodexNote", (_, note) => {
+    if (!db) return null;
     const stmt = db.prepare(`
             INSERT OR REPLACE INTO codex (id, title, content, tags, createdAt, updatedAt)
             VALUES (?, ?, ?, ?, ?, ?)
@@ -95,6 +103,7 @@ function initDb() {
     );
   });
   ipcMain.handle("db:deleteCodexNote", (_, id) => {
+    if (!db) return null;
     return db.prepare("DELETE FROM codex WHERE id = ?").run(id);
   });
 }
