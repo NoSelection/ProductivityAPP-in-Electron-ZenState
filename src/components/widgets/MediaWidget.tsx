@@ -83,7 +83,7 @@ export const MediaWidget = () => {
             border backdrop-blur-md
           `}>
             {mode === 'ambient' ? (
-              React.createElement((activeItem as any).icon, {
+              React.createElement((activeItem as typeof AMBIENT_PRESETS[number]).icon, {
                 size: 32,
                 className: playing ? 'text-accent-highlight' : 'text-[var(--text-muted)]',
                 strokeWidth: 1.5
@@ -110,7 +110,7 @@ export const MediaWidget = () => {
         <div className="hidden">
           <Player
             ref={playerRef}
-            url={(activeItem as any).url}
+            url={(activeItem as typeof STREAM_PRESETS[number]).url}
             playing={playing}
             volume={volume}
           />

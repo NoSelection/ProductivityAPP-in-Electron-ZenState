@@ -17,21 +17,24 @@ export const CodexWidget = () => {
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     loadNotes();
   }, []);
 
   const loadNotes = async () => {
+    setIsLoading(true);
     const saved = await window.neuralDb.getCodexNotes();
-    setNotes((saved as any) || []);
+    setNotes((saved) || []);
+    setIsLoading(false);
   };
 
   const activeNote = notes.find(n => n.id === activeNoteId);
 
   const createNote = () => {
     const newNote: CodexNote = {
-      id: Math.random().toString(36).substr(2, 9),
+      id: Math.random().toString(36).substring(2, 11),
       title: 'Untitled Entry',
       content: '',
       tags: [],
@@ -49,7 +52,7 @@ export const CodexWidget = () => {
   const saveNote = async () => {
     if (!activeNote) return;
     setIsSaving(true);
-    await window.neuralDb.saveCodexNote(activeNote as any);
+    await window.neuralDb.saveCodexNote(activeNote);
     setTimeout(() => setIsSaving(false), 500);
   };
 
@@ -83,7 +86,13 @@ export const CodexWidget = () => {
         />
 
         <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-1">
-          {filteredNotes.map(note => (
+          {isLoading && (
+            <div className="flex flex-col items-center justify-center py-8 gap-3">
+              <div className="w-10 h-10 rounded-full border-2 border-accent-highlight/30 border-t-accent-highlight animate-spin" />
+              <span className="text-[9px] font-tech text-[var(--text-muted)] uppercase tracking-widest">Loading...</span>
+            </div>
+          )}
+          {!isLoading && filteredNotes.map(note => (
             <button
               key={note.id}
               onClick={() => setActiveNoteId(note.id)}
@@ -103,6 +112,12 @@ export const CodexWidget = () => {
               </p>
             </button>
           ))}
+          {!isLoading && filteredNotes.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-8 opacity-40">
+              <FileText size={24} strokeWidth={1} className="text-[var(--text-muted)] mb-2" />
+              <span className="text-[9px] font-tech text-[var(--text-muted)] uppercase tracking-widest">No entries</span>
+            </div>
+          )}
         </div>
       </div>
 

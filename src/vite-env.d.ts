@@ -21,14 +21,16 @@ interface Window {
   neuralDb: {
     getQuests: () => Promise<Quest[]>
     saveQuests: (quests: Quest[]) => Promise<void>
-    getStats: () => Promise<any>
+    getStats: () => Promise<Record<string, unknown>>
     saveStat: (key: string, value: unknown) => Promise<void>
-    getNotes: () => Promise<any>
+    getNotes: () => Promise<string>
     saveNotes: (content: string) => Promise<void>
-    getSettings: () => Promise<any>
+    getSettings: () => Promise<{ category: string; key: string; value: string }[]>
     saveSetting: (category: string, key: string, value: unknown) => Promise<void>
     getCodexNotes: () => Promise<CodexNote[]>
     saveCodexNote: (note: CodexNote) => Promise<void>
     deleteCodexNote: (id: string) => Promise<void>
+    saveSession: (duration: number) => Promise<void>
+    getSessions: () => Promise<{ id: string, duration: number, timestamp: number }[]>
   }
 }

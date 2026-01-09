@@ -70,7 +70,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   };
 
   const addWidget = (type: WidgetId) => {
-    const id = `${type}-${Math.random().toString(36).substr(2, 4)}`;
+    const id = `${type}-${Math.random().toString(36).substring(2, 6)}`;
     const newWidget: WidgetInstance = {
       id,
       type,
@@ -118,7 +118,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       }
       
       // If not exists, add it
-      const id = `${type}-${Math.random().toString(36).substr(2, 4)}`;
+      const id = `${type}-${Math.random().toString(36).substring(2, 6)}`;
       return [...prev, {
         id,
         type,
@@ -160,6 +160,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useWorkspace() {
   const context = useContext(WorkspaceContext);
   if (context === undefined) {

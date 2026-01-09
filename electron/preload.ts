@@ -48,4 +48,6 @@ contextBridge.exposeInMainWorld('neuralDb', {
   getCodexNotes: () => ipcRenderer.invoke('db:getCodexNotes'),
   saveCodexNote: (note: CodexNote) => ipcRenderer.invoke('db:saveCodexNote', note),
   deleteCodexNote: (id: string) => ipcRenderer.invoke('db:deleteCodexNote', id),
+  saveSession: (duration: number) => ipcRenderer.invoke('db:saveSession', duration),
+  getSessions: () => ipcRenderer.invoke('db:getSessions'),
 })

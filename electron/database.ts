@@ -58,11 +58,29 @@ export function initDb() {
             createdAt INTEGER,
             updatedAt INTEGER
         );
+
+        CREATE TABLE IF NOT EXISTS sessions (
+            id TEXT PRIMARY KEY,
+            duration INTEGER,
+            timestamp INTEGER
+        );
     `)
 
     console.log('Neural Core (SQLite) initialized at:', dbPath)
 
     // --- IPC Handlers ---
+
+    // Sessions (Timer)
+    ipcMain.handle('db:saveSession', (_, duration: number) => {
+        if (!db) return null
+        const id = Math.random().toString(36).substr(2, 9)
+        return db.prepare('INSERT INTO sessions (id, duration, timestamp) VALUES (?, ?, ?)').run(id, duration, Date.now())
+    })
+
+    ipcMain.handle('db:getSessions', () => {
+        if (!db) return []
+        return db.prepare('SELECT * FROM sessions ORDER BY timestamp DESC').all()
+    })
 
     // Quests
     ipcMain.handle('db:getQuests', () => {

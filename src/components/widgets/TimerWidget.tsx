@@ -1,7 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import { GlassButton } from '../atoms/GlassButton';
 import { settingsService } from '../../lib/settingsService';
+
+// Pure utility function - defined outside component to avoid recreation
+const formatTime = (seconds: number) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+};
 
 export const TimerWidget = () => {
   const [focusDuration, setFocusDuration] = useState(25);
@@ -25,31 +32,36 @@ export const TimerWidget = () => {
     if (isActive && timeLeft > 0) {
       timer = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
-        // We could emit events here or use a global store for total focus time
       }, 1000);
-    } else if (timeLeft === 0) {
+    } else if (timeLeft === 0 && isActive) {
       setIsActive(false);
-      // Notify completion
+      // Save Session (Duration in minutes)
+      window.neuralDb.saveSession(focusDuration);
+      // Maybe play a sound here?
     }
     return () => {
       if (timer) clearInterval(timer);
     };
-  }, [isActive, timeLeft]);
+  }, [isActive, timeLeft, focusDuration]);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const resetTimer = () => {
+  const resetTimer = useCallback(() => {
     setIsActive(false);
     setTimeLeft(focusDuration * 60);
-  };
+  }, [focusDuration]);
 
-  const percentage = ((focusDuration * 60 - timeLeft) / (focusDuration * 60)) * 100;
-  const circumference = 2 * Math.PI * 45; // Smaller radius for widget
-  const strokeDashoffset = circumference - (circumference * percentage) / 100;
+  const toggleTimer = useCallback(() => {
+    setIsActive(prev => !prev);
+  }, []);
+
+  // Memoize SVG calculations
+  const { circumference, strokeDashoffset } = useMemo(() => {
+    const circ = 2 * Math.PI * 45;
+    const percentage = ((focusDuration * 60 - timeLeft) / (focusDuration * 60)) * 100;
+    return {
+      circumference: circ,
+      strokeDashoffset: circ - (circ * percentage) / 100
+    };
+  }, [focusDuration, timeLeft]);
 
   return (
     <div className="flex flex-col items-center justify-between h-full py-8">
@@ -64,7 +76,7 @@ export const TimerWidget = () => {
         {/* Glow */}
         <div className={`absolute inset-0 bg-accent-highlight/5 blur-3xl rounded-full transition-opacity duration-1000 ${isActive ? 'opacity-100' : 'opacity-0'}`} />
         
-        <svg className="w-48 h-48 transform -rotate-90" viewBox="0 0 100 100">
+        <svg className="w-48 h-48 transform -rotate-90" viewBox="0 0 100 100" aria-hidden="true">
           <circle
             cx="50"
             cy="50"
@@ -89,7 +101,12 @@ export const TimerWidget = () => {
         </svg>
 
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-4xl font-display font-light text-[var(--text-main)] tracking-tighter">
+          <span
+            className="text-4xl font-display font-light text-[var(--text-main)] tracking-tighter"
+            role="timer"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {formatTime(timeLeft)}
           </span>
           <span className="text-[10px] font-tech text-[var(--text-muted)] uppercase tracking-widest mt-1">
@@ -98,12 +115,13 @@ export const TimerWidget = () => {
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4" role="group" aria-label="Timer controls">
         <GlassButton
           size="icon"
           variant={isActive ? 'primary' : 'secondary'}
-          onClick={() => setIsActive(!isActive)}
+          onClick={toggleTimer}
           className="rounded-full w-12 h-12"
+          aria-label={isActive ? 'Pause timer' : 'Start timer'}
         >
           {isActive ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" className="ml-0.5" />}
         </GlassButton>
@@ -112,6 +130,7 @@ export const TimerWidget = () => {
           variant="ghost"
           onClick={resetTimer}
           className="rounded-full w-10 h-10 text-[var(--text-muted)] hover:text-[var(--text-main)]"
+          aria-label="Reset timer"
         >
           <RotateCcw size={16} />
         </GlassButton>

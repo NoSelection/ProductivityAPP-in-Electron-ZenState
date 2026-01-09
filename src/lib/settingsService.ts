@@ -9,7 +9,12 @@ export const settingsService = {
         // Browser Fallback
         if (!window.neuralDb) {
             const stored = localStorage.getItem('zen-settings')
-            return stored ? JSON.parse(stored) : {}
+            if (!stored) return {}
+            try {
+                return JSON.parse(stored)
+            } catch {
+                return {}
+            }
         }
 
         const rawSettings = await window.neuralDb.getSettings()
@@ -21,7 +26,7 @@ export const settingsService = {
             }
             try {
                 settings[row.category][row.key] = JSON.parse(row.value)
-            } catch (e) {
+            } catch {
                 settings[row.category][row.key] = row.value
             }
         })
@@ -33,7 +38,14 @@ export const settingsService = {
         // Browser Fallback
         if (!window.neuralDb) {
             const stored = localStorage.getItem('zen-settings')
-            const settings = stored ? JSON.parse(stored) : {}
+            let settings: Settings = {}
+            if (stored) {
+                try {
+                    settings = JSON.parse(stored)
+                } catch {
+                    settings = {}
+                }
+            }
             if (!settings[category]) settings[category] = {}
             settings[category][key] = value
             localStorage.setItem('zen-settings', JSON.stringify(settings))

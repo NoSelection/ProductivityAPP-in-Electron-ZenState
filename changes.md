@@ -1,5 +1,17 @@
 # ZenState - Session Change Log
 
+## [2026-01-09] ZenState // The Void Aesthetic (Gemini 3 Pro)
+- **Frontend Override**: Complete "Hyper-Glass" redesign focused on deep immersion and cinematic UI.
+- **Void Theme**: Implemented a "True Void" (`#020204`) aesthetic with punchy indigo accents and high-contrast typography.
+- **Theme System Implementation**: 
+    - Full support for **Void**, **Pure** (White), **Lotus** (Pink), and **Zen** (Midnight) themes.
+    - Dynamic variable system for borders, shadows, and text colors.
+- **Component Evolution**:
+    - **Floating Sidebar & Header**: Moved to a detached, floating artifact layout.
+    - **Neo Buttons**: New interaction states with inner glows and artifact shadows.
+    - **Settings Widget**: complete overhaul to match the premium "System Settings" design with toggle switches and tabs.
+- **Visibility Polish**: Solved contrast issues in light themes using smart hover variables (`--glass-border-hover`).
+
 ## [2026-01-09] ZenState // Crystal Rebirth (Interactive Glass OS)
 - **Architectural Shift**: Completely scrapped the old frontend for a modern, widget-based "Crystal OS" architecture.
 - **Glass Design System**: Implemented a high-fidelity "Etheric Glass" palette with advanced backdrop blurs, grain textures, and layered cinematic atmosphere.

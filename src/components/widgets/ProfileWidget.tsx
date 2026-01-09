@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Camera, User, Award, Clock, Zap } from 'lucide-react';
 import { GlassPanel } from '../atoms/GlassPanel';
 import { settingsService } from '../../lib/settingsService';
@@ -10,44 +10,68 @@ export const ProfileWidget = () => {
     avatar: '',
   });
   const [stats, setStats] = useState({
-    focusMinutes: 0,
+    focusHours: 0,
     questsCompleted: 0,
-    level: 1
+    level: 1,
+    totalXP: 0
   });
-  
+  const [isLoading, setIsLoading] = useState(true);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     loadProfile();
   }, []);
 
   const loadProfile = async () => {
+    setIsLoading(true);
     const settings = await settingsService.getAll();
     if (settings.profile) {
       setProfile(prev => ({ ...prev, ...settings.profile }));
     }
-    
-    // Load Stats (Mocking mostly, but connecting to real DB calls if we had them explicit)
-    // We can pull from quest count
-    const quests = await window.neuralDb.getQuests();
-    const completed = quests.filter((q: any) => q.completed).length;
-    
-    // Calculate level based on completed quests
-    const level = 1 + Math.floor(completed / 5);
 
-    setStats(prev => ({
-      ...prev,
-      questsCompleted: completed,
-      level
-    }));
+    // Load Stats
+    const quests = await window.neuralDb.getQuests();
+    const sessions = await window.neuralDb.getSessions();
+
+    const completedQuests = quests.filter((q) => q.completed).length;
+
+    // Calculate Focus Hours
+    const totalMinutes = sessions.reduce((acc: number, s) => acc + (s.duration || 0), 0);
+    const focusHours = Math.floor(totalMinutes / 60);
+
+    // Calculate XP
+    // 50 XP per Quest
+    // 10 XP per Minute Focused
+    const questXP = completedQuests * 50;
+    const focusXP = totalMinutes * 10;
+    const totalXP = questXP + focusXP;
+
+    // Calculate Level (Simple curve: Level 1 = 0-500, Level 2 = 500-1000...)
+    const level = 1 + Math.floor(totalXP / 500);
+
+    setStats({
+      focusHours,
+      questsCompleted: completedQuests,
+      level,
+      totalXP
+    });
+    setIsLoading(false);
   };
 
-  const updateProfile = async (key: string, value: string) => {
-    const newProfile = { ...profile, [key]: value };
-    setProfile(newProfile);
-    await settingsService.set('profile', key, value);
-    // Trigger a custom event so MainLayout can update the avatar immediately
-    window.dispatchEvent(new Event('profile-updated'));
+  // Debounced profile save to prevent excessive DB writes on every keystroke
+  const debouncedSave = useCallback((key: string, value: string) => {
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(async () => {
+      await settingsService.set('profile', key, value);
+      window.dispatchEvent(new Event('profile-updated'));
+    }, 500);
+  }, []);
+
+  const updateProfile = (key: string, value: string) => {
+    setProfile(prev => ({ ...prev, [key]: value }));
+    debouncedSave(key, value);
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,10 +86,19 @@ export const ProfileWidget = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center gap-4">
+        <div className="w-16 h-16 rounded-full border-2 border-accent-highlight/30 border-t-accent-highlight animate-spin" />
+        <span className="text-[10px] font-tech text-[var(--text-muted)] uppercase tracking-widest">Loading Profile...</span>
+      </div>
+    );
+  }
+
   return (
     <div className="h-full flex flex-col gap-8">
       {/* Header / ID Card Section */}
-      <div className="flex items-center gap-8">
+      <div className="flex flex-col sm:flex-row items-center gap-4 md:gap-8">
         <div className="relative group">
           <div className="w-32 h-32 rounded-3xl overflow-hidden border-2 border-[var(--border-highlight)] shadow-2xl relative bg-[var(--glass-surface)]">
             {profile.avatar ? (
@@ -98,7 +131,7 @@ export const ProfileWidget = () => {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col justify-center gap-1">
+        <div className="flex-1 flex flex-col justify-center gap-1 text-center sm:text-left w-full">
           <div className="group relative">
             <span className="absolute -top-3 left-0 text-[10px] font-tech uppercase tracking-[0.2em] text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-opacity">Identity</span>
             <input
@@ -122,7 +155,7 @@ export const ProfileWidget = () => {
       <div className="w-full h-[1px] bg-[var(--border-subtle)]" />
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
         <GlassPanel 
           variant="frosted" 
           className="p-6 flex flex-col items-center justify-center gap-2 group hover:-translate-y-1 hover:shadow-xl hover:border-accent-highlight/30 transition-all duration-300"
@@ -141,7 +174,7 @@ export const ProfileWidget = () => {
            <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-400 mb-2 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300">
             <Zap size={24} />
           </div>
-          <span className="text-4xl font-display text-[var(--text-main)] mt-2">{stats.level * 100}</span>
+          <span className="text-4xl font-display text-[var(--text-main)] mt-2">{stats.totalXP}</span>
           <span className="text-[10px] font-tech uppercase tracking-[0.2em] text-[var(--text-muted)]">XP Generated</span>
         </GlassPanel>
 
@@ -152,7 +185,7 @@ export const ProfileWidget = () => {
            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-2 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-300">
             <Clock size={24} />
           </div>
-          <span className="text-4xl font-display text-[var(--text-main)] mt-2">--</span>
+          <span className="text-4xl font-display text-[var(--text-main)] mt-2">{stats.focusHours}</span>
           <span className="text-[10px] font-tech uppercase tracking-[0.2em] text-[var(--text-muted)]">Focus Hours</span>
         </GlassPanel>
       </div>

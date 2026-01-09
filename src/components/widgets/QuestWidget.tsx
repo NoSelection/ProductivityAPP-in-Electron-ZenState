@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, CheckCircle2, Circle } from 'lucide-react';
 import { GlassInput } from '../atoms/GlassInput';
@@ -13,20 +13,34 @@ interface Quest {
 export const QuestWidget = () => {
   const [quests, setQuests] = useState<Quest[]>([]);
   const [newQuest, setNewQuest] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const hasLoaded = useRef(false);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load from DB
   useEffect(() => {
     const load = async () => {
+      setIsLoading(true);
       const saved = await window.neuralDb.getQuests();
-      setQuests(saved.map((q: any) => ({ ...q, completed: !!q.completed })));
+      setQuests(saved.map((q) => ({ ...q, completed: !!q.completed })));
+      hasLoaded.current = true;
+      setIsLoading(false);
     };
     load();
   }, []);
 
-  // Save to DB
+  // Debounced save to DB - only after initial load
+  const saveQuests = useCallback((questsToSave: Quest[]) => {
+    if (!hasLoaded.current) return;
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(() => {
+      window.neuralDb.saveQuests(questsToSave);
+    }, 300);
+  }, []);
+
   useEffect(() => {
-    window.neuralDb.saveQuests(quests);
-  }, [quests]);
+    saveQuests(quests);
+  }, [quests, saveQuests]);
 
   const addQuest = () => {
     if (!newQuest.trim()) return;
@@ -73,7 +87,13 @@ export const QuestWidget = () => {
           onKeyDown={(e) => e.key === 'Enter' && addQuest()}
           className="py-2"
         />
-        <GlassButton size="icon" variant="primary" onClick={addQuest} className="shrink-0 w-11 h-11 rounded-2xl">
+        <GlassButton
+          size="icon"
+          variant="primary"
+          onClick={addQuest}
+          className="shrink-0 w-11 h-11 rounded-2xl"
+          aria-label="Add new quest"
+        >
           <Plus size={18} />
         </GlassButton>
       </div>
@@ -94,10 +114,11 @@ export const QuestWidget = () => {
               <button
                 onClick={() => toggleQuest(quest.id)}
                 className={`shrink-0 transition-colors ${quest.completed ? 'text-accent-highlight' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'}`}
+                aria-label={quest.completed ? `Mark "${quest.text}" as incomplete` : `Mark "${quest.text}" as complete`}
               >
                 {quest.completed ? <CheckCircle2 size={16} /> : <Circle size={16} />}
               </button>
-              
+
               <span className={`flex-1 text-sm font-light tracking-wide ${quest.completed ? 'line-through text-[var(--text-muted)]' : 'text-[var(--text-main)]'}`}>
                 {quest.text}
               </span>
@@ -105,6 +126,7 @@ export const QuestWidget = () => {
               <button
                 onClick={() => deleteQuest(quest.id)}
                 className="opacity-0 group-hover:opacity-100 p-1 text-[var(--text-muted)] hover:text-red-400 transition-all"
+                aria-label={`Delete "${quest.text}"`}
               >
                 <Trash2 size={14} />
               </button>
@@ -112,12 +134,22 @@ export const QuestWidget = () => {
           ))}
         </AnimatePresence>
         
-        {quests.length === 0 && (
-          <div className="h-full flex flex-col items-center justify-center opacity-20 py-10">
-            <div className="w-10 h-10 rounded-full border border-dashed border-[var(--text-main)] flex items-center justify-center mb-2">
-              <Plus size={16} className="text-[var(--text-main)]" />
+        {isLoading && (
+          <div className="h-full flex flex-col items-center justify-center py-10 gap-4">
+            <div className="w-16 h-16 rounded-full border-2 border-accent-highlight/30 border-t-accent-highlight animate-spin" />
+            <span className="text-[10px] font-tech text-[var(--text-muted)] uppercase tracking-widest">Loading Directives...</span>
+          </div>
+        )}
+
+        {!isLoading && quests.length === 0 && (
+          <div className="h-full flex flex-col items-center justify-center opacity-30 py-10 gap-4">
+            <div className="w-20 h-20 rounded-full border-2 border-dashed border-[var(--text-main)] flex items-center justify-center animate-[spin_10s_linear_infinite]">
+              <Plus size={32} className="text-[var(--text-main)]" />
             </div>
-            <span className="text-[10px] font-tech uppercase tracking-widest text-[var(--text-main)]">No Directives</span>
+            <div className="text-center">
+                <span className="text-sm font-display uppercase tracking-widest text-[var(--text-main)] block">Awaiting Orders</span>
+                <span className="text-[10px] font-tech text-[var(--text-muted)]">System Ready</span>
+            </div>
           </div>
         )}
       </div>
