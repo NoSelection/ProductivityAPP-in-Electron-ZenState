@@ -50,4 +50,9 @@ contextBridge.exposeInMainWorld('neuralDb', {
   deleteCodexNote: (id: string) => ipcRenderer.invoke('db:deleteCodexNote', id),
   saveSession: (duration: number) => ipcRenderer.invoke('db:saveSession', duration),
   getSessions: () => ipcRenderer.invoke('db:getSessions'),
+  getSessions: () => ipcRenderer.invoke('db:getSessions'),
+})
+
+contextBridge.exposeInMainWorld('electron', {
+  openArtifact: (type: string) => ipcRenderer.send('open-artifact', type)
 })

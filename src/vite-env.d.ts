@@ -31,6 +31,10 @@ interface Window {
     saveCodexNote: (note: CodexNote) => Promise<void>
     deleteCodexNote: (id: string) => Promise<void>
     saveSession: (duration: number) => Promise<void>
+
     getSessions: () => Promise<{ id: string, duration: number, timestamp: number }[]>
+  }
+  electron: {
+    openArtifact: (type: string) => void
   }
 }

@@ -82,6 +82,31 @@ ipcMain.on('window-maximize', () => {
 })
 ipcMain.on('window-close', () => win?.close())
 
+// Artifact Spawner
+// Artifact Spawner
+ipcMain.on('open-artifact', (_event, type) => {
+  const artifactWin = new BrowserWindow({
+    width: 340,
+    height: 360,
+    frame: false,
+    transparent: true,
+    alwaysOnTop: true,
+    resizable: false, // Keep size fixed for artifacts for now
+    icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.mjs'),
+      nodeIntegration: true,
+      contextIsolation: true,
+    },
+  })
+
+  if (VITE_DEV_SERVER_URL) {
+    artifactWin.loadURL(`${VITE_DEV_SERVER_URL}#/artifact/${type}`)
+  } else {
+    artifactWin.loadFile(path.join(RENDERER_DIST, 'index.html'), { hash: `/artifact/${type}` })
+  }
+})
+
 app.whenReady().then(() => {
   initDb()
   createWindow()
