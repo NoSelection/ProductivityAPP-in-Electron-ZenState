@@ -69,7 +69,7 @@ export function useNeuralStorage<T>(key: string, initialValue: T) {
                         }
 
                         setStoredValue(parsedLocal)
-                        // window.localStorage.removeItem(key) // Optional: clean up later
+                        window.localStorage.removeItem(key)
                     } else {
                         setStoredValue(initialValue)
                     }
