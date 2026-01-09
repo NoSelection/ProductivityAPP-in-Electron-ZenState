@@ -86,8 +86,8 @@ ipcMain.on('window-close', () => win?.close())
 // Artifact Spawner
 ipcMain.on('open-artifact', (_event, type) => {
   const artifactWin = new BrowserWindow({
-    width: 340,
-    height: 360,
+    width: 380,
+    height: 420,
     frame: false,
     transparent: true,
     alwaysOnTop: true,

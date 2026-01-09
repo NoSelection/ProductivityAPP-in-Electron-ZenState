@@ -1,5 +1,12 @@
 # ZenState - Session Change Log
 
+## [2026-01-09] ZenState // Premium Artifact Evolution (Gemini 3 Pro)
+- **Octagonal to Rectangular**: Replaced the circular artifact layout with a premium soft rectangular design (`rounded-[40px]`).
+- **Cute Aesthetics**: Implemented a "Cute Glass" style using custom pastel gradients (`bg-cute-gradient`) and high-fidelity glass blurs.
+- **Hardware Finish**: Added cinematic light accents, including a top "light beam" and a subtle bottom glow for a physical object feel.
+- **Enhanced Draggability**: Optimized the entire container to serve as a drag handle, ensuring seamless window movement.
+- **Responsive Windowing**: Adjusted Electron main process to launch artifacts in larger `380x420` windows to accommodate the new form factor.
+
 ## [2026-01-09] ZenState // The Void Aesthetic (Gemini 3 Pro)
 - **Frontend Override**: Complete "Hyper-Glass" redesign focused on deep immersion and cinematic UI.
 - **Void Theme**: Implemented a "True Void" (`#020204`) aesthetic with punchy indigo accents and high-contrast typography.
