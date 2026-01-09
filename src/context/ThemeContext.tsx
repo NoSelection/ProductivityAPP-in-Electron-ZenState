@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { MotionConfig } from 'framer-motion';
 import { settingsService } from '../lib/settingsService';
@@ -94,10 +95,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             const settings = await settingsService.getAll();
             if (settings.visual) {
                 if (settings.visual.animationsEnabled !== undefined) {
-                    setAnimationsEnabled(settings.visual.animationsEnabled);
+                    setAnimationsEnabled(settings.visual.animationsEnabled as boolean);
                 }
                 if (settings.visual.blurEnabled !== undefined) {
-                    setBlurEnabled(settings.visual.blurEnabled);
+                    setBlurEnabled(settings.visual.blurEnabled as boolean);
                 }
             }
         };

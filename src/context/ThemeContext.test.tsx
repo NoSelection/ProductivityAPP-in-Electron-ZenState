@@ -1,8 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, waitFor, cleanup } from '@testing-library/react';
 import { ThemeProvider, useTheme } from './ThemeContext';
-import { settingsService } from '../lib/settingsService';
-import React from 'react';
 
 // Mock dependencies
 vi.mock('../lib/settingsService', () => ({
@@ -18,7 +16,7 @@ vi.mock('../lib/settingsService', () => ({
 }));
 
 const TestComponent = () => {
-  const { animationsEnabled, blurEnabled } = useTheme() as any;
+  const { animationsEnabled, blurEnabled } = useTheme() as { animationsEnabled: boolean; blurEnabled: boolean };
   return (
     <div>
       <span data-testid="animations">{animationsEnabled ? 'on' : 'off'}</span>

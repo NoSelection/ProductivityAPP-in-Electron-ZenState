@@ -27,11 +27,11 @@ class MockAudioContext {
   resume = vi.fn().mockResolvedValue(undefined)
 }
 
-// @ts-ignore
+// @ts-expect-error mocking Audio for tests
 global.Audio = MockAudio
-// @ts-ignore
+// @ts-expect-error mocking AudioContext for tests
 global.AudioContext = MockAudioContext
-// @ts-ignore
+// @ts-expect-error mocking webkitAudioContext for tests
 global.webkitAudioContext = MockAudioContext
 
 describe('AudioService', () => {
@@ -42,11 +42,10 @@ describe('AudioService', () => {
 
   it('should play a sound by ID', () => {
     audioService.play('rain')
-    // @ts-ignore
     const audioInstance = audioService.getAudioInstance()
-    expect(audioInstance.src).toContain('/audio/rain.mp3')
-    expect(audioInstance.loop).toBe(true)
-    expect(audioInstance.play).toHaveBeenCalled()
+    expect(audioInstance!.src).toContain('/audio/rain.mp3')
+    expect(audioInstance!.loop).toBe(true)
+    expect(audioInstance!.play).toHaveBeenCalled()
   })
 
   it('should provide frequency data', () => {

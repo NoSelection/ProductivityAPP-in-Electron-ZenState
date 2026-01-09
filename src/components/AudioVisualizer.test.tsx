@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, cleanup } from '@testing-library/react';
 import { AudioVisualizer } from './AudioVisualizer';
-import React from 'react';
 
 // Mock useTheme
 vi.mock('../context/ThemeContext', () => ({

@@ -35,21 +35,21 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 {/* Control Buttons (Top Right) */}
                 <div className="relative z-[10000] flex items-center gap-1 p-2 pointer-events-auto app-no-drag bg-black/50 backdrop-blur-md rounded-bl-xl border-b border-l border-white/5">
                     <button
-                        onClick={() => (window as any).ipcRenderer?.send('window-minimize')}
+                        onClick={() => (window as Window & { ipcRenderer?: { send: (channel: string) => void } }).ipcRenderer?.send('window-minimize')}
                         className="p-1.5 rounded-md text-white/40 hover:text-[var(--prismatic-2)] hover:bg-[var(--prismatic-2)]/10 transition-colors"
                         title="Minimize"
                     >
                         <Minus className="w-3.5 h-3.5" />
                     </button>
                     <button
-                        onClick={() => (window as any).ipcRenderer?.send('window-maximize')}
+                        onClick={() => (window as Window & { ipcRenderer?: { send: (channel: string) => void } }).ipcRenderer?.send('window-maximize')}
                         className="p-1.5 rounded-md text-white/40 hover:text-[var(--prismatic-2)] hover:bg-[var(--prismatic-2)]/10 transition-colors"
                         title="Maximize"
                     >
                         <Square className="w-3 h-3" />
                     </button>
                     <button
-                        onClick={() => (window as any).ipcRenderer?.send('window-close')}
+                        onClick={() => (window as Window & { ipcRenderer?: { send: (channel: string) => void } }).ipcRenderer?.send('window-close')}
                         className="p-1.5 rounded-md text-white/40 hover:text-[var(--prismatic-1)] hover:bg-[var(--prismatic-1)]/10 transition-colors"
                         title="Close"
                     >

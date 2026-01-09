@@ -1,6 +1,6 @@
 export interface Settings {
     [category: string]: {
-        [key: string]: any
+        [key: string]: unknown
     }
 }
 
@@ -12,11 +12,10 @@ export const settingsService = {
             return stored ? JSON.parse(stored) : {}
         }
 
-        // @ts-ignore
         const rawSettings = await window.neuralDb.getSettings()
         const settings: Settings = {}
 
-        rawSettings.forEach((row: any) => {
+        rawSettings.forEach((row: { category: string; key: string; value: string }) => {
             if (!settings[row.category]) {
                 settings[row.category] = {}
             }
@@ -30,7 +29,7 @@ export const settingsService = {
         return settings
     },
 
-    async set(category: string, key: string, value: any): Promise<void> {
+    async set(category: string, key: string, value: unknown): Promise<void> {
         // Browser Fallback
         if (!window.neuralDb) {
             const stored = localStorage.getItem('zen-settings')
@@ -41,7 +40,6 @@ export const settingsService = {
             return
         }
 
-        // @ts-ignore
         await window.neuralDb.saveSetting(category, key, value)
     }
 }

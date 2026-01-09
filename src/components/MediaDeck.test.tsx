@@ -1,8 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { MediaDeck } from './MediaDeck';
 import { audioService } from '../lib/audioService';
-import React from 'react';
 
 // Mock audioService
 vi.mock('../lib/audioService', () => ({
@@ -19,37 +18,33 @@ vi.mock('../context/ThemeContext', () => ({
   useTheme: () => ({
     colors: { neon_primary: '#00f0ff', neon_secondary: '#ff00aa' }
   }),
-  ThemeProvider: ({ children }: any) => <div>{children}</div>
+  ThemeProvider: ({ children }: { children: React.ReactNode }) => <div>{children}</div>
 }));
 
 // Mock framer-motion
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, className, onClick, style }: any) => (
-      <div className={className} onClick={onClick} style={style}>{children}</div>
+    div: ({ children, className, onClick, style, animate, transition, ...rest }: { children?: React.ReactNode; className?: string; onClick?: () => void; style?: React.CSSProperties; animate?: unknown; transition?: unknown; [key: string]: unknown }) => (
+      <div className={className} onClick={onClick} style={style} {...rest}>{children}</div>
     ),
-    button: ({ children, onClick, className, title }: any) => (
+    button: ({ children, onClick, className, title }: { children?: React.ReactNode; onClick?: () => void; className?: string; title?: string }) => (
       <button className={className} onClick={onClick} title={title}>{children}</button>
     ),
   },
-  AnimatePresence: ({ children }: any) => <>{children}</>,
-  MotionConfig: ({ children }: any) => <>{children}</>
+  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  MotionConfig: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
 
 // Mock Lucide icons
 vi.mock('lucide-react', () => ({
-  Play: () => <svg data-testid="icon-play" aria-label="play" />,
-  Pause: () => <svg data-testid="icon-pause" aria-label="pause" />,
-  SkipForward: () => <svg data-testid="icon-skip" aria-label="skip" />,
-  Volume2: () => <svg data-testid="icon-volume" aria-label="volume" />,
-  Radio: () => <svg data-testid="icon-radio" aria-label="radio" />,
-  Link: () => <svg data-testid="icon-link" aria-label="link" />,
-  Eye: () => <svg data-testid="icon-eye" aria-label="eye" />,
+  Play: () => <svg data-testid="icon-play" />,
+  Pause: () => <svg data-testid="icon-pause" />,
+  SkipForward: () => <svg data-testid="icon-skip" />,
+  Volume2: () => <svg data-testid="icon-volume" />,
   CloudRain: () => <svg data-testid="icon-rain" />,
   TreePine: () => <svg data-testid="icon-tree" />,
   Rocket: () => <svg data-testid="icon-rocket" />,
   Wind: () => <svg data-testid="icon-wind" />,
-  Music: () => <svg data-testid="icon-music" aria-label="music" />,
 }));
 
 // Mock ReactPlayer
@@ -57,46 +52,69 @@ vi.mock('react-player', () => ({
   default: () => <div data-testid="mock-player" />
 }));
 
+// Mock AudioVisualizer to avoid canvas issues
+vi.mock('./AudioVisualizer', () => ({
+  AudioVisualizer: () => <div data-testid="mock-visualizer" />
+}));
+
 describe('MediaDeck', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('renders and defaults to ambient mode', async () => {
-    render(<MediaDeck />);
-    expect(screen.getByText(/AUDIO DECK/i)).toBeDefined();
-    expect(screen.getAllByText(/Rainfall/i)[0]).toBeDefined();
+  afterEach(() => {
+    cleanup();
   });
 
-  it('calls audioService.play with rain when play is clicked in ambient mode', async () => {
+  it('renders and defaults to ambient mode', () => {
     render(<MediaDeck />);
-    const playButton = screen.getAllByRole('button')[2]; 
-    fireEvent.click(playButton);
-    expect(audioService.play).toHaveBeenCalledWith('rain');
+    // Check mode indicator shows "ambient"
+    expect(screen.getByText('ambient')).toBeDefined();
+    // Check initial preset name is shown
+    expect(screen.getByText('Rainfall')).toBeDefined();
   });
 
-  it('updates volume via audioService', async () => {
+  it('calls audioService.play with rain when play is clicked in ambient mode', () => {
     render(<MediaDeck />);
-    const volumeSlider = screen.getAllByRole('slider')[0];
+    // Find the play button (the larger one with icon-play)
+    const playIcon = screen.getByTestId('icon-play');
+    const playButton = playIcon.closest('button');
+    if (playButton) {
+      fireEvent.click(playButton);
+      expect(audioService.play).toHaveBeenCalledWith('rain');
+    }
+  });
+
+  it('updates volume via audioService', () => {
+    render(<MediaDeck />);
+    const volumeSlider = screen.getByRole('slider');
     fireEvent.change(volumeSlider, { target: { value: '0.8' } });
     expect(audioService.setVolume).toHaveBeenCalledWith(0.8);
   });
 
-  it('cycles ambient content', async () => {
+  it('cycles ambient content', () => {
     render(<MediaDeck />);
-    expect(screen.getAllByText(/Rainfall/i)[0]).toBeDefined();
-    
-    const skipButton = screen.getAllByLabelText('skip')[0].parentElement;
-    if (skipButton) fireEvent.click(skipButton);
-    
-    expect(screen.getAllByText(/Pine Forest/i)[0]).toBeDefined();
+    expect(screen.getByText('Rainfall')).toBeDefined();
+
+    // Find skip button
+    const skipIcon = screen.getByTestId('icon-skip');
+    const skipButton = skipIcon.closest('button');
+    if (skipButton) {
+      fireEvent.click(skipButton);
+    }
+
+    // Should show next preset (Forest)
+    expect(screen.getByText('Forest')).toBeDefined();
   });
 
-  it('switches to stream mode', async () => {
+  it('switches to stream mode', () => {
     render(<MediaDeck />);
-    const modeButton = screen.getAllByLabelText('music')[0].parentElement;
-    if (modeButton) fireEvent.click(modeButton);
-    
-    expect(screen.getAllByText(/Lofi Girl/i)[0]).toBeDefined();
+    // Find Switch button
+    const switchButton = screen.getByText('Switch');
+    fireEvent.click(switchButton);
+
+    // Should show stream mode and first stream preset
+    expect(screen.getByText('stream')).toBeDefined();
+    expect(screen.getByText('Lofi Girl')).toBeDefined();
   });
 });

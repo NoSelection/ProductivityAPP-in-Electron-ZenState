@@ -15,7 +15,7 @@ export const audioService = {
         audio.volume = currentVolume;
 
         if (!audioContext) {
-            // @ts-ignore
+            // @ts-expect-error webkitAudioContext exists in Safari
             const Context = globalThis.AudioContext || globalThis.webkitAudioContext;
             if (Context) {
                 audioContext = new Context();
@@ -27,7 +27,7 @@ export const audioService = {
             }
         }
 
-        if (audioContext.state === 'suspended') {
+        if (audioContext && audioContext.state === 'suspended') {
             audioContext.resume();
         }
 

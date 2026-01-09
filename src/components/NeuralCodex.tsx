@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Archive, Zap, Activity, Search, Plus, Trash2 } from 'lucide-react'
+import { Archive, Search, Plus, Trash2 } from 'lucide-react'
 import { useNeuralStorage } from '../hooks/useNeuralStorage'
 import { cn } from '../lib/utils'
 
@@ -13,20 +13,13 @@ interface CodexNote {
     updatedAt: number
 }
 
-interface Quest {
-    id: string
-    text: string
-    completed: boolean
-}
 
 export const NeuralCodex: React.FC = () => {
     // --- Global State ---
     const [totalFocus] = useNeuralStorage('zen-focus-total', 0)
-    const [quests] = useNeuralStorage<Quest[]>('zen-quests', [])
     const [codexNotes, setCodexNotes] = useState<CodexNote[]>([])
     const [searchQuery, setSearchQuery] = useState('')
     const [activeNoteId, setActiveNoteId] = useState<string | null>(null)
-    const [isLoading, setIsLoading] = useState(true)
 
     // --- Stats Logic ---
     useEffect(() => {
@@ -34,18 +27,19 @@ export const NeuralCodex: React.FC = () => {
     }, [])
 
     const loadCodexNotes = async () => {
-        setIsLoading(true)
         try {
             const rawNotes = await window.neuralDb.getCodexNotes()
-            const parsedNotes: CodexNote[] = rawNotes.map((n: any) => ({
-                ...n,
-                tags: n.tags ? JSON.parse(n.tags) : []
+            const parsedNotes: CodexNote[] = rawNotes.map((n) => ({
+                id: n.id,
+                title: n.title,
+                content: n.content,
+                tags: typeof n.tags === 'string' ? JSON.parse(n.tags) : n.tags,
+                createdAt: n.createdAt ?? Date.now(),
+                updatedAt: n.updatedAt ?? Date.now()
             }))
             setCodexNotes(parsedNotes)
         } catch (error) {
             console.error("Failed to load Codex notes:", error)
-        } finally {
-            setIsLoading(false)
         }
     }
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-import { Circle, CheckCircle2, Target, Zap, X, Crosshair } from 'lucide-react'
+import { CheckCircle2, X } from 'lucide-react'
 import { cn } from '../lib/utils'
 
 export const FocusCard: React.FC = () => {

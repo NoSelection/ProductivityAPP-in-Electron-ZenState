@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, waitFor, fireEvent, cleanup } from '@testing-library/react';
 import { Timer } from './Timer';
-import { settingsService } from '../lib/settingsService';
 
 // Mock dependencies
 vi.mock('../lib/settingsService', () => ({
@@ -18,19 +17,19 @@ vi.mock('../lib/settingsService', () => ({
 
 // Mock hooks
 vi.mock('../hooks/useNeuralStorage', () => ({
-  useNeuralStorage: (key: string, initialValue: any) => [initialValue, vi.fn()]
+  useNeuralStorage: <T,>(_key: string, initialValue: T) => [initialValue, vi.fn()]
 }));
 
 // Mock framer-motion
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, className, style }: any) => (
+    div: ({ children, className, style }: { children?: React.ReactNode; className?: string; style?: React.CSSProperties }) => (
       <div className={className} style={style}>{children}</div>
     ),
-    button: ({ children, onClick, className }: any) => (
+    button: ({ children, onClick, className }: { children?: React.ReactNode; onClick?: () => void; className?: string }) => (
       <button className={className} onClick={onClick}>{children}</button>
     ),
-    circle: ({ children, ...props }: any) => <circle {...props}>{children}</circle>
+    circle: ({ children, ...props }: React.SVGProps<SVGCircleElement>) => <circle {...props}>{children}</circle>
   }
 }));
 

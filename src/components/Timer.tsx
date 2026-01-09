@@ -20,11 +20,9 @@ export const Timer: React.FC = () => {
         const loadSettings = async () => {
             const settings = await settingsService.getAll()
             if (settings.timer?.focusDuration) {
-                const duration = settings.timer.focusDuration
+                const duration = settings.timer.focusDuration as number
                 setFocusDuration(duration)
-                if (!isActive) {
-                    setTimeLeft(duration * 60)
-                }
+                setTimeLeft(duration * 60)
             }
         }
         loadSettings()

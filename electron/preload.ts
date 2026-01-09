@@ -20,16 +20,32 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   },
 })
 
+interface Quest {
+  id: string
+  text: string
+  completed: boolean | number
+  createdAt?: number
+}
+
+interface CodexNote {
+  id: string
+  title: string
+  content: string
+  tags: string[]
+  createdAt?: number
+  updatedAt?: number
+}
+
 contextBridge.exposeInMainWorld('neuralDb', {
   getQuests: () => ipcRenderer.invoke('db:getQuests'),
-  saveQuests: (quests: any[]) => ipcRenderer.invoke('db:saveQuests', quests),
+  saveQuests: (quests: Quest[]) => ipcRenderer.invoke('db:saveQuests', quests),
   getStats: () => ipcRenderer.invoke('db:getStats'),
-  saveStat: (key: string, value: any) => ipcRenderer.invoke('db:saveStat', key, value),
+  saveStat: (key: string, value: unknown) => ipcRenderer.invoke('db:saveStat', key, value),
   getNotes: () => ipcRenderer.invoke('db:getNotes'),
   saveNotes: (content: string) => ipcRenderer.invoke('db:saveNotes', content),
   getSettings: () => ipcRenderer.invoke('db:getSettings'),
-  saveSetting: (category: string, key: string, value: any) => ipcRenderer.invoke('db:saveSetting', category, key, value),
+  saveSetting: (category: string, key: string, value: unknown) => ipcRenderer.invoke('db:saveSetting', category, key, value),
   getCodexNotes: () => ipcRenderer.invoke('db:getCodexNotes'),
-  saveCodexNote: (note: any) => ipcRenderer.invoke('db:saveCodexNote', note),
+  saveCodexNote: (note: CodexNote) => ipcRenderer.invoke('db:saveCodexNote', note),
   deleteCodexNote: (id: string) => ipcRenderer.invoke('db:deleteCodexNote', id),
 })

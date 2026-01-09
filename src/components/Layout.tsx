@@ -111,19 +111,19 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     {/* Window Controls */}
                     <div className="hidden sm:flex items-center gap-1 pl-4 border-l border-white/10 app-no-drag">
                         <button
-                            onClick={() => (window as any).ipcRenderer?.send('window-minimize')}
+                            onClick={() => (window as Window & { ipcRenderer?: { send: (channel: string) => void } }).ipcRenderer?.send('window-minimize')}
                             className="p-2 rounded text-white/20 hover:text-neon-lime hover:bg-neon-lime/10 transition-all"
                         >
                             <Minus className="w-3.5 h-3.5" />
                         </button>
                         <button
-                            onClick={() => (window as any).ipcRenderer?.send('window-maximize')}
+                            onClick={() => (window as Window & { ipcRenderer?: { send: (channel: string) => void } }).ipcRenderer?.send('window-maximize')}
                             className="p-2 rounded text-white/20 hover:text-neon-cyan hover:bg-neon-cyan/10 transition-all"
                         >
                             <Square className="w-3 h-3" />
                         </button>
                         <button
-                            onClick={() => (window as any).ipcRenderer?.send('window-close')}
+                            onClick={() => (window as Window & { ipcRenderer?: { send: (channel: string) => void } }).ipcRenderer?.send('window-close')}
                             className="p-2 rounded text-white/20 hover:text-neon-magenta hover:bg-neon-magenta/10 transition-all"
                         >
                             <X className="w-4 h-4" />

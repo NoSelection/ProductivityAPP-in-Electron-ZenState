@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { motion } from 'framer-motion'
 import { Brain, Terminal, Cpu, Plus, X } from 'lucide-react'
 import { useNeuralStorage } from '../hooks/useNeuralStorage'
 import { cn } from '../lib/utils'
@@ -30,7 +29,7 @@ export const BrainDump: React.FC = () => {
         } else if (isInitialized && !activeNoteId && notes.length > 0) {
             setActiveNoteId(notes[0].id)
         }
-    }, [isInitialized, notes.length, activeNoteId])
+    }, [isInitialized, notes, activeNoteId, setNotes])
 
     const activeNote = notes.find(n => n.id === activeNoteId) || notes[0]
 

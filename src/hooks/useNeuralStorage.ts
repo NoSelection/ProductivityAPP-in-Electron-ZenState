@@ -1,19 +1,48 @@
 import { useState, useEffect } from 'react'
 
+interface Quest {
+    id: string
+    text: string
+    completed: boolean | number
+    createdAt?: number
+}
+
+interface StatRow {
+    key: string
+    value: string
+}
+
+interface CodexNote {
+    id: string
+    title: string
+    content: string
+    tags: string[]
+    createdAt?: number
+    updatedAt?: number
+}
+
+interface SettingRow {
+    category: string
+    key: string
+    value: string
+}
+
 // Declare the neuralDb interface for TypeScript
 declare global {
     interface Window {
         neuralDb: {
-            getQuests: () => Promise<any[]>
-            saveQuests: (quests: any[]) => Promise<{ success: boolean }>
-            getStats: () => Promise<any[]>
-            saveStat: (key: string, value: any) => Promise<any>
+            getQuests: () => Promise<Quest[]>
+            saveQuests: (quests: Quest[]) => Promise<{ success: boolean }>
+            getStats: () => Promise<StatRow[]>
+            saveStat: (key: string, value: unknown) => Promise<unknown>
             getNotes: () => Promise<string>
-            saveNotes: (content: string) => Promise<any>
+            saveNotes: (content: string) => Promise<unknown>
+            getSettings: () => Promise<SettingRow[]>
+            saveSetting: (category: string, key: string, value: unknown) => Promise<unknown>
             // Codex
-            getCodexNotes: () => Promise<any[]>
-            saveCodexNote: (note: any) => Promise<any>
-            deleteCodexNote: (id: string) => Promise<any>
+            getCodexNotes: () => Promise<CodexNote[]>
+            saveCodexNote: (note: CodexNote) => Promise<unknown>
+            deleteCodexNote: (id: string) => Promise<unknown>
         }
     }
 }
@@ -39,16 +68,16 @@ export function useNeuralStorage<T>(key: string, initialValue: T) {
                 }
 
                 // Electron Mode: Use SQLite (neuralDb)
-                let data: any
+                let data: T | null = null
 
                 // 1. Try to get from SQLite
                 if (key === 'zen-quests') {
-                    data = await window.neuralDb.getQuests()
+                    data = await window.neuralDb.getQuests() as T
                 } else if (key === 'zen-brain-dump') {
-                    data = await window.neuralDb.getNotes()
+                    data = await window.neuralDb.getNotes() as T
                 } else {
                     const stats = await window.neuralDb.getStats()
-                    const stat = stats.find((s: any) => s.key === key)
+                    const stat = stats.find((s) => s.key === key)
                     data = stat ? JSON.parse(stat.value) : null
                 }
 
@@ -85,6 +114,7 @@ export function useNeuralStorage<T>(key: string, initialValue: T) {
         }
 
         loadData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [key])
 
     const setValue = async (value: T | ((val: T) => T)) => {
@@ -100,7 +130,7 @@ export function useNeuralStorage<T>(key: string, initialValue: T) {
 
             // Electron Mode: Persist to SQLite
             if (key === 'zen-quests') {
-                await window.neuralDb.saveQuests(valueToStore as any[])
+                await window.neuralDb.saveQuests(valueToStore as Quest[])
             } else if (key === 'zen-brain-dump') {
                 await window.neuralDb.saveNotes(valueToStore as string)
             } else {

@@ -35,14 +35,14 @@ vi.mock('../lib/settingsService', () => ({
 // Mock framer-motion to avoid animation issues in tests
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, className, onClick, style }: any) => (
+    div: ({ children, className, onClick, style }: { children?: React.ReactNode; className?: string; onClick?: () => void; style?: React.CSSProperties }) => (
       <div className={className} onClick={onClick} style={style}>{children}</div>
     ),
-    button: ({ children, onClick, className }: any) => (
+    button: ({ children, onClick, className }: { children?: React.ReactNode; onClick?: () => void; className?: string }) => (
       <button className={className} onClick={onClick}>{children}</button>
     ),
   },
-  AnimatePresence: ({ children }: any) => <>{children}</>,
+  AnimatePresence: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
 // Mock Lucide icons

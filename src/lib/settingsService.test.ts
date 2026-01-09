@@ -6,10 +6,8 @@ const mockNeuralDb = {
   saveSetting: vi.fn()
 }
 
-// @ts-ignore
+// @ts-expect-error mocking window for tests
 global.window = { neuralDb: mockNeuralDb }
-// @ts-ignore
-global.neuralDb = mockNeuralDb
 
 describe('SettingsService', () => {
   beforeEach(() => {
