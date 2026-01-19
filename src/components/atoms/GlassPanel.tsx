@@ -32,6 +32,11 @@ export const GlassPanel = memo<GlassPanelProps>(function GlassPanel({
         className
       )}
     >
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 rounded-3xl bg-[radial-gradient(120%_120%_at_0%_0%,rgba(255,255,255,0.18),transparent_55%)] opacity-60" />
+        <div className="absolute inset-0 rounded-3xl bg-[radial-gradient(120%_120%_at_100%_100%,rgba(0,0,0,0.18),transparent_60%)] opacity-40" />
+      </div>
+
       {/* Top edge highlight for depth */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none opacity-50" />
 
@@ -45,4 +50,3 @@ export const GlassPanel = memo<GlassPanelProps>(function GlassPanel({
     </motion.div>
   );
 });
-

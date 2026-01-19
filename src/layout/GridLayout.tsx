@@ -46,7 +46,7 @@ export const GridLayout: React.FC = () => {
     <div className="w-full h-full relative overflow-y-auto overflow-x-hidden custom-scrollbar">
       <LayoutGroup>
         {/* Grid Container */}
-        <div className="grid grid-cols-12 gap-4 lg:gap-8 auto-rows-[minmax(150px,auto)] max-w-[1600px] mx-auto pb-32">
+        <div className="grid grid-cols-12 gap-5 lg:gap-6 auto-rows-[minmax(120px,auto)] max-w-[1600px] mx-auto pb-24">
           <AnimatePresence mode="popLayout">
             {widgets.filter(w => w.visible).map((widget, index) => (
               <motion.div
@@ -71,7 +71,7 @@ export const GridLayout: React.FC = () => {
                   variant={isEditMode ? 'active' : 'frosted'}
                   hoverable={!isEditMode}
                   className={cn(
-                    'p-8 flex flex-col min-h-[400px] w-full',
+                    'p-6 flex flex-col min-h-[320px] w-full',
                     isEditMode && 'ring-2 ring-accent-highlight/20'
                   )}
                 >

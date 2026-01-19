@@ -35,9 +35,9 @@ interface WorkspaceContextType extends WorkspaceState {
 const STORAGE_KEY = 'zen-workspace-layout';
 
 const defaultWidgets: WidgetInstance[] = [
-  { id: 'timer-1', type: 'timer', x: 0, y: 0, w: 3, h: 4, visible: true },
-  { id: 'media-1', type: 'media', x: 3, y: 0, w: 3, h: 4, visible: true },
-  { id: 'quest-1', type: 'quest', x: 6, y: 0, w: 6, h: 4, visible: true },
+  { id: 'timer-1', type: 'timer', x: 0, y: 0, w: 4, h: 3, visible: true },
+  { id: 'media-1', type: 'media', x: 4, y: 0, w: 4, h: 3, visible: true },
+  { id: 'quest-1', type: 'quest', x: 8, y: 0, w: 4, h: 3, visible: true },
 ];
 
 const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefined);
@@ -76,8 +76,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       type,
       x: 0,
       y: 0,
-      w: 3,
-      h: 4,
+      w: 4,
+      h: 3,
       visible: true
     };
     setWidgets(prev => [...prev, newWidget]);
@@ -124,8 +124,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         type,
         x: 0,
         y: 0,
-        w: type === 'codex' || type === 'quest' ? 6 : 3,
-        h: 4,
+        w: type === 'codex' || type === 'quest' ? 6 : 4,
+        h: 3,
         visible: true
       }];
     });
