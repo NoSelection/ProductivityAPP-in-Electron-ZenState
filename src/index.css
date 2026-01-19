@@ -7,26 +7,24 @@
 @layer base {
   :root {
     /* --- CORE PALETTE (Void / Hyper-Zen) --- */
-    --bg-main: #020204;
-    /* True Void Black */
-    --bg-elevated: #08080c;
+    --bg-main: #070a14;
+    --bg-elevated: #0f1426;
 
-    --text-main: #ffffff;
-    --text-muted: #9494a8;
-    --text-accent: #e0e0ff;
+    --text-main: #f8fafc;
+    --text-muted: #99a2b8;
+    --text-accent: #c7d2fe;
 
     /* --- GLASS ENGINE --- */
-    --glass-base: rgba(0, 0, 0, 0.85);
-    /* Darker, denser glass */
-    --glass-surface: rgba(10, 10, 20, 0.5);
-    --glass-highlight: rgba(255, 255, 255, 0.03);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --glass-glow: rgba(99, 102, 241, 0.15);
+    --glass-base: rgba(6, 8, 18, 0.78);
+    --glass-surface: rgba(16, 24, 48, 0.48);
+    --glass-highlight: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(148, 163, 184, 0.18);
+    --glass-glow: rgba(56, 189, 248, 0.16);
 
     /* --- ACCENTS (Electric Indigo) --- */
-    --accent-primary: #eef2ff;
-    --accent-secondary: #6366f1;
-    --accent-highlight: #818cf8;
+    --accent-primary: #e2e8f0;
+    --accent-secondary: #7c8cff;
+    --accent-highlight: #60a5fa;
     --accent-success: #10b981;
     --accent-warning: #f59e0b;
     --accent-error: #ef4444;
@@ -53,21 +51,21 @@
 
   /* --- PURE THEME (White) --- */
   .theme-white {
-    --bg-main: #ffffff;
-    --bg-elevated: #f8fafc;
-    --text-main: #0f172a;
-    --text-muted: #64748b;
+    --bg-main: #f7f9fc;
+    --bg-elevated: #eef2f7;
+    --text-main: #111827;
+    --text-muted: #6b7280;
     --text-accent: #334155;
 
     --glass-base: rgba(255, 255, 255, 0.9);
-    --glass-surface: rgba(241, 245, 249, 0.5);
-    --glass-highlight: rgba(0, 0, 0, 0.03);
-    --glass-border: rgba(0, 0, 0, 0.06);
-    --glass-glow: rgba(56, 189, 248, 0.1);
+    --glass-surface: rgba(241, 245, 249, 0.7);
+    --glass-highlight: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(15, 23, 42, 0.08);
+    --glass-glow: rgba(59, 130, 246, 0.12);
 
     --accent-primary: #0f172a;
-    --accent-secondary: #475569;
-    --accent-highlight: #3b82f6;
+    --accent-secondary: #4b5563;
+    --accent-highlight: #2563eb;
 
     --shadow-artifact:
       0 1px 2px rgba(0, 0, 0, 0.05),
@@ -79,21 +77,21 @@
 
   /* --- LOTUS THEME (Soft Pink) --- */
   .theme-lotus {
-    --bg-main: #fff0f5;
-    --bg-elevated: #fff5f8;
-    --text-main: #831843;
-    --text-muted: #bc4b78;
-    --text-accent: #be185d;
+    --bg-main: #fff1f5;
+    --bg-elevated: #ffe6ef;
+    --text-main: #7f1d4b;
+    --text-muted: #b4537e;
+    --text-accent: #a21caf;
 
-    --glass-base: rgba(255, 240, 245, 0.85);
-    --glass-surface: rgba(255, 255, 255, 0.6);
-    --glass-highlight: rgba(255, 255, 255, 0.4);
-    --glass-border: rgba(219, 39, 119, 0.1);
-    --glass-glow: rgba(219, 39, 119, 0.15);
+    --glass-base: rgba(255, 241, 245, 0.9);
+    --glass-surface: rgba(255, 255, 255, 0.7);
+    --glass-highlight: rgba(255, 255, 255, 0.55);
+    --glass-border: rgba(219, 39, 119, 0.16);
+    --glass-glow: rgba(236, 72, 153, 0.18);
 
-    --accent-primary: #831843;
-    --accent-secondary: #9d174d;
-    --accent-highlight: #db2777;
+    --accent-primary: #7f1d4b;
+    --accent-secondary: #be185d;
+    --accent-highlight: #ec4899;
 
     --shadow-artifact:
       0 1px 2px rgba(131, 24, 67, 0.05),
@@ -105,21 +103,21 @@
 
   /* --- ZEN THEME (Deep Indigo) --- */
   .theme-zen {
-    --bg-main: #020412;
-    --bg-elevated: #0a0e26;
+    --bg-main: #0b1025;
+    --bg-elevated: #121837;
     --text-main: #e0e7ff;
-    --text-muted: #818cf8;
-    --text-accent: #a5b4fc;
+    --text-muted: #93a4ff;
+    --text-accent: #c7d2fe;
 
-    --glass-base: rgba(5, 5, 20, 0.8);
-    --glass-surface: rgba(30, 27, 75, 0.4);
-    --glass-highlight: rgba(129, 140, 248, 0.05);
-    --glass-border: rgba(129, 140, 248, 0.15);
-    --glass-glow: rgba(79, 70, 229, 0.3);
+    --glass-base: rgba(10, 12, 34, 0.78);
+    --glass-surface: rgba(30, 41, 90, 0.45);
+    --glass-highlight: rgba(165, 180, 252, 0.08);
+    --glass-border: rgba(129, 140, 248, 0.22);
+    --glass-glow: rgba(79, 70, 229, 0.26);
 
     --accent-primary: #e0e7ff;
-    --accent-secondary: #6366f1;
-    --accent-highlight: #4338ca;
+    --accent-secondary: #7c8cff;
+    --accent-highlight: #4f46e5;
 
     --shadow-artifact:
       0 0 0 1px rgba(99, 102, 241, 0.1),
