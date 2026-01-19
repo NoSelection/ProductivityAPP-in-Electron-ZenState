@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "description": "A high-fidelity minimalist focus OS",
-  "author": "Battle Buddy",
+  "author": "NoSelection Corp",
   "type": "module",
   "scripts": {
     "dev": "vite",
