@@ -1,6 +1,22 @@
-# ZenState
+﻿# ZenState
 
 A high-fidelity minimalist focus OS designed to help you achieve deep work and flow states.
+
+## Case Study
+
+### Problem
+Most focus tools fragment attention across multiple windows and heavy UI. I wanted a single calm workspace that reduces decision fatigue and makes it easy to start a session.
+
+### My Role
+Product design, UI/UX, frontend, Electron integration, and visual system.
+
+### Key Decisions
+- Built a widget-based dashboard so timer, ambient audio, and tasks live in one view.
+- Designed a glass-and-light theme system that stays legible and consistent across modes.
+- Implemented a shared timer hook to keep artifacts in sync with the main window.
+
+### Outcome
+A cohesive desktop experience that makes starting and sustaining focus feel effortless. Next, I would add usage analytics and more customizable layouts.
 
 ![ZenState Dashboard](screenshots/Screenshot%202026-01-19%20172201.png)
 
@@ -81,13 +97,13 @@ npm run build
 
 ```
 src/
-├── components/
-│   ├── atoms/       # Basic UI components
-│   ├── layout/      # Layout components
-│   └── widgets/     # Feature widgets
-├── features/        # Feature modules
-├── layout/          # App layouts
-└── pages/           # Page components
+|-- components/
+|   |-- atoms/       # Basic UI components
+|   |-- layout/      # Layout components
+|   `-- widgets/     # Feature widgets
+|-- features/        # Feature modules
+|-- layout/          # App layouts
+`-- pages/           # Page components
 ```
 
 ## License
